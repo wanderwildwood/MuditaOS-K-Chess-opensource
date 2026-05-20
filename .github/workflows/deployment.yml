@@ -1,0 +1,85 @@
+name: Release - Android
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  deploy:
+    name: Deploy - Android Release
+    runs-on: [ Linux ]
+    env:
+      build-outputs-directory: app-android/build/outputs
+      MUDITA_ARTIFACTORY_PASSWORD: ${{secrets.MUDITA_ARTIFACTORY_PASSWORD}}
+      MUDITA_ARTIFACTORY_USERNAME: ${{secrets.MUDITA_ARTIFACTORY_USERNAME}}
+      MUDITA_ARTIFACTORY_OUTPUT_URL: ${{secrets.MUDITA_ARTIFACTORY_OUTPUT_URL}}
+      MUDITA_PRIVATE_REPOSITORY_URL: ${{secrets.MUDITA_PRIVATE_REPOSITORY_URL}}
+      SENTRY_DSN: ${{secrets.SENTRY_DSN}}
+      SENTRY_URL: ${{secrets.SENTRY_URL}}
+      SENTRY_ORG: ${{secrets.SENTRY_ORG}}
+      SENTRY_PROJECT: ${{secrets.SENTRY_PROJECT}}
+      SENTRY_AUTH_TOKEN: ${{secrets.SENTRY_AUTH_TOKEN}}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+
+      - name: Install requests
+        run: pip install requests
+
+      - name: Increment BUILD_NUMBER as VERSION_CODE
+        id: version_code
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          VERSION_CODE=$(python3 gradle/build-logic/convention/src/main/kotlin/com/mudita/scripts/bump_build_version.py BUILD_NUMBER)
+          echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
+          echo "version-code=$VERSION_CODE" >> $GITHUB_OUTPUT
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'liberica'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        timeout-minutes: 5
+        with:
+          cache-read-only: true
+          gradle-home-cache-cleanup: true
+
+      - name: Verify Version Bump
+        run: ./gradlew checkVersion
+
+      - name: Extract Tag Prefix and Map to Build Variant
+        run: |
+          PREFIX=$(echo $GITHUB_REF | sed 's|refs/tags/\([^\.]*\).*|\1|')
+          echo "BUILD_VARIANT=${PREFIX}" >> $GITHUB_ENV
+        env:
+          GITHUB_REF: ${{ github.ref }}
+
+      - name: Build APK
+        run: |
+          if [ $BUILD_VARIANT = "development" ]; then
+            ./gradlew assembleDebug
+          else
+            ./gradlew assemble$BUILD_VARIANT
+          fi
+
+      - name: Generate changelog
+        run: ./gradlew generateChangelog -PtagPrefix=$BUILD_VARIANT
+
+      - name: Deploy to Nexus
+        run: ./gradlew uploadApkToNexus -PnexusUrl=${MUDITA_ARTIFACTORY_OUTPUT_URL} -PtagPrefix=$BUILD_VARIANT

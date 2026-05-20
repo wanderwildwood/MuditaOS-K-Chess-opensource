@@ -1,0 +1,10 @@
+{
+	"library": false,
+	"projects": [
+		{
+			"name": "Chess",
+			"id": "0574b4c8-6a6a-4548-b541-ba06d48659fd"
+		}
+	],
+	"filePath": "src/main/res/values/strings.xml"
+}

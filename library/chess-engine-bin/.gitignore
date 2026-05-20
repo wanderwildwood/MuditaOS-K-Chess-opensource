@@ -1,0 +1,2 @@
+src/main/jni/fairy-stockfish/*
+!src/main/jni/*/Android.mk

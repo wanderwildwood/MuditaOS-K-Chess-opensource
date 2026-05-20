@@ -1,0 +1,26 @@
+CREATE TABLE SavedGames (
+    id TEXT NOT NULL PRIMARY KEY,
+    movesSAN TEXT,
+    createdAt INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+selectExistsById:
+    SELECT EXISTS (
+        SELECT 1
+        FROM SavedGames
+        WHERE id = ?
+    );
+
+selectById:
+    SELECT * FROM SavedGames
+    WHERE id = ?;
+
+upsert:
+    INSERT INTO SavedGames(id, movesSAN)
+    VALUES (?, ?)
+    ON CONFLICT (id) DO UPDATE SET
+    movesSAN = excluded.movesSAN;
+
+deleteById:
+    DELETE FROM SavedGames
+    WHERE id = ?;

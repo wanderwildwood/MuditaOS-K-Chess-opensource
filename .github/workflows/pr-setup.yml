@@ -1,0 +1,82 @@
+name: PR setup
+
+# Script is fired for all "ready for review" PRs and it is responsible for:
+# 1. re-requesting review from reviewers who approve or reject the PR
+# 2. assigning reviewers if not yet assigned
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+
+env:
+  required-reviewers: 1 # pick new reviewers only if there are less requested reviewers then required
+
+jobs:
+  pr-setup:
+
+    runs-on: [ Linux ]
+
+    if: github.event.pull_request.draft == false
+    steps:
+
+      #####################
+      # Re-request review #
+      #####################
+      - name: Get reviews
+        uses: octokit/request-action@v2.x
+        id: get_reviews
+        with:
+          route: GET /repos/{owner}/{repo}/pulls/${{ github.event.pull_request.number }}/reviews
+          owner: mudita
+          repo: KompaktOS-Chess
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get reviewers who rejected the PR
+        run: |
+          rejected=$(echo $reviews_array | jq -r '[.[] | select(.state!="COMMENTED") | .user.login] | unique | join(",")')
+          echo "reviewers-which-rejected=$rejected" >> $GITHUB_ENV
+        env:
+          reviews_array: ${{ steps.get_reviews.outputs.data }}
+
+      - name: Re-request review from rejected reviewers
+        uses: madrapps/add-reviewers@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          reviewers: ${{ env.reviewers-which-rejected }}
+
+      #############################
+      # Pick reviewers if missing #
+      #############################
+
+      - name: Get requested reviewers
+        uses: octokit/request-action@v2.x
+        id: get_requested_reviewers
+        with:
+          route: GET /repos/{owner}/{repo}/pulls/${{ github.event.pull_request.number }}/requested_reviewers
+          owner: mudita
+          repo: KompaktOS-Chess
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Count requested reviewers
+        run: |
+          length=$(echo $requested_reviewers_array | jq '.["users"] | . | length')
+          echo "requested-reviewers=$length" >> $GITHUB_ENV
+        env:
+          requested_reviewers_array: ${{ steps.get_requested_reviewers.outputs.data }}
+
+      - name: Checkout
+        if: env.requested-reviewers < env.required-reviewers
+        uses: actions/checkout@v4
+
+      - name: Pick reviewers
+        if: env.requested-reviewers < env.required-reviewers
+        uses: uesteibar/reviewer-lottery@v3
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          config: ".github/pick-reviewers-config.yml"

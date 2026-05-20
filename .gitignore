@@ -1,0 +1,29 @@
+# Android Studio
+*.iml
+.idea/*
+!.idea/fileTemplates/
+!.idea/codeStyles/
+!.idea/runConfigurations/
+/captures
+
+# Gradle
+.gradle
+**/local.properties
+**/build
+
+# Kotlin
+.kotlin
+
+# OS
+.DS_Store
+
+# Built application files
+*.apk
+*.aar
+*.ap_
+*.aab
+
+# Build artifacts
+**/output-metadata.json
+*.dm
+aboutlibraries.json

@@ -1,0 +1,15 @@
+{
+  "uniqueId": "io.github.fairy-stockfish:fairy-stockfish",
+  "developers": [
+    {
+      "name": "Fabian Fichter (ianfab)"
+    }
+  ],
+  "artifactVersion": "14",
+  "description": "Fairy-Stockfish is a chess variant engine",
+  "name": "Fairy-Stockfish 14",
+  "tag": "custom",
+  "licenses": [
+    "stockfishlic"
+  ]
+}
