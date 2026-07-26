@@ -73,15 +73,30 @@ internal class GameplayMapper {
             isSelected = isSelected
         )
 
+    fun toWhiteParticipant(isSelected: Boolean = false) =
+        ParticipantUi(
+            nameResId = RFrontitude.string.common_label_white,
+            isWhite = true,
+            isSelected = isSelected
+        )
+
+    fun toBlackParticipant(isSelected: Boolean = false) =
+        ParticipantUi(
+            nameResId = RFrontitude.string.common_label_black,
+            isWhite = false,
+            isSelected = isSelected
+        )
+
     fun toGameplayDialogUi(
         status: GameStatus,
         sideToMove: Side,
         isMoveSuggestionsOn: Boolean,
         isPromotionManualConfirmationRequired: Boolean,
-        checkInfo: CheckInfo?
+        checkInfo: CheckInfo?,
+        isTwoPlayerMode: Boolean = false
     ): GameplayDialogUi? =
         when (status) {
-            STOPPED -> GameMenuDialogUi(isMoveSuggestionsOn)
+            STOPPED -> GameMenuDialogUi(isMoveSuggestionsOn, isTwoPlayerMode)
 
             WHITE_WON -> createVictoryDialogFor(side = WHITE)
 

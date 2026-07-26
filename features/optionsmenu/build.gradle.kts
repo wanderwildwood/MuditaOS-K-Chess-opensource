@@ -23,7 +23,7 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.koin.compose)
 
-    implementation(libs.kompakt.ui)
+    implementation(libs.mmd)
     implementation(libs.logcat)
 
     testImplementation(testFixtures(projects.library.coroutines))

@@ -12,10 +12,12 @@ dependencies {
 
     api(libs.androidx.compose.tooling.preview)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.icons.core)
 
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.android)
     implementation(libs.koin.core)
 
-    implementation(libs.kompakt.ui)
+    implementation(libs.mmd)
 }

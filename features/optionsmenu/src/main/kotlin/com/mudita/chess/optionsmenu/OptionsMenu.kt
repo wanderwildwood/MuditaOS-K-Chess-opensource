@@ -29,6 +29,7 @@ import com.mudita.chess.navigation.NavActionsEffect
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.DifficultyLevelMinusIconClicked
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.DifficultyLevelPlusIconClicked
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.DifficultyLevelStepClicked
+import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.GameModeSelected
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.MoveSuggestionsSwitchToggled
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.NavigationUpClicked
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.PlayButtonClicked
@@ -40,15 +41,14 @@ import com.mudita.chess.ui.OnLifecycleEvent
 import com.mudita.chess.ui.R
 import com.mudita.chess.ui.model.TextUi
 import com.mudita.chess.ui.compontent.SwitchOption
-import com.mudita.kompakt.commonUi.KompaktTheme
-import com.mudita.kompakt.commonUi.KompaktTypography900
-import com.mudita.kompakt.commonUi.components.appBar.KompaktTopAppBar
-import com.mudita.kompakt.commonUi.components.button.KompaktButtonAttributes
-import com.mudita.kompakt.commonUi.components.button.KompaktPrimaryButton
-import com.mudita.kompakt.commonUi.components.button.KompaktSecondaryButton
+import com.mudita.chess.ui.design.AppButtonAttributes
+import com.mudita.chess.ui.design.AppPrimaryButton
+import com.mudita.chess.ui.design.AppSecondaryButton
+import com.mudita.chess.ui.design.AppTheme
+import com.mudita.chess.ui.design.AppTopAppBar
+import com.mudita.chess.ui.design.AppTypography900
 import org.koin.androidx.compose.koinViewModel
 import com.mudita.chess.frontitude.R as RFrontitude
-import com.mudita.kompakt.commonUi.R as RCommonUi
 
 @Composable
 fun OptionsMenu(navigator: AppNavigator) {
@@ -91,31 +91,37 @@ private fun OptionsMenuScreen(
                 .padding(contentPadding)
                 .padding(bottom = 16.dp)
         ) {
-            SwitchOption(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 4.dp),
-                text = stringResource(id = RFrontitude.string.chess_gamepausemenu_toggle_button_movesuggestions),
-                textStyle = KompaktTypography900.titleMedium,
-                isSwitchedOn = uiState.isMoveSuggestionsOn,
-                onSwitchToggle = { uiEvent(MoveSuggestionsSwitchToggled) }
-            )
-            PlayerColor(
-                isWhiteSelected = uiState.isWhiteSelected,
+            GameMode(
+                isTwoPlayerMode = uiState.isTwoPlayerMode,
                 uiEvent = uiEvent
             )
-            DifficultyLevel(
-                difficultyLevelStep = uiState.difficultyLevelStep,
-                difficultyLevelLabel = uiState.difficultyLevelLabel,
-                uiEvent = uiEvent
-            )
+            if (!uiState.isTwoPlayerMode) {
+                SwitchOption(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 4.dp),
+                    text = stringResource(id = RFrontitude.string.chess_gamepausemenu_toggle_button_movesuggestions),
+                    textStyle = AppTypography900.titleMedium,
+                    isSwitchedOn = uiState.isMoveSuggestionsOn,
+                    onSwitchToggle = { uiEvent(MoveSuggestionsSwitchToggled) }
+                )
+                PlayerColor(
+                    isWhiteSelected = uiState.isWhiteSelected,
+                    uiEvent = uiEvent
+                )
+                DifficultyLevel(
+                    difficultyLevelStep = uiState.difficultyLevelStep,
+                    difficultyLevelLabel = uiState.difficultyLevelLabel,
+                    uiEvent = uiEvent
+                )
+            }
             Spacer(modifier = Modifier.weight(1f))
-            KompaktPrimaryButton(
+            AppPrimaryButton(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 12.dp),
                 text = stringResource(id = RFrontitude.string.chess_optionsmenu_button_play),
-                size = KompaktTheme.buttonStyle.large,
+                size = AppButtonAttributes.Large,
                 onClick = { uiEvent(PlayButtonClicked) }
             )
         }
@@ -124,11 +130,47 @@ private fun OptionsMenuScreen(
 
 @Composable
 private fun OptionsMenuTopAppBar(uiEvent: (OptionsMenuUiEvent) -> Unit) {
-    KompaktTopAppBar(
+    AppTopAppBar(
         title = stringResource(id = RFrontitude.string.common_label_options),
-        navigationIconResId = RCommonUi.drawable.arrow_left,
         onNavigationIconClick = { uiEvent(NavigationUpClicked) }
     )
+}
+
+@Composable
+private fun GameMode(
+    isTwoPlayerMode: Boolean,
+    uiEvent: (OptionsMenuUiEvent) -> Unit
+) {
+    Column(modifier = Modifier.padding(horizontal = 12.dp)) {
+        Text(
+            text = stringResource(id = RFrontitude.string.chess_optionsmenu_label_gamemode),
+            style = AppTypography900.titleMedium
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            AppSecondaryButton(
+                modifier = Modifier.weight(1f),
+                text = stringResource(id = RFrontitude.string.chess_optionsmenu_button_oneplayer),
+                attributes = AppButtonAttributes(
+                    borderStrokeWidth = if (!isTwoPlayerMode) 4.dp else 2.dp
+                ),
+                onClick = { uiEvent(GameModeSelected(isTwoPlayerMode = false)) }
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            AppSecondaryButton(
+                modifier = Modifier.weight(1f),
+                text = stringResource(id = RFrontitude.string.chess_optionsmenu_button_twoplayer),
+                attributes = AppButtonAttributes(
+                    borderStrokeWidth = if (isTwoPlayerMode) 4.dp else 2.dp
+                ),
+                onClick = { uiEvent(GameModeSelected(isTwoPlayerMode = true)) }
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+    }
 }
 
 @Composable
@@ -141,18 +183,18 @@ private fun PlayerColor(
             text = stringResource(
                 id = RFrontitude.string.chess_optionsmenu_label_selectplayercolor
             ),
-            style = KompaktTypography900.titleMedium
+            style = AppTypography900.titleMedium
         )
         Spacer(modifier = Modifier.height(16.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            KompaktSecondaryButton(
+            AppSecondaryButton(
                 modifier = Modifier.weight(1f),
                 text = stringResource(id = RFrontitude.string.common_label_white),
                 iconResId = R.drawable.ic_knight_white_transparent,
-                attributes = KompaktButtonAttributes.DynamicButton(
+                attributes = AppButtonAttributes(
                     spaceBetweenIconAndText = 0.dp,
                     borderStrokeWidth = if (isWhiteSelected) 4.dp else 2.dp,
                     iconSize = 24.dp
@@ -160,11 +202,11 @@ private fun PlayerColor(
                 onClick = { uiEvent(PlayerColorSelected(isWhiteSelected = true)) }
             )
             Spacer(modifier = Modifier.width(8.dp))
-            KompaktSecondaryButton(
+            AppSecondaryButton(
                 modifier = Modifier.weight(1f),
                 text = stringResource(id = RFrontitude.string.common_label_black),
                 iconResId = R.drawable.ic_knight_black_transparent,
-                attributes = KompaktButtonAttributes.DynamicButton(
+                attributes = AppButtonAttributes(
                     spaceBetweenIconAndText = 0.dp,
                     borderStrokeWidth = if (!isWhiteSelected) 4.dp else 2.dp,
                     height = 40.dp,
@@ -190,7 +232,7 @@ private fun DifficultyLevel(
         text = stringResource(
             id = RFrontitude.string.chess_optionsmenu_label_difficultylevel
         ),
-        style = KompaktTypography900.titleMedium
+        style = AppTypography900.titleMedium
     )
     Spacer(modifier = Modifier.height(16.dp))
     DifficultyLevelBar(
@@ -208,7 +250,7 @@ private fun DifficultyLevel(
 @KompaktPreview
 @Composable
 private fun OptionsMenuScreenPreview() {
-    KompaktTheme {
+    AppTheme {
         OptionsMenuScreen(
             uiState = OptionsMenuUiState(
                 isMoveSuggestionsOn = true,
@@ -219,6 +261,17 @@ private fun OptionsMenuScreenPreview() {
                     args = arrayOf(DifficultyLevel(1).elo())
                 )
             ),
+            uiEvent = {}
+        )
+    }
+}
+
+@KompaktPreview
+@Composable
+private fun OptionsMenuScreenTwoPlayerPreview() {
+    AppTheme {
+        OptionsMenuScreen(
+            uiState = OptionsMenuUiState(isTwoPlayerMode = true),
             uiEvent = {}
         )
     }

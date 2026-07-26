@@ -12,11 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.mudita.kompakt.commonUi.KompaktTheme
-import com.mudita.kompakt.commonUi.KompaktTypography900
-import com.mudita.kompakt.commonUi.components.KompaktSwitch
+import com.mudita.chess.ui.design.AppSwitch
+import com.mudita.chess.ui.design.AppTheme
+import com.mudita.chess.ui.design.AppTypography900
 
 @Composable
 fun SwitchOption(
@@ -24,10 +23,7 @@ fun SwitchOption(
     isSwitchedOn: Boolean,
     onSwitchToggle: (Boolean) -> Unit,
     textStyle: TextStyle,
-    modifier: Modifier = Modifier,
-    indicatorWidth: Dp = 48.dp,
-    indicatorHeight: Dp = 30.dp,
-    verticalTouchAreaPadding: Dp = 16.dp
+    modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier,
@@ -35,31 +31,28 @@ fun SwitchOption(
     ) {
         Text(
             modifier = Modifier
-                .padding(start = 8.dp, end = 16.dp + indicatorWidth),
+                .padding(start = 8.dp, end = 64.dp),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             text = text,
             style = textStyle
         )
-        KompaktSwitch(
+        AppSwitch(
             modifier = Modifier.align(Alignment.CenterEnd),
-            width = indicatorWidth,
-            height = indicatorHeight,
-            isSwitchedOn = isSwitchedOn,
-            onSwitchToggle = onSwitchToggle,
-            verticalTouchAreaPadding = verticalTouchAreaPadding
+            checked = isSwitchedOn,
+            onCheckedChange = onSwitchToggle
         )
     }
 }
 
 @Preview
 @Composable
-private fun SwitchOptionPreview() = KompaktTheme {
+private fun SwitchOptionPreview() = AppTheme {
     Box(modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer)) {
         SwitchOption(
             modifier = Modifier.fillMaxWidth(),
             text = "Move suggestions",
-            textStyle = KompaktTypography900.titleMedium,
+            textStyle = AppTypography900.titleMedium,
             isSwitchedOn = true,
             onSwitchToggle = {}
         )

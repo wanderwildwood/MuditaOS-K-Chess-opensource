@@ -20,7 +20,7 @@ import com.mudita.chess.ui.model.PieceTypeUi.PAWN
 import com.mudita.chess.ui.model.PieceUi
 import com.mudita.chess.ui.model.PositionUi.E2
 import com.mudita.chess.ui.model.PositionUi.E4
-import com.mudita.kompakt.commonUi.KompaktTypography500
+import com.mudita.chess.ui.design.AppTypography500
 import com.mudita.chess.ui.R as RCommonUi
 
 @Composable
@@ -47,7 +47,7 @@ internal fun GameMoveListItem(
             ) {
                 Text(
                     text = moveUi.from.name.lowercase(),
-                    style = KompaktTypography500.labelSmall
+                    style = AppTypography500.labelSmall
                 )
                 Image(
                     painter = painterResource(id = RCommonUi.drawable.arrow_right),
@@ -57,7 +57,7 @@ internal fun GameMoveListItem(
                 )
                 Text(
                     text = moveUi.to.name.lowercase(),
-                    style = KompaktTypography500.labelSmall
+                    style = AppTypography500.labelSmall
                 )
             }
         }

@@ -17,12 +17,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mudita.chess.ui.R
-import com.mudita.kompakt.commonUi.KompaktTheme
-import com.mudita.kompakt.commonUi.KompaktTypography900
-import com.mudita.kompakt.commonUi.colorWhite
-import com.mudita.kompakt.commonUi.components.KompaktIconButton
-import com.mudita.kompakt.commonUi.components.button.KompaktButtonAttributes
-import com.mudita.kompakt.commonUi.components.button.KompaktPrimaryButton
+import com.mudita.chess.ui.design.AppButtonAttributes
+import com.mudita.chess.ui.design.AppIconButton
+import com.mudita.chess.ui.design.AppPrimaryButton
+import com.mudita.chess.ui.design.AppTheme
+import com.mudita.chess.ui.design.AppTypography900
+import com.mudita.chess.ui.design.appColorWhite
 import com.mudita.chess.frontitude.R as RFrontitude
 
 @Composable
@@ -64,13 +64,13 @@ internal fun BottomMenu(
         Spacer(modifier = Modifier.weight(1f))
         if (isConfirmMoveButtonVisible) {
             Spacer(modifier = Modifier.width(6.dp))
-            KompaktPrimaryButton(
+            AppPrimaryButton(
                 text = stringResource(id = RFrontitude.string.chess_gameplay_topbar_button_confirmmove).uppercase(),
-                size = KompaktButtonAttributes.DynamicButton(
+                size = AppButtonAttributes(
                     height = 36.dp,
                     contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
                     cornerRadius = 8.dp,
-                    textStyle = KompaktTypography900.labelSmall
+                    textStyle = AppTypography900.labelSmall
                 ),
                 onClick = onConfirmMoveButtonClicked
             )
@@ -85,7 +85,7 @@ private fun BottomMenuIconButton(
     onClicks: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    KompaktIconButton(
+    AppIconButton(
         modifier = modifier
             .border(
                 border = BorderStroke(
@@ -103,11 +103,11 @@ private fun BottomMenuIconButton(
 @Preview
 @Composable
 private fun BottomMenuPreview() {
-    KompaktTheme {
+    AppTheme {
         BottomMenu(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(colorWhite),
+                .background(appColorWhite),
             onPauseButtonClick = {},
             isConfirmMoveButtonVisible = true,
             onConfirmMoveButtonClicked = {},

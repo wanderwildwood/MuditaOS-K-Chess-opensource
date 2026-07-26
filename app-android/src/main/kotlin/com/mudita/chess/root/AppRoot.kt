@@ -7,13 +7,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.mudita.chess.navigation.AppNavigation
 import com.mudita.chess.navigation.routes.MainRoute
-import com.mudita.kompakt.commonUi.KompaktTheme
+import com.mudita.chess.ui.design.AppTheme
 
 @Composable
 internal fun AppRoot(
     navController: NavHostController = rememberNavController()
 ) {
-    KompaktTheme {
+    AppTheme {
         AppNavigation(
             navController = navController,
             startDestination = MainRoute::class

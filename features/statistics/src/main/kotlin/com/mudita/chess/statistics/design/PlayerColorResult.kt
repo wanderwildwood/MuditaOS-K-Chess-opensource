@@ -21,10 +21,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mudita.chess.ui.R
-import com.mudita.kompakt.commonUi.KompaktTheme
-import com.mudita.kompakt.commonUi.KompaktTypography500
-import com.mudita.kompakt.commonUi.KompaktTypography900
-import com.mudita.kompakt.commonUi.colorBlack
+import com.mudita.chess.ui.design.AppTheme
+import com.mudita.chess.ui.design.AppTypography500
+import com.mudita.chess.ui.design.AppTypography900
+import com.mudita.chess.ui.design.appColorBlack
 
 @Composable
 internal fun PlayerColorResult(
@@ -49,11 +49,11 @@ internal fun PlayerColorResult(
     )
     Text(
         text = "$percentage%",
-        style = KompaktTypography900.titleLarge
+        style = AppTypography900.titleLarge
     )
     Text(
         text = label,
-        style = KompaktTypography500.displaySmall
+        style = AppTypography500.displaySmall
     )
 }
 
@@ -68,12 +68,12 @@ private fun DrawScope.drawDashedCircle() {
             phase = 0f
         )
     )
-    drawCircle(color = colorBlack, style = dashedStroke)
+    drawCircle(color = appColorBlack, style = dashedStroke)
 }
 
 private fun DrawScope.drawPercentageProgress(percentage: Int) {
     drawArc(
-        color = colorBlack,
+        color = appColorBlack,
         startAngle = 270f,
         sweepAngle = 360f * percentage / 100,
         useCenter = false,
@@ -84,7 +84,7 @@ private fun DrawScope.drawPercentageProgress(percentage: Int) {
 
 @Preview
 @Composable
-private fun PlayerColorResultPreview() = KompaktTheme {
+private fun PlayerColorResultPreview() = AppTheme {
     PlayerColorResult(
         modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer),
         iconResId = R.drawable.ic_knight_white_outline_black,

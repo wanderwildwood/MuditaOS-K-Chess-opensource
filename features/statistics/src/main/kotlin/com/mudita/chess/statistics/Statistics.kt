@@ -33,17 +33,15 @@ import com.mudita.chess.statistics.design.PlayedColorStatistics
 import com.mudita.chess.statistics.model.MatchResultUi
 import com.mudita.chess.ui.KompaktPreview
 import com.mudita.chess.ui.compontent.DialogHost
-import com.mudita.kompakt.commonUi.KompaktTheme
-import com.mudita.kompakt.commonUi.KompaktTypography500
-import com.mudita.kompakt.commonUi.KompaktTypography900
-import com.mudita.kompakt.commonUi.components.appBar.KompaktTopAppBar
-import com.mudita.kompakt.commonUi.components.button.KompaktButtonAttributes
-import com.mudita.kompakt.commonUi.components.button.KompaktSecondaryButton
-import com.mudita.kompakt.commonUi.components.modal.KompaktModal
-import com.mudita.kompakt.commonUi.components.modal.KompaktModalType.Confirm
+import com.mudita.chess.ui.design.AppButtonAttributes
+import com.mudita.chess.ui.design.AppConfirmCard
+import com.mudita.chess.ui.design.AppSecondaryButton
+import com.mudita.chess.ui.design.AppTheme
+import com.mudita.chess.ui.design.AppTopAppBar
+import com.mudita.chess.ui.design.AppTypography500
+import com.mudita.chess.ui.design.AppTypography900
 import org.koin.androidx.compose.koinViewModel
 import com.mudita.chess.frontitude.R as RFrontitude
-import com.mudita.kompakt.commonUi.R as RCommonUi
 
 @Composable
 fun Statistics(navigator: AppNavigator) {
@@ -110,13 +108,13 @@ private fun EmptyContent(modifier: Modifier = Modifier) =
         Text(
             text = stringResource(id = RFrontitude.string.common_search_error_h1_wecouldntfind),
             textAlign = TextAlign.Center,
-            style = KompaktTypography900.titleMedium
+            style = AppTypography900.titleMedium
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = stringResource(id = RFrontitude.string.chess_statistics_emptystate_body_asyouwin),
             textAlign = TextAlign.Center,
-            style = KompaktTypography500.bodyMedium
+            style = AppTypography500.bodyMedium
         )
     }
 
@@ -139,15 +137,13 @@ private fun Content(
             dialogContentAlignment = Alignment.BottomCenter,
             onDismissRequest = { uiEvent(DialogDismissRequested) }
         ) {
-            KompaktModal(
-                kompaktModalType = Confirm(
-                    title = stringResource(id = RFrontitude.string.chess_statistics_dialog_h1_clearallstatistics),
-                    description = stringResource(id = RFrontitude.string.chess_statistics_dialog_body_thiswillgiveyou),
-                    confirmText = stringResource(id = RFrontitude.string.chess_statistics_dialog_button_clearstatistics),
-                    cancelText = stringResource(id = RFrontitude.string.common_dialog_button_cancel),
-                    onConfirm = { uiEvent(DialogClearStatisticsButtonClicked) },
-                    onCancel = { uiEvent(DialogCancelButtonClicked) }
-                )
+            AppConfirmCard(
+                title = stringResource(id = RFrontitude.string.chess_statistics_dialog_h1_clearallstatistics),
+                description = stringResource(id = RFrontitude.string.chess_statistics_dialog_body_thiswillgiveyou),
+                confirmText = stringResource(id = RFrontitude.string.chess_statistics_dialog_button_clearstatistics),
+                cancelText = stringResource(id = RFrontitude.string.common_dialog_button_cancel),
+                onConfirm = { uiEvent(DialogClearStatisticsButtonClicked) },
+                onCancel = { uiEvent(DialogCancelButtonClicked) }
             )
         }
     }
@@ -158,15 +154,14 @@ internal fun StatisticsTopAppBar(
     uiEvent: (StatisticsUiEvent) -> Unit,
     isClearAllButtonVisible: Boolean
 ) {
-    KompaktTopAppBar(
+    AppTopAppBar(
         title = stringResource(id = RFrontitude.string.common_screentitle_statistics),
-        navigationIconResId = RCommonUi.drawable.arrow_left,
         onNavigationIconClick = { uiEvent(NavigationUpClicked) },
-        actionView = {
+        actions = {
             if (isClearAllButtonVisible) {
-                KompaktSecondaryButton(
+                AppSecondaryButton(
                     text = stringResource(id = RFrontitude.string.common_topbar_button_clearall),
-                    attributes = KompaktButtonAttributes.Small,
+                    attributes = AppButtonAttributes.Small,
                     onClick = { uiEvent(ClearAllButtonClicked) }
                 )
                 Spacer(modifier = Modifier.width(16.dp))
@@ -178,7 +173,7 @@ internal fun StatisticsTopAppBar(
 @KompaktPreview
 @Composable
 private fun StatisticsScreenPreview() {
-    KompaktTheme {
+    AppTheme {
         StatisticsScreen(
             uiState = StatisticsUiState(
                 isContentVisible = true,
@@ -201,7 +196,7 @@ private fun StatisticsScreenPreview() {
 @KompaktPreview
 @Composable
 private fun StatisticsEmptyScreenPreview() {
-    KompaktTheme {
+    AppTheme {
         StatisticsScreen(
             uiState = StatisticsUiState(
                 isContentVisible = true,

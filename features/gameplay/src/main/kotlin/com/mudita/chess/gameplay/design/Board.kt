@@ -13,7 +13,7 @@ import com.mudita.chess.gameplay.BoardUi
 import com.mudita.chess.gameplay.GameplayMapper
 import com.mudita.chess.gameplay.game.ChessBoard
 import com.mudita.chess.ui.model.PositionUi
-import com.mudita.kompakt.commonUi.KompaktTheme
+import com.mudita.chess.ui.design.AppTheme
 
 @Composable
 internal fun Board(
@@ -47,7 +47,7 @@ private fun Content(board: BoardUi, onSquareClick: (PositionUi) -> Unit) {
 
 @Preview
 @Composable
-private fun BoardPreview() = KompaktTheme {
+private fun BoardPreview() = AppTheme {
     val mapper = GameplayMapper()
     Board(
         board = mapper.toBoardUi(ChessBoard(topParticipantSide = BLACK).state),

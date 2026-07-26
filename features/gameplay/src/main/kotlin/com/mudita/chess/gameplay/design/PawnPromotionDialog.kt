@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,10 +29,9 @@ import com.mudita.chess.ui.KompaktPreview
 import com.mudita.chess.ui.compontent.Piece
 import com.mudita.chess.ui.model.PieceTypeUi
 import com.mudita.chess.ui.model.PieceUi
-import com.mudita.kompakt.commonUi.KompaktTypography900
-import com.mudita.kompakt.commonUi.compactColorScheme
-import com.mudita.kompakt.commonUi.components.button.KompaktButtonAttributes
-import com.mudita.kompakt.commonUi.components.button.KompaktSecondaryButton
+import com.mudita.chess.ui.design.AppButtonAttributes
+import com.mudita.chess.ui.design.AppSecondaryButton
+import com.mudita.chess.ui.design.AppTypography900
 import com.mudita.chess.frontitude.R as RFrontitude
 
 @Composable
@@ -46,14 +46,14 @@ internal fun PawnPromotionDialog(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
-            .border(3.dp, compactColorScheme.primary, shape = RoundedCornerShape(16.dp))
-            .background(color = compactColorScheme.secondary)
+            .border(3.dp, MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(16.dp))
+            .background(color = MaterialTheme.colorScheme.secondary)
             .padding(16.dp)
     ) {
         Text(
             text = stringResource(id = RFrontitude.string.chess_gameplay_dialog_h1_promoteinto),
             textAlign = TextAlign.Center,
-            style = KompaktTypography900.labelMedium
+            style = AppTypography900.labelMedium
         )
         Spacer(modifier = Modifier.height(16.dp))
         Row(
@@ -72,9 +72,9 @@ internal fun PawnPromotionDialog(
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
-        KompaktSecondaryButton(
+        AppSecondaryButton(
             text = stringResource(id = RFrontitude.string.common_dialog_button_confirm),
-            attributes = KompaktButtonAttributes.Small,
+            attributes = AppButtonAttributes.Small,
             onClick = { onOptionConfirmed(promotionOptions.elementAt(selectedOptionIndex)) }
         )
     }

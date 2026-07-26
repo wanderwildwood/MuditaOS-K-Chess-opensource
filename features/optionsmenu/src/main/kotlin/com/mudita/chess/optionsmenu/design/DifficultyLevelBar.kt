@@ -30,8 +30,8 @@ import com.mudita.chess.gameoptions.model.DifficultyLevel
 import com.mudita.chess.ui.R
 import com.mudita.chess.ui.model.TextUi
 import com.mudita.chess.ui.model.stringify
-import com.mudita.kompakt.commonUi.KompaktTypography500
-import com.mudita.kompakt.commonUi.components.KompaktIconButton
+import com.mudita.chess.ui.design.AppIconButton
+import com.mudita.chess.ui.design.AppTypography500
 import com.mudita.chess.frontitude.R as RFrontitude
 
 @Composable
@@ -74,7 +74,7 @@ private fun ControllerIcon(
     @DrawableRes iconResId: Int,
     onClick: () -> Unit
 ) {
-    KompaktIconButton(
+    AppIconButton(
         onClick = onClick,
         iconSize = 21.75.dp,
         iconResId = iconResId,
@@ -111,7 +111,7 @@ private fun Label(difficultyLevelLabel: TextUi?) {
         modifier = Modifier.fillMaxWidth(),
         text = difficultyLevelLabel?.stringify().orEmpty(),
         textAlign = TextAlign.Center,
-        style = KompaktTypography500.labelSmall
+        style = AppTypography500.labelSmall
     )
 }
 

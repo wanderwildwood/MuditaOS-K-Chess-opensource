@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,8 +26,7 @@ import com.mudita.chess.ui.model.PieceTypeUi.KING
 import com.mudita.chess.ui.model.PieceTypeUi.KNIGHT
 import com.mudita.chess.ui.model.PieceTypeUi.ROOK
 import com.mudita.chess.ui.model.PieceUi
-import com.mudita.kompakt.commonUi.KompaktTypography900
-import com.mudita.kompakt.commonUi.compactColorScheme
+import com.mudita.chess.ui.design.AppTypography900
 import com.mudita.chess.frontitude.R as RFrontitude
 import com.mudita.chess.ui.R as RCommonUi
 
@@ -41,14 +41,14 @@ internal fun CheckInfoDialog(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
-            .border(3.dp, compactColorScheme.primary, shape = RoundedCornerShape(16.dp))
-            .background(color = compactColorScheme.secondary)
+            .border(3.dp, MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(16.dp))
+            .background(color = MaterialTheme.colorScheme.secondary)
             .padding(16.dp)
     ) {
         Text(
             text = stringResource(id = RFrontitude.string.chess_gameplay_notification_check),
             textAlign = TextAlign.Center,
-            style = KompaktTypography900.labelMedium
+            style = AppTypography900.labelMedium
         )
         FlowRow(
             horizontalArrangement = Arrangement.Center,

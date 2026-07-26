@@ -13,6 +13,7 @@ import com.mudita.chess.navigation.routes.OptionsMenuRoute
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.DifficultyLevelMinusIconClicked
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.DifficultyLevelPlusIconClicked
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.DifficultyLevelStepClicked
+import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.GameModeSelected
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.MoveSuggestionsSwitchToggled
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.NavigationUpClicked
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.PlayButtonClicked
@@ -81,12 +82,40 @@ class OptionsMenuViewModelTest {
     }
 
     @Test
+    fun `show screen with initial values in two player mode`() {
+        every { args.value } returns OptionsMenuRoute(
+            isMoveSuggestionsOn = true,
+            isPlayerWhite = false,
+            difficultyLevel = 4,
+            isTwoPlayerMode = true
+        )
+
+        assertThat(tested.state.isTwoPlayerMode).isEqualTo(true)
+    }
+
+    @Test
     fun `NavigationUpClicked event should navigate up`() = runTest {
         tested.navActions.test {
             tested.handleUiEvent(NavigationUpClicked)
 
             assertThat(awaitItem()).isEqualTo(NavigateUp())
         }
+    }
+
+    @Test
+    fun `GameModeSelected event with two player mode true should set two player mode to true`() {
+        tested.handleUiEvent(GameModeSelected(isTwoPlayerMode = true))
+
+        assertThat(tested.state.isTwoPlayerMode).isEqualTo(true)
+    }
+
+    @Test
+    fun `GameModeSelected event with two player mode false should set two player mode to false`() {
+        tested.handleUiEvent(GameModeSelected(isTwoPlayerMode = true))
+
+        tested.handleUiEvent(GameModeSelected(isTwoPlayerMode = false))
+
+        assertThat(tested.state.isTwoPlayerMode).isEqualTo(false)
     }
 
     @Test
@@ -183,6 +212,37 @@ class OptionsMenuViewModelTest {
             tested.handleUiEvent(PlayButtonClicked)
 
             assertThat(awaitItem()).isEqualTo(NavigateTo(GameplayRoute(isPlayerWhite = false)))
+        }
+    }
+
+    @Test
+    fun `PlayButtonClicked event should navigate to game screen in two player mode`() = runTest {
+        tested.handleUiEvent(GameModeSelected(isTwoPlayerMode = true))
+
+        tested.navActions.test {
+            tested.handleUiEvent(PlayButtonClicked)
+
+            assertThat(awaitItem()).isEqualTo(
+                NavigateTo(GameplayRoute(isPlayerWhite = true, isTwoPlayerMode = true))
+            )
+        }
+    }
+
+    @Test
+    fun `SaveGameState event should save game options with two player mode`() = runTest {
+        tested.handleUiEvent(GameModeSelected(isTwoPlayerMode = true))
+
+        tested.handleUiEvent(SaveGameState)
+
+        coVerify {
+            saveGameOptionsUseCase(
+                GameOptions(
+                    isMoveSuggestionsOn = true,
+                    isPlayerWhite = true,
+                    difficultyLevel = DifficultyLevel(1),
+                    isTwoPlayerMode = true
+                )
+            )
         }
     }
 

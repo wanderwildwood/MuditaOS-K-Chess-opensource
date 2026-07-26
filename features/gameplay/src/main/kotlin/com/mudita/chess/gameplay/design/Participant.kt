@@ -23,9 +23,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mudita.chess.gameplay.model.ParticipantUi
 import com.mudita.chess.ui.R
-import com.mudita.kompakt.commonUi.KompaktTheme
-import com.mudita.kompakt.commonUi.KompaktTypography900
-import com.mudita.kompakt.commonUi.colorWhite
+import com.mudita.chess.ui.design.AppTheme
+import com.mudita.chess.ui.design.AppTypography900
+import com.mudita.chess.ui.design.appColorWhite
 import com.mudita.chess.frontitude.R as RFrontitude
 
 @Composable
@@ -57,7 +57,7 @@ internal fun Participant(
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = stringResource(id = participant.nameResId).uppercase(),
-                style = KompaktTypography900.displaySmall
+                style = AppTypography900.displaySmall
             )
         }
     }
@@ -74,11 +74,11 @@ private fun getParticipantIconResId(participant: ParticipantUi) =
 
 @Preview
 @Composable
-private fun ParticipantPreview() = KompaktTheme {
+private fun ParticipantPreview() = AppTheme {
     Column {
         Participant(
             modifier = Modifier
-                .background(colorWhite)
+                .background(appColorWhite)
                 .padding(8.dp),
             participant = ParticipantUi(
                 nameResId = RFrontitude.string.common_label_computer,
@@ -89,7 +89,7 @@ private fun ParticipantPreview() = KompaktTheme {
         Spacer(modifier = Modifier.height(8.dp))
         Participant(
             modifier = Modifier
-                .background(colorWhite)
+                .background(appColorWhite)
                 .padding(8.dp),
             participant = ParticipantUi(
                 nameResId = RFrontitude.string.common_label_you,

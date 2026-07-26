@@ -61,8 +61,8 @@ internal typealias BoardUi = List<List<SquareUi>>
 
 internal data class GameplayUiState(
     val board: BoardUi,
-    val computer: ParticipantUi,
-    val player: ParticipantUi,
+    val topParticipant: ParticipantUi,
+    val bottomParticipant: ParticipantUi,
     val isConfirmMoveButtonVisible: Boolean,
     val isGameMovesButtonVisible: Boolean = false,
     val isUndoMoveButtonVisible: Boolean = false,
@@ -106,13 +106,15 @@ internal class GameplayViewModel(
     NavActionsEmitter by NavActionsEmitter() {
 
     private val game: Game
-    private val playerSide: Side
-    private val computerSide: Side
+    private val topSide: Side
+    private val bottomSide: Side
+    private val isTwoPlayerMode: Boolean = args.value.isTwoPlayerMode
 
     private var gameOptions = GameOptions(
         isPlayerWhite = args.value.isPlayerWhite,
         isMoveSuggestionsOn = false,
-        difficultyLevel = DifficultyLevel(1)
+        difficultyLevel = DifficultyLevel(1),
+        isTwoPlayerMode = isTwoPlayerMode
     )
 
     private val uiState: StateHandler<GameplayUiState>
@@ -127,13 +129,22 @@ internal class GameplayViewModel(
         val isPlayerWhite = args.value.isPlayerWhite
         val wasGameStarted = savedStateHandle.wasGameStarted()
         val isRestoringGame = !isNewGame || wasGameStarted
-        playerSide = if (isPlayerWhite) WHITE else Side.BLACK
-        computerSide = playerSide.flip()
-        game = gameFactory.createPlayerVsComputer(
-            playerSide = playerSide,
-            isPiecesPositionReady = !isRestoringGame,
-            uiEvents = uiEvents
-        )
+        if (isTwoPlayerMode) {
+            bottomSide = WHITE
+            topSide = Side.BLACK
+            game = gameFactory.createTwoPlayerLocal(
+                isPiecesPositionReady = !isRestoringGame,
+                uiEvents = uiEvents
+            )
+        } else {
+            bottomSide = if (isPlayerWhite) WHITE else Side.BLACK
+            topSide = bottomSide.flip()
+            game = gameFactory.createPlayerVsComputer(
+                playerSide = bottomSide,
+                isPiecesPositionReady = !isRestoringGame,
+                uiEvents = uiEvents
+            )
+        }
         uiState = StateHandler(initialUiState(game.board.state, isRestoringGame))
 
         setupUiLifecycleCollection()
@@ -179,21 +190,24 @@ internal class GameplayViewModel(
             sideToMove = boardState.sideToMove,
             isMoveSuggestionsOn = gameOptions.isMoveSuggestionsOn,
             isPromotionManualConfirmationRequired = boardState.isPromotionManualConfirmationRequired,
-            checkInfo = boardState.checkInfo
+            checkInfo = boardState.checkInfo,
+            isTwoPlayerMode = isTwoPlayerMode
         )
         val isCompleteRoundMovesCountReached = boardState.moves.size >= COMPLETE_ROUND_MOVES_COUNT
-        val computerMovedFirst = computer.isWhite && boardState.moves.isNotEmpty()
+        // Only relevant in vs-computer mode: true when the computer plays White and has already made
+        // the opening move, so Undo should be offered even before a full round has been completed.
+        val topSideMovedFirst = topParticipant.isWhite && boardState.moves.isNotEmpty()
         copy(
             board = mapper.toBoardUi(boardState),
-            player = player.copy(
-                isSelected = boardState.isPlayerTurn()
+            bottomParticipant = bottomParticipant.copy(
+                isSelected = boardState.sideToMove == bottomSide
             ),
-            computer = computer.copy(
-                isSelected = boardState.isComputerTurn()
+            topParticipant = topParticipant.copy(
+                isSelected = boardState.sideToMove == topSide
             ),
             isConfirmMoveButtonVisible = boardState.isMoveManualConfirmationRequired,
             isGameMovesButtonVisible = isCompleteRoundMovesCountReached,
-            isUndoMoveButtonVisible = isCompleteRoundMovesCountReached || computerMovedFirst,
+            isUndoMoveButtonVisible = isCompleteRoundMovesCountReached || topSideMovedFirst,
             dialog = dialog
         )
     }
@@ -272,16 +286,20 @@ internal class GameplayViewModel(
     }
 
     private suspend fun addGameToStatistics() {
+        // Statistics are framed around a single human player vs. the computer ("You played as...",
+        // Won/Lost) and don't map onto two local human players sharing a device, so skip recording.
+        if (isTwoPlayerMode) return
+
         val type = when (game.status) {
             GameStatus.WHITE_WON,
-            GameStatus.BLACK_WON -> if (game.board.state.isPlayerTurn()) WON else LOST
+            GameStatus.BLACK_WON -> if (game.board.state.sideToMove == bottomSide) WON else LOST
 
             GameStatus.DRAW -> DRAW
             else -> throw IllegalStateException("Game is not finished and has ${game.status} status")
         }
-        val isPlayerWhite = playerSide == WHITE
+        val isPlayerWhite = bottomSide == WHITE
 
-        logcat { "Adding $type to statistics for a $playerSide player" }
+        logcat { "Adding $type to statistics for a $bottomSide player" }
         addToGameStatisticsUseCase(type = type, isWhitePlayer = isPlayerWhite)
             .onFailure { logcat { "Failed to save $type for a $isPlayerWhite player" } }
     }
@@ -320,12 +338,22 @@ internal class GameplayViewModel(
             .launchIn(viewModelScope)
 
     private fun initialUiState(initialBoardState: ChessBoardState, isRestoringGame: Boolean): GameplayUiState {
-        val isPlayerSelected = !isRestoringGame && initialBoardState.isPlayerTurn()
-        val isComputerSelected = !isRestoringGame && initialBoardState.isComputerTurn()
+        val isTopSelected = !isRestoringGame && initialBoardState.sideToMove == topSide
+        val isBottomSelected = !isRestoringGame && initialBoardState.sideToMove == bottomSide
+        val topParticipant = if (isTwoPlayerMode) {
+            mapper.toBlackParticipant(isSelected = isTopSelected)
+        } else {
+            mapper.toComputer(topSide, isSelected = isTopSelected)
+        }
+        val bottomParticipant = if (isTwoPlayerMode) {
+            mapper.toWhiteParticipant(isSelected = isBottomSelected)
+        } else {
+            mapper.toPlayer(bottomSide, isSelected = isBottomSelected)
+        }
         return GameplayUiState(
             board = mapper.toBoardUi(initialBoardState),
-            player = mapper.toPlayer(playerSide, isSelected = isPlayerSelected),
-            computer = mapper.toComputer(computerSide, isSelected = isComputerSelected),
+            topParticipant = topParticipant,
+            bottomParticipant = bottomParticipant,
             isConfirmMoveButtonVisible = initialBoardState.isMoveManualConfirmationRequired,
             dialog = LoadingDialogUi.takeIf { isRestoringGame }
         )
@@ -343,14 +371,12 @@ internal class GameplayViewModel(
             route = OptionsMenuRoute(
                 isPlayerWhite = gameOptions.isPlayerWhite,
                 isMoveSuggestionsOn = gameOptions.isMoveSuggestionsOn,
-                difficultyLevel = gameOptions.difficultyLevel.value
+                difficultyLevel = gameOptions.difficultyLevel.value,
+                isTwoPlayerMode = gameOptions.isTwoPlayerMode
             ),
             options = navOptions { popUpTo<MainRoute>() }
         )
     )
-
-    private fun ChessBoardState.isPlayerTurn() = playerSide == sideToMove
-    private fun ChessBoardState.isComputerTurn() = computerSide == sideToMove
 
     private fun SavedStateHandle.markGameStarted() =
         set(KEY_GAME_STARTED_BEFORE, true)
