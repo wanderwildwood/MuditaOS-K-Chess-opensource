@@ -27,10 +27,11 @@ import com.mudita.chess.main.MainUiEvent.StatisticsButtonClicked
 import com.mudita.chess.navigation.AppNavigator
 import com.mudita.chess.navigation.NavActionsEffect
 import com.mudita.chess.ui.KompaktPreview
-import com.mudita.kompakt.commonUi.KompaktTheme
-import com.mudita.kompakt.commonUi.KompaktTypography900
-import com.mudita.kompakt.commonUi.components.button.KompaktPrimaryButton
-import com.mudita.kompakt.commonUi.components.button.KompaktSecondaryButton
+import com.mudita.chess.ui.design.AppButtonAttributes
+import com.mudita.chess.ui.design.AppPrimaryButton
+import com.mudita.chess.ui.design.AppSecondaryButton
+import com.mudita.chess.ui.design.AppTheme
+import com.mudita.chess.ui.design.AppTypography900
 import org.koin.androidx.compose.koinViewModel
 import com.mudita.chess.frontitude.R as RFrontitude
 import com.mudita.chess.ui.R as RCommonUi
@@ -90,7 +91,7 @@ private fun BoxScope.MainLoading() {
     ) {
         Text(
             text = stringResource(RFrontitude.string.common_status_loading),
-            style = KompaktTypography900.titleMedium
+            style = AppTypography900.titleMedium
         )
         Spacer(modifier = Modifier.height(16.dp))
         Image(painter = painterResource(RCommonUi.drawable.spinner), contentDescription = null)
@@ -116,17 +117,17 @@ private fun BoxScope.BottomButtons(uiEvent: (MainUiEvent) -> Unit) {
             .align(Alignment.BottomCenter)
             .padding(horizontal = 12.dp, vertical = 16.dp)
     ) {
-        KompaktPrimaryButton(
+        AppPrimaryButton(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = RFrontitude.string.chess_optionsmenu_button_play),
-            size = KompaktTheme.buttonStyle.large,
+            size = AppButtonAttributes.Large,
             onClick = { uiEvent(PlayButtonClicked) }
         )
         Spacer(modifier = Modifier.height(16.dp))
-        KompaktSecondaryButton(
+        AppSecondaryButton(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = RFrontitude.string.common_screentitle_statistics),
-            attributes = KompaktTheme.buttonStyle.large,
+            attributes = AppButtonAttributes.Large,
             onClick = { uiEvent(StatisticsButtonClicked) }
         )
     }
@@ -135,7 +136,7 @@ private fun BoxScope.BottomButtons(uiEvent: (MainUiEvent) -> Unit) {
 @KompaktPreview
 @Composable
 private fun MainScreenLoadedPreview() {
-    KompaktTheme {
+    AppTheme {
         MainScreen(
             uiState = MainUiState(isLoading = false),
             uiEvent = {}
@@ -146,7 +147,7 @@ private fun MainScreenLoadedPreview() {
 @KompaktPreview
 @Composable
 private fun MainScreenLoadingPreview() {
-    KompaktTheme {
+    AppTheme {
         MainScreen(
             uiState = MainUiState(isLoading = true),
             uiEvent = {}

@@ -23,10 +23,13 @@
     <string name="chess_gameplay_notification_check">Šach</string>
     <string name="chess_gameplay_topbar_button_confirmmove">Potvrdit tah</string>
     <string name="chess_listofmoves_screentitle_listofmoves">Seznam tahů</string>
+    <string name="chess_optionsmenu_button_oneplayer">1 hráč</string>
     <string name="chess_optionsmenu_button_play">Hrát</string>
+    <string name="chess_optionsmenu_button_twoplayer">2 hráči</string>
     <string name="chess_optionsmenu_label_advanced">POKROČILÝ (%d ELO)</string>
     <string name="chess_optionsmenu_label_beginner">ZAČÁTEČNÍK (%d ELO)</string>
     <string name="chess_optionsmenu_label_difficultylevel">Úroveň obtížnosti</string>
+    <string name="chess_optionsmenu_label_gamemode">Herní režim</string>
     <string name="chess_optionsmenu_label_intermediate">STŘEDNÍ (%d ELO)</string>
     <string name="chess_optionsmenu_label_selectplayercolor">Vyberte barvu hráče</string>
     <string name="chess_statistics_dialog_body_thiswillgiveyou">Tímto začnete znovu, ale nelze to vrátit zpět</string>
@@ -46,7 +49,7 @@
     <string name="common_label_am">dop.</string>
     <string name="common_label_apps">Aplikace</string>
     <string name="common_label_black">Černé</string>
-    <string name="common_label_chess">Šachy</string>
+    <string name="common_label_chess">Chess+</string>
     <string name="common_label_computer">POČÍTAČ</string>
     <string name="common_label_options">Možnosti</string>
     <string name="common_label_phone">Telefon</string>

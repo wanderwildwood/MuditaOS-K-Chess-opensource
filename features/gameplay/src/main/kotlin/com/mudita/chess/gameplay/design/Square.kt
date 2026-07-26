@@ -16,9 +16,9 @@ import com.mudita.chess.ui.model.PositionUi
 import com.mudita.chess.ui.model.PositionUi.A1
 import com.mudita.chess.gameplay.model.SquareUi
 import com.mudita.chess.ui.compontent.Piece
-import com.mudita.kompakt.commonUi.KompaktTheme
-import com.mudita.kompakt.commonUi.colorBlack
-import com.mudita.kompakt.commonUi.colorWhite
+import com.mudita.chess.ui.design.AppTheme
+import com.mudita.chess.ui.design.appColorBlack
+import com.mudita.chess.ui.design.appColorWhite
 
 @Composable
 internal fun Square(
@@ -26,7 +26,7 @@ internal fun Square(
     onClick: (PositionUi) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val squareColor = if (square.isWhite) colorWhite else colorBlack
+    val squareColor = if (square.isWhite) appColorWhite else appColorBlack
 
     Box(
         modifier = modifier
@@ -46,7 +46,7 @@ internal fun Square(
 
 @Preview
 @Composable
-private fun SquarePreview() = KompaktTheme {
+private fun SquarePreview() = AppTheme {
     Row {
         EmptySquares()
         SquareWithPieces()

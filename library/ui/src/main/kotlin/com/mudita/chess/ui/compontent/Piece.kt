@@ -18,8 +18,8 @@ import com.mudita.chess.ui.model.PieceTypeUi.KNIGHT
 import com.mudita.chess.ui.model.PieceTypeUi.PAWN
 import com.mudita.chess.ui.model.PieceTypeUi.QUEEN
 import com.mudita.chess.ui.model.PieceTypeUi.ROOK
+import com.mudita.chess.ui.design.AppTheme
 import com.mudita.chess.ui.model.PieceUi
-import com.mudita.kompakt.commonUi.KompaktTheme
 
 @Composable
 fun Piece(
@@ -68,7 +68,7 @@ private fun getBlackPieceResId(piece: PieceUi) =
 
 @Preview
 @Composable
-private fun PiecePreview() = KompaktTheme {
+private fun PiecePreview() = AppTheme {
     Column {
         AllPieces(isWhite = true)
         AllPieces(isWhite = false)

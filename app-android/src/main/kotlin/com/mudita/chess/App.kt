@@ -1,10 +1,7 @@
 package com.mudita.chess
 
 import android.app.Application
-import com.mudita.chess.BuildConfig.BUILD_TYPE
 import com.mudita.chess.BuildConfig.DEBUG
-import com.mudita.chess.BuildConfig.PROGUARD_UUID
-import com.mudita.chess.BuildConfig.SENTRY_DSN
 import com.mudita.chess.appinfo.AppInfo
 import com.mudita.chess.appinfo.di.appInfoModule
 import com.mudita.chess.coroutines.di.coroutinesModule
@@ -21,7 +18,6 @@ import com.mudita.chess.optionsmenu.di.optionsMenuModule
 import com.mudita.chess.preferences.di.preferencesModule
 import com.mudita.chess.statistics.di.statisticsModule
 import com.mudita.chess.ui.resourceprovider.di.uiModule
-import com.mudita.sentry.sdk.SentryInitializer
 import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -32,14 +28,6 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-
-        SentryInitializer.init(
-            context = this,
-            dsn = SENTRY_DSN,
-            proguardUuid = PROGUARD_UUID,
-            environment = BUILD_TYPE,
-            isEnabled = !DEBUG
-        )
 
         startKoin {
             androidContext(this@App)

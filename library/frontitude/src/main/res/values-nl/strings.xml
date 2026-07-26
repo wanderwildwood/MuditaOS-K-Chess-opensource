@@ -23,10 +23,13 @@
     <string name="chess_gameplay_notification_check">Schaak</string>
     <string name="chess_gameplay_topbar_button_confirmmove">Bevestig zet</string>
     <string name="chess_listofmoves_screentitle_listofmoves">Lijst met zetten</string>
+    <string name="chess_optionsmenu_button_oneplayer">1 speler</string>
     <string name="chess_optionsmenu_button_play">Spelen</string>
+    <string name="chess_optionsmenu_button_twoplayer">2 spelers</string>
     <string name="chess_optionsmenu_label_advanced">GEAVANCEERD (%d ELO)</string>
     <string name="chess_optionsmenu_label_beginner">BEGINNER (%d ELO)</string>
     <string name="chess_optionsmenu_label_difficultylevel">Moeilijkheidsgraad</string>
+    <string name="chess_optionsmenu_label_gamemode">Spelmodus</string>
     <string name="chess_optionsmenu_label_intermediate">GEMIDDELD (%d ELO)</string>
     <string name="chess_optionsmenu_label_selectplayercolor">Kleur kiezen</string>
     <string name="chess_statistics_dialog_body_thiswillgiveyou">U kunt dan helemaal opnieuw beginnen, maar dit kan niet ongedaan worden gemaakt</string>
@@ -46,7 +49,7 @@
     <string name="common_label_am">AM</string>
     <string name="common_label_apps">Apps</string>
     <string name="common_label_black">Zwart</string>
-    <string name="common_label_chess">Schaken</string>
+    <string name="common_label_chess">Chess+</string>
     <string name="common_label_computer">COMPUTER</string>
     <string name="common_label_options">Opties</string>
     <string name="common_label_phone">Telefoon</string>

@@ -178,6 +178,23 @@ internal class GameplayViewModelTest {
         )
     }
 
+    private val testedTwoPlayerLocal by lazy {
+        GameplayViewModel(
+            args = args,
+            savedStateHandle = savedStateHandle,
+            mapper = mapper,
+            uiEvents = uiEvents,
+            getGameOptionsUseCase = getGameOptionsUseCase,
+            saveGameOptionsUseCase = saveGameOptionsUseCase,
+            getCurrentGameMovesUseCase = getCurrentGameMovesUseCase,
+            saveCurrentGameMovesUseCase = saveCurrentGameMovesUseCase,
+            removeCurrentGameUseCase = removeCurrentGameUseCase,
+            addToGameStatisticsUseCase = addToGameStatisticsUseCase,
+            dispatchers = dispatchers,
+            gameFactory = testGame.twoPlayerLocalFactory()
+        )
+    }
+
     @Test
     fun `on init show starting board when player is white`() = runTest {
         every { args.value } returns GameplayRoute(isPlayerWhite = true)
@@ -185,12 +202,12 @@ internal class GameplayViewModelTest {
         assertThat(tested.state).isEqualTo(
             GameplayUiState(
                 board = WHITE_PLAYER_INITIAL_BOARD_UI,
-                computer = ParticipantUi(
+                topParticipant = ParticipantUi(
                     nameResId = RFrontitude.string.common_label_computer,
                     isWhite = false,
                     isSelected = false
                 ),
-                player = ParticipantUi(
+                bottomParticipant = ParticipantUi(
                     nameResId = RFrontitude.string.common_label_you,
                     isWhite = true,
                     isSelected = true
@@ -210,12 +227,12 @@ internal class GameplayViewModelTest {
         assertThat(tested.state).isEqualTo(
             GameplayUiState(
                 board = BLACK_PLAYER_INITIAL_BOARD_UI,
-                computer = ParticipantUi(
+                topParticipant = ParticipantUi(
                     nameResId = RFrontitude.string.common_label_computer,
                     isWhite = true,
                     isSelected = true
                 ),
-                player = ParticipantUi(
+                bottomParticipant = ParticipantUi(
                     nameResId = RFrontitude.string.common_label_you,
                     isWhite = false,
                     isSelected = false
@@ -236,12 +253,12 @@ internal class GameplayViewModelTest {
         assertThat(tested.state).isEqualTo(
             GameplayUiState(
                 board = BLACK_PLAYER_EMPTY_BOARD_UI,
-                computer = ParticipantUi(
+                topParticipant = ParticipantUi(
                     nameResId = RFrontitude.string.common_label_computer,
                     isWhite = true,
                     isSelected = false
                 ),
-                player = ParticipantUi(
+                bottomParticipant = ParticipantUi(
                     nameResId = RFrontitude.string.common_label_you,
                     isWhite = false,
                     isSelected = false
@@ -263,12 +280,12 @@ internal class GameplayViewModelTest {
         assertThat(tested.state).isEqualTo(
             GameplayUiState(
                 board = WHITE_PLAYER_EMPTY_BOARD_UI,
-                computer = ParticipantUi(
+                topParticipant = ParticipantUi(
                     nameResId = RFrontitude.string.common_label_computer,
                     isWhite = false,
                     isSelected = false
                 ),
-                player = ParticipantUi(
+                bottomParticipant = ParticipantUi(
                     nameResId = RFrontitude.string.common_label_you,
                     isWhite = true,
                     isSelected = false
@@ -291,12 +308,12 @@ internal class GameplayViewModelTest {
         assertThat(tested.state).isEqualTo(
             GameplayUiState(
                 board = BLACK_PLAYER_EMPTY_BOARD_UI,
-                computer = ParticipantUi(
+                topParticipant = ParticipantUi(
                     nameResId = RFrontitude.string.common_label_computer,
                     isWhite = true,
                     isSelected = false
                 ),
-                player = ParticipantUi(
+                bottomParticipant = ParticipantUi(
                     nameResId = RFrontitude.string.common_label_you,
                     isWhite = false,
                     isSelected = false
@@ -319,12 +336,12 @@ internal class GameplayViewModelTest {
         assertThat(tested.state).isEqualTo(
             GameplayUiState(
                 board = WHITE_PLAYER_EMPTY_BOARD_UI,
-                computer = ParticipantUi(
+                topParticipant = ParticipantUi(
                     nameResId = RFrontitude.string.common_label_computer,
                     isWhite = false,
                     isSelected = false
                 ),
-                player = ParticipantUi(
+                bottomParticipant = ParticipantUi(
                     nameResId = RFrontitude.string.common_label_you,
                     isWhite = true,
                     isSelected = false
@@ -349,12 +366,12 @@ internal class GameplayViewModelTest {
                 board = WHITE_PLAYER_INITIAL_BOARD_UI
                     .replace(SquareUi(position = Ui.E2, isWhite = true, piece = null))
                     .replace(SquareUi(position = Ui.E4, isWhite = true, piece = PieceUi(PAWN, isWhite = true))),
-                computer = ParticipantUi(
+                topParticipant = ParticipantUi(
                     nameResId = RFrontitude.string.common_label_computer,
                     isWhite = false,
                     isSelected = true
                 ),
-                player = ParticipantUi(
+                bottomParticipant = ParticipantUi(
                     nameResId = RFrontitude.string.common_label_you,
                     isWhite = true,
                     isSelected = false
@@ -381,12 +398,12 @@ internal class GameplayViewModelTest {
                     .replace(SquareUi(position = Ui.E4, isWhite = true, piece = PieceUi(PAWN, isWhite = true)))
                     .replace(SquareUi(position = Ui.E7, isWhite = false, piece = null))
                     .replace(SquareUi(position = Ui.E5, isWhite = false, piece = PieceUi(PAWN, isWhite = false))),
-                computer = ParticipantUi(
+                topParticipant = ParticipantUi(
                     nameResId = RFrontitude.string.common_label_computer,
                     isWhite = true,
                     isSelected = true
                 ),
-                player = ParticipantUi(
+                bottomParticipant = ParticipantUi(
                     nameResId = RFrontitude.string.common_label_you,
                     isWhite = false,
                     isSelected = false
@@ -412,12 +429,12 @@ internal class GameplayViewModelTest {
                 board = WHITE_PLAYER_INITIAL_BOARD_UI
                     .replace(SquareUi(position = Ui.E2, isWhite = true, piece = null))
                     .replace(SquareUi(position = Ui.E4, isWhite = true, piece = PieceUi(PAWN, isWhite = true))),
-                computer = ParticipantUi(
+                topParticipant = ParticipantUi(
                     nameResId = RFrontitude.string.common_label_computer,
                     isWhite = false,
                     isSelected = true
                 ),
-                player = ParticipantUi(
+                bottomParticipant = ParticipantUi(
                     nameResId = RFrontitude.string.common_label_you,
                     isWhite = true,
                     isSelected = false
@@ -443,12 +460,12 @@ internal class GameplayViewModelTest {
                     .replace(SquareUi(position = Ui.E4, isWhite = true, piece = PieceUi(PAWN, isWhite = true)))
                     .replace(SquareUi(position = Ui.E7, isWhite = false, piece = null))
                     .replace(SquareUi(position = Ui.E5, isWhite = false, piece = PieceUi(PAWN, isWhite = false))),
-                computer = ParticipantUi(
+                topParticipant = ParticipantUi(
                     nameResId = RFrontitude.string.common_label_computer,
                     isWhite = true,
                     isSelected = true
                 ),
-                player = ParticipantUi(
+                bottomParticipant = ParticipantUi(
                     nameResId = RFrontitude.string.common_label_you,
                     isWhite = false,
                     isSelected = false
@@ -486,12 +503,12 @@ internal class GameplayViewModelTest {
                     .replace(SquareUi(position = Ui.E6, isWhite = true, piece = PieceUi(PAWN, isWhite = true)))
                     .replace(SquareUi(position = Ui.E7, isWhite = false, piece = null))
                     .replace(SquareUi(position = Ui.D8, isWhite = false, piece = null)),
-                computer = ParticipantUi(
+                topParticipant = ParticipantUi(
                     nameResId = RFrontitude.string.common_label_computer,
                     isWhite = false,
                     isSelected = false
                 ),
-                player = ParticipantUi(
+                bottomParticipant = ParticipantUi(
                     nameResId = RFrontitude.string.common_label_you,
                     isWhite = true,
                     isSelected = true
@@ -523,12 +540,12 @@ internal class GameplayViewModelTest {
                     .replace(SquareUi(position = Ui.D7, isWhite = true, piece = PieceUi(QUEEN, isWhite = true), isHighlighted = true))
                     .replace(SquareUi(position = Ui.C7, isWhite = false, piece = null))
                     .replace(SquareUi(position = Ui.E8, isWhite = true, piece = PieceUi(KING, isWhite = false), isHighlighted = true)),
-                computer = ParticipantUi(
+                topParticipant = ParticipantUi(
                     nameResId = RFrontitude.string.common_label_computer,
                     isWhite = true,
                     isSelected = false
                 ),
-                player = ParticipantUi(
+                bottomParticipant = ParticipantUi(
                     nameResId = RFrontitude.string.common_label_you,
                     isWhite = false,
                     isSelected = true
@@ -564,6 +581,16 @@ internal class GameplayViewModelTest {
         assertThat(tested.state.dialog).isEqualTo(GameMenuDialogUi(isMoveSuggestionsOn = true))
     }
 
+    @Test
+    fun `on init shows game menu with two player mode when returning to an ongoing two player game`() = runTest {
+        every { args.value } returns GameplayRoute(isPlayerWhite = true, isTwoPlayerMode = true)
+        every { savedStateHandle.get<Boolean>(KEY_GAME_STARTED_BEFORE) } returns true
+
+        assertThat(testedTwoPlayerLocal.state.dialog).isEqualTo(
+            GameMenuDialogUi(isMoveSuggestionsOn = true, isTwoPlayerMode = true)
+        )
+    }
+
     @ParameterizedTest
     @MethodSource("provideInitEndgameParameters")
     fun `on init shows endgame when return to completed game which was started before`(
@@ -575,6 +602,82 @@ internal class GameplayViewModelTest {
         testGame.startingFen = fen
 
         assertThat(tested.state.dialog).isEqualTo(dialog)
+    }
+
+    @Test
+    fun `on init show starting board in two player mode with white at the bottom`() = runTest {
+        every { args.value } returns GameplayRoute(isPlayerWhite = false, isTwoPlayerMode = true)
+
+        assertThat(testedTwoPlayerLocal.state).isEqualTo(
+            GameplayUiState(
+                board = WHITE_PLAYER_INITIAL_BOARD_UI,
+                topParticipant = ParticipantUi(
+                    nameResId = RFrontitude.string.common_label_black,
+                    isWhite = false,
+                    isSelected = false
+                ),
+                bottomParticipant = ParticipantUi(
+                    nameResId = RFrontitude.string.common_label_white,
+                    isWhite = true,
+                    isSelected = true
+                ),
+                isConfirmMoveButtonVisible = false
+            )
+        )
+    }
+
+    @Test
+    fun `white player makes first move in two player mode then black player can move`() = runTest {
+        every { args.value } returns GameplayRoute(isPlayerWhite = true, isTwoPlayerMode = true)
+
+        testedTwoPlayerLocal.states.test {
+            skipItems(1)
+
+            testedTwoPlayerLocal.handleUiEvent(SquareClicked(Ui.E2))
+            awaitItem()
+            testedTwoPlayerLocal.handleUiEvent(SquareClicked(Ui.E4))
+            awaitItem()
+            testedTwoPlayerLocal.handleUiEvent(ConfirmMoveButtonClicked)
+            val moveConfirmedState = awaitItem()
+
+            assertThat(moveConfirmedState.topParticipant.isSelected).isTrue()
+            assertThat(moveConfirmedState.bottomParticipant.isSelected).isFalse()
+
+            testedTwoPlayerLocal.handleUiEvent(SquareClicked(Ui.E7))
+            awaitItem()
+            testedTwoPlayerLocal.handleUiEvent(SquareClicked(Ui.E5))
+            awaitItem()
+            testedTwoPlayerLocal.handleUiEvent(ConfirmMoveButtonClicked)
+            val blackMoveConfirmedState = awaitItem()
+
+            assertThat(blackMoveConfirmedState.topParticipant.isSelected).isFalse()
+            assertThat(blackMoveConfirmedState.bottomParticipant.isSelected).isTrue()
+        }
+    }
+
+    @Test
+    fun `EndgameNewGameButtonClicked does not add two player game result to statistics`() = runTest {
+        every { args.value } returns GameplayRoute(isPlayerWhite = true, isTwoPlayerMode = true)
+        val gameOptions = GameOptions(
+            isMoveSuggestionsOn = true,
+            isPlayerWhite = true,
+            difficultyLevel = DifficultyLevel(1),
+            isTwoPlayerMode = true
+        )
+        coEvery { getGameOptionsUseCase() } returns Result.success(gameOptions)
+        testGame.startingFen = WHITE_PARTICIPANT_WON_FEN
+
+        testedTwoPlayerLocal.states.test {
+            skipItems(1)
+        }
+
+        testedTwoPlayerLocal.handleUiEvent(EndgameNewGameButtonClicked)
+
+        testedTwoPlayerLocal.navActions.test {
+            verifyNavigatedToOptionsMenu(awaitItem(), gameOptions)
+        }
+        coVerify(exactly = 0) { addToGameStatisticsUseCase(type = any(), isWhitePlayer = any()) }
+        coVerify { removeCurrentGameUseCase() }
     }
 
     @Test
@@ -597,8 +700,8 @@ internal class GameplayViewModelTest {
             val pieceSelectedBoard = BLACK_PLAYER_INITIAL_BOARD_UI
                 .replace(SquareUi(position = Ui.E2, isWhite = true, piece = pawnUi, isHighlighted = true))
             assertThat(pieceSelectedState.board).isEqualTo(pieceSelectedBoard)
-            assertThat(pieceSelectedState.computer.isSelected).isTrue()
-            assertThat(pieceSelectedState.player.isSelected).isFalse()
+            assertThat(pieceSelectedState.topParticipant.isSelected).isTrue()
+            assertThat(pieceSelectedState.bottomParticipant.isSelected).isFalse()
             coVerify(exactly = 0) {
                 saveCurrentGameMovesUseCase(any())
             }
@@ -608,8 +711,8 @@ internal class GameplayViewModelTest {
                 .replace(SquareUi(position = Ui.E2, isWhite = true, piece = null))
                 .replace(SquareUi(position = Ui.E4, isWhite = true, piece = pawnUi, isHighlighted = true))
             assertThat(movedState.board).isEqualTo(movedBoard)
-            assertThat(movedState.computer.isSelected).isTrue()
-            assertThat(movedState.player.isSelected).isFalse()
+            assertThat(movedState.topParticipant.isSelected).isTrue()
+            assertThat(movedState.bottomParticipant.isSelected).isFalse()
             coVerify(exactly = 0) {
                 saveCurrentGameMovesUseCase(any())
             }
@@ -619,8 +722,8 @@ internal class GameplayViewModelTest {
                 .replace(SquareUi(position = Ui.E2, isWhite = true, piece = null))
                 .replace(SquareUi(position = Ui.E4, isWhite = true, piece = pawnUi))
             assertThat(moveConfirmedState.board).isEqualTo(moveConfirmedBoard)
-            assertThat(moveConfirmedState.computer.isSelected).isFalse()
-            assertThat(moveConfirmedState.player.isSelected).isTrue()
+            assertThat(moveConfirmedState.topParticipant.isSelected).isFalse()
+            assertThat(moveConfirmedState.bottomParticipant.isSelected).isTrue()
             assertThat(moveConfirmedState.isGameMovesButtonVisible).isFalse()
             assertThat(moveConfirmedState.isUndoMoveButtonVisible).isTrue()
             coVerify(exactly = 1) {
@@ -647,8 +750,8 @@ internal class GameplayViewModelTest {
                 .replace(SquareUi(position = Ui.E3, isWhite = false, isHighlighted = true))
                 .replace(SquareUi(position = Ui.E4, isWhite = true, isHighlighted = true))
             assertThat(pieceSelectedState.board).isEqualTo(pieceSelectedBoard)
-            assertThat(pieceSelectedState.computer.isSelected).isFalse()
-            assertThat(pieceSelectedState.player.isSelected).isTrue()
+            assertThat(pieceSelectedState.topParticipant.isSelected).isFalse()
+            assertThat(pieceSelectedState.bottomParticipant.isSelected).isTrue()
             coVerify(exactly = 0) {
                 saveCurrentGameMovesUseCase(any())
             }
@@ -659,8 +762,8 @@ internal class GameplayViewModelTest {
                 .replace(SquareUi(position = Ui.E2, isWhite = true, piece = null))
                 .replace(SquareUi(position = Ui.E4, isWhite = true, piece = pawnUi, isHighlighted = true))
             assertThat(movedState.board).isEqualTo(movedBoard)
-            assertThat(movedState.computer.isSelected).isFalse()
-            assertThat(movedState.player.isSelected).isTrue()
+            assertThat(movedState.topParticipant.isSelected).isFalse()
+            assertThat(movedState.bottomParticipant.isSelected).isTrue()
             coVerify(exactly = 0) {
                 saveCurrentGameMovesUseCase(any())
             }
@@ -671,8 +774,8 @@ internal class GameplayViewModelTest {
                 .replace(SquareUi(position = Ui.E2, isWhite = true, piece = null))
                 .replace(SquareUi(position = Ui.E4, isWhite = true, piece = pawnUi))
             assertThat(moveConfirmedState.board).isEqualTo(moveConfirmedBoard)
-            assertThat(moveConfirmedState.computer.isSelected).isTrue()
-            assertThat(moveConfirmedState.player.isSelected).isFalse()
+            assertThat(moveConfirmedState.topParticipant.isSelected).isTrue()
+            assertThat(moveConfirmedState.bottomParticipant.isSelected).isFalse()
             assertThat(moveConfirmedState.isGameMovesButtonVisible).isFalse()
             assertThat(moveConfirmedState.isUndoMoveButtonVisible).isFalse()
             coVerify(exactly = 1) {
@@ -698,8 +801,8 @@ internal class GameplayViewModelTest {
             val pieceSelectedBoard = WHITE_PLAYER_INITIAL_BOARD_UI
                 .replace(SquareUi(position = Ui.E2, isWhite = true, piece = pawnUi, isHighlighted = true))
             assertThat(pieceSelectedState.board).isEqualTo(pieceSelectedBoard)
-            assertThat(pieceSelectedState.computer.isSelected).isFalse()
-            assertThat(pieceSelectedState.player.isSelected).isTrue()
+            assertThat(pieceSelectedState.topParticipant.isSelected).isFalse()
+            assertThat(pieceSelectedState.bottomParticipant.isSelected).isTrue()
             coVerify(exactly = 0) {
                 saveCurrentGameMovesUseCase(any())
             }
@@ -710,8 +813,8 @@ internal class GameplayViewModelTest {
                 .replace(SquareUi(position = Ui.E2, isWhite = true, piece = null))
                 .replace(SquareUi(position = Ui.E4, isWhite = true, piece = pawnUi, isHighlighted = true))
             assertThat(movedState.board).isEqualTo(movedBoard)
-            assertThat(movedState.computer.isSelected).isFalse()
-            assertThat(movedState.player.isSelected).isTrue()
+            assertThat(movedState.topParticipant.isSelected).isFalse()
+            assertThat(movedState.bottomParticipant.isSelected).isTrue()
             coVerify(exactly = 0) {
                 saveCurrentGameMovesUseCase(any())
             }
@@ -722,8 +825,8 @@ internal class GameplayViewModelTest {
                 .replace(SquareUi(position = Ui.E2, isWhite = true, piece = null))
                 .replace(SquareUi(position = Ui.E4, isWhite = true, piece = pawnUi))
             assertThat(moveConfirmedState.board).isEqualTo(moveConfirmedBoard)
-            assertThat(moveConfirmedState.computer.isSelected).isTrue()
-            assertThat(moveConfirmedState.player.isSelected).isFalse()
+            assertThat(moveConfirmedState.topParticipant.isSelected).isTrue()
+            assertThat(moveConfirmedState.bottomParticipant.isSelected).isFalse()
             assertThat(moveConfirmedState.isGameMovesButtonVisible).isFalse()
             assertThat(moveConfirmedState.isUndoMoveButtonVisible).isFalse()
             coVerify(exactly = 1) {
@@ -1267,7 +1370,8 @@ internal class GameplayViewModelTest {
             route = OptionsMenuRoute(
                 isMoveSuggestionsOn = gameOptions.isMoveSuggestionsOn,
                 isPlayerWhite = gameOptions.isPlayerWhite,
-                difficultyLevel = gameOptions.difficultyLevel.value
+                difficultyLevel = gameOptions.difficultyLevel.value,
+                isTwoPlayerMode = gameOptions.isTwoPlayerMode
             ),
             options = navOptions { popUpTo<MainRoute>() }
         ))

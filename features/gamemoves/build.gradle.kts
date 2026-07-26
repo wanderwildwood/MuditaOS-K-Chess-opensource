@@ -20,7 +20,7 @@ dependencies {
     implementation(libs.koin.core)
     implementation(libs.koin.compose)
 
-    implementation(libs.kompakt.ui)
+    implementation(libs.mmd)
     implementation(libs.logcat)
     implementation(libs.chesslib)
 

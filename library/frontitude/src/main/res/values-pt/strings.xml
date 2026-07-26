@@ -23,10 +23,13 @@
     <string name="chess_gameplay_notification_check">Xeque</string>
     <string name="chess_gameplay_topbar_button_confirmmove">Confirme</string>
     <string name="chess_listofmoves_screentitle_listofmoves">Lista de jogadas</string>
+    <string name="chess_optionsmenu_button_oneplayer">1 jogador</string>
     <string name="chess_optionsmenu_button_play">Jogar</string>
+    <string name="chess_optionsmenu_button_twoplayer">2 jogadores</string>
     <string name="chess_optionsmenu_label_advanced">EXPERIENTE (%d ELO)</string>
     <string name="chess_optionsmenu_label_beginner">INICIANTE (%d ELO)</string>
     <string name="chess_optionsmenu_label_difficultylevel">Nível de dificuldade</string>
+    <string name="chess_optionsmenu_label_gamemode">Modo de jogo</string>
     <string name="chess_optionsmenu_label_intermediate">INTERMÉDIO (%d ELO)</string>
     <string name="chess_optionsmenu_label_selectplayercolor">Cor do jogador</string>
     <string name="chess_statistics_dialog_body_thiswillgiveyou">Esta opção permite começar do zero mas não pode ser anulada</string>
@@ -46,7 +49,7 @@
     <string name="common_label_am">AM</string>
     <string name="common_label_apps">Aplicações</string>
     <string name="common_label_black">Pretas</string>
-    <string name="common_label_chess">Xadrez</string>
+    <string name="common_label_chess">Chess+</string>
     <string name="common_label_computer">COMPUTADOR</string>
     <string name="common_label_options">Opções</string>
     <string name="common_label_phone">Telemóvel</string>

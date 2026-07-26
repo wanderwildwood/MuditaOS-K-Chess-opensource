@@ -42,7 +42,7 @@ import com.mudita.chess.navigation.AppNavigator
 import com.mudita.chess.navigation.NavActionsEffect
 import com.mudita.chess.ui.KompaktPreview
 import com.mudita.chess.ui.OnLifecycleEvent
-import com.mudita.kompakt.commonUi.KompaktTheme
+import com.mudita.chess.ui.design.AppTheme
 import org.koin.androidx.compose.koinViewModel
 import com.mudita.chess.frontitude.R as RFrontitude
 
@@ -105,7 +105,7 @@ private fun GameplayScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 12.dp, horizontal = 16.dp),
-                    participant = uiState.computer
+                    participant = uiState.topParticipant
                 )
                 Board(
                     modifier = Modifier
@@ -120,7 +120,7 @@ private fun GameplayScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 12.dp, horizontal = 16.dp),
-                    participant = uiState.player
+                    participant = uiState.bottomParticipant
                 )
                 BottomMenu(
                     modifier = Modifier
@@ -150,17 +150,17 @@ private fun GameplayScreen(
 
 @KompaktPreview
 @Composable
-private fun GameplayScreenPreview() = KompaktTheme {
+private fun GameplayScreenPreview() = AppTheme {
     val mapper = GameplayMapper()
     GameplayScreen(
         uiState = GameplayUiState(
             board = mapper.toBoardUi(ChessBoard(topParticipantSide = BLACK).state),
-            computer = ParticipantUi(
+            topParticipant = ParticipantUi(
                 nameResId = RFrontitude.string.common_label_computer,
                 isWhite = false,
                 isSelected = false
             ),
-            player = ParticipantUi(
+            bottomParticipant = ParticipantUi(
                 nameResId = RFrontitude.string.common_label_you,
                 isWhite = true,
                 isSelected = true

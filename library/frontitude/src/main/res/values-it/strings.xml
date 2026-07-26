@@ -23,10 +23,13 @@
     <string name="chess_gameplay_notification_check">Scacco</string>
     <string name="chess_gameplay_topbar_button_confirmmove">Conferma</string>
     <string name="chess_listofmoves_screentitle_listofmoves">Lista mosse</string>
+    <string name="chess_optionsmenu_button_oneplayer">1 giocatore</string>
     <string name="chess_optionsmenu_button_play">Gioca</string>
+    <string name="chess_optionsmenu_button_twoplayer">2 giocatori</string>
     <string name="chess_optionsmenu_label_advanced">AVANZATO (%d ELO)</string>
     <string name="chess_optionsmenu_label_beginner">PRINCIPIANTE (%d ELO)</string>
     <string name="chess_optionsmenu_label_difficultylevel">Livello di difficoltà</string>
+    <string name="chess_optionsmenu_label_gamemode">Modalità di gioco</string>
     <string name="chess_optionsmenu_label_intermediate">INTERMEDIO (%d ELO)</string>
     <string name="chess_optionsmenu_label_selectplayercolor">Colore giocatore</string>
     <string name="chess_statistics_dialog_body_thiswillgiveyou">Conferma per ricominciare da capo, ma ricorda che l’azione è irreversibile</string>
@@ -46,7 +49,7 @@
     <string name="common_label_am">AM</string>
     <string name="common_label_apps">App</string>
     <string name="common_label_black">Neri</string>
-    <string name="common_label_chess">Scacchi</string>
+    <string name="common_label_chess">Chess+</string>
     <string name="common_label_computer">COMPUTER</string>
     <string name="common_label_options">Opzioni</string>
     <string name="common_label_phone">Telefono</string>

@@ -30,12 +30,10 @@ import com.mudita.chess.ui.model.PositionUi.D2
 import com.mudita.chess.ui.model.PositionUi.D3
 import com.mudita.chess.ui.model.PositionUi.E2
 import com.mudita.chess.ui.model.PositionUi.E4
-import com.mudita.kompakt.commonUi.KompaktTheme
-import com.mudita.kompakt.commonUi.components.DashedHorizontalDivider
-import com.mudita.kompakt.commonUi.components.fakeScroll.KompaktLazyFakeScroll
+import com.mudita.chess.ui.design.AppDashedHorizontalDivider
+import com.mudita.chess.ui.design.AppTheme
+import com.mudita.mmd.components.lazy.LazyColumnMMD
 import org.koin.androidx.compose.koinViewModel
-
-private const val MOVES_ON_PAGE = 7
 
 @Composable
 fun GameMoves(navigator: AppNavigator) {
@@ -73,15 +71,14 @@ private fun GameMovesScreen(
         containerColor = MaterialTheme.colorScheme.primaryContainer,
         topBar = { GameMovesTopAppBar(uiEvent) }
     ) { contentPadding ->
-        KompaktLazyFakeScroll(
-            step = MOVES_ON_PAGE,
+        LazyColumnMMD(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(contentPadding)
         ) {
             items(uiState.moves) { moveUi ->
                 GameMoveListItem(moveUi = moveUi)
-                DashedHorizontalDivider(modifier = Modifier.fillMaxWidth())
+                AppDashedHorizontalDivider(modifier = Modifier.fillMaxWidth())
             }
         }
     }
@@ -90,7 +87,7 @@ private fun GameMovesScreen(
 @KompaktPreview
 @Composable
 private fun GameMovesScreenPreview() {
-    KompaktTheme {
+    AppTheme {
         GameMovesScreen(
             uiState = GameMovesUiState(
                 listOf(

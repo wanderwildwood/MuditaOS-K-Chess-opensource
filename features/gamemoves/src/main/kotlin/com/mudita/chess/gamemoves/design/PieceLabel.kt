@@ -12,14 +12,14 @@ import com.mudita.chess.ui.model.PieceTypeUi.PAWN
 import com.mudita.chess.ui.model.PieceTypeUi.QUEEN
 import com.mudita.chess.ui.model.PieceTypeUi.ROOK
 import com.mudita.chess.ui.model.PieceUi
-import com.mudita.kompakt.commonUi.KompaktTypography900
+import com.mudita.chess.ui.design.AppTypography900
 import com.mudita.chess.frontitude.R as RFrontitude
 
 @Composable
 internal fun PieceLabel(piece: PieceUi) {
     Text(
         text = stringResource(id = getPieceResId(piece = piece)),
-        style = KompaktTypography900.labelMedium
+        style = AppTypography900.labelMedium
     )
 }
 

@@ -32,7 +32,8 @@ internal sealed class GameplayDialogUi(
     data object LoadingDialogUi : GameplayDialogUi(type = LOADING)
 
     data class GameMenuDialogUi(
-        val isMoveSuggestionsOn: Boolean
+        val isMoveSuggestionsOn: Boolean,
+        val isTwoPlayerMode: Boolean = false
     ) : GameplayDialogUi(type = GAME_MENU, alignment = BOTTOM)
 
     data class PawnPromotionDialogUi(

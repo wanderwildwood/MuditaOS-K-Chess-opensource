@@ -4,15 +4,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.mudita.chess.gamemoves.GameMovesUiEvent
 import com.mudita.chess.gamemoves.GameMovesUiEvent.NavigationUpClicked
-import com.mudita.kompakt.commonUi.components.appBar.KompaktTopAppBar
+import com.mudita.chess.ui.design.AppNavigationIcon
+import com.mudita.chess.ui.design.AppTopAppBar
 import com.mudita.chess.frontitude.R as RFrontitude
-import com.mudita.kompakt.commonUi.R as RCommonUi
 
 @Composable
 internal fun GameMovesTopAppBar(uiEvent: (GameMovesUiEvent) -> Unit) {
-    KompaktTopAppBar(
+    AppTopAppBar(
         title = stringResource(id = RFrontitude.string.chess_listofmoves_screentitle_listofmoves),
-        navigationIconResId = RCommonUi.drawable.close,
+        navigationIcon = AppNavigationIcon.CLOSE,
         onNavigationIconClick = { uiEvent(NavigationUpClicked) }
     )
 }

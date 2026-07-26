@@ -17,8 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.mudita.kompakt.commonUi.KompaktTheme
-import com.mudita.kompakt.commonUi.KompaktTypography900
+import com.mudita.chess.ui.design.AppTheme
+import com.mudita.chess.ui.design.AppTypography900
 
 @Composable
 internal fun MatchResultItem(
@@ -37,18 +37,18 @@ internal fun MatchResultItem(
     Text(
         modifier = Modifier.width(valueWidth),
         text = value.toString(),
-        style = KompaktTypography900.titleLarge
+        style = AppTypography900.titleLarge
     )
     Spacer(modifier = Modifier.width(16.dp))
     Text(
         text = title,
-        style = KompaktTypography900.labelMedium
+        style = AppTypography900.labelMedium
     )
 }
 
 @Preview
 @Composable
-private fun MatchResultItemPreview() = KompaktTheme {
+private fun MatchResultItemPreview() = AppTheme {
     Column(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
         val valueWidth = 72.dp
         MatchResultItem(

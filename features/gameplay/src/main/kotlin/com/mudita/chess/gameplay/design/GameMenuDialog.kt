@@ -18,12 +18,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mudita.chess.ui.compontent.SwitchOption
-import com.mudita.kompakt.commonUi.KompaktTheme
-import com.mudita.kompakt.commonUi.KompaktTypography900
-import com.mudita.kompakt.commonUi.compactColorScheme
-import com.mudita.kompakt.commonUi.components.button.KompaktButtonAttributes
-import com.mudita.kompakt.commonUi.components.button.KompaktPrimaryButton
-import com.mudita.kompakt.commonUi.components.button.KompaktSecondaryButton
+import com.mudita.chess.ui.design.AppButtonAttributes
+import com.mudita.chess.ui.design.AppPrimaryButton
+import com.mudita.chess.ui.design.AppSecondaryButton
+import com.mudita.chess.ui.design.AppTheme
+import com.mudita.chess.ui.design.AppTypography900
 import com.mudita.chess.frontitude.R as RFrontitude
 
 @Composable
@@ -33,7 +32,8 @@ fun GameMenuDialog(
     onNewGameClick: () -> Unit,
     onExitClick: () -> Unit,
     onMoveSuggestionsSwitchToggle: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isTwoPlayerMode: Boolean = false
 ) {
     Column(
         modifier = modifier.fillMaxWidth()
@@ -41,15 +41,16 @@ fun GameMenuDialog(
         HorizontalDivider(
             modifier = Modifier.fillMaxWidth(),
             thickness = 3.dp,
-            color = compactColorScheme.primary
+            color = MaterialTheme.colorScheme.primary
         )
         Column(
             modifier = modifier
                 .fillMaxWidth()
-                .background(color = compactColorScheme.secondary)
+                .background(color = MaterialTheme.colorScheme.secondary)
         ) {
             Content(
                 isMoveSuggestionsOn = isMoveSuggestionsOn,
+                isTwoPlayerMode = isTwoPlayerMode,
                 onResumeClick = onResumeClick,
                 onNewGameClick = onNewGameClick,
                 onExitClick = onExitClick,
@@ -62,6 +63,7 @@ fun GameMenuDialog(
 @Composable
 private fun Content(
     isMoveSuggestionsOn: Boolean,
+    isTwoPlayerMode: Boolean,
     onResumeClick: () -> Unit,
     onNewGameClick: () -> Unit,
     onExitClick: () -> Unit,
@@ -72,6 +74,7 @@ private fun Content(
     Spacer(modifier = Modifier.height(24.dp))
     Options(
         isMoveSuggestionsOn = isMoveSuggestionsOn,
+        isTwoPlayerMode = isTwoPlayerMode,
         onResumeClick = onResumeClick,
         onNewGameClick = onNewGameClick,
         onExitClick = onExitClick,
@@ -85,12 +88,13 @@ private fun Title() =
         modifier = Modifier.fillMaxWidth(),
         text = stringResource(id = RFrontitude.string.maps_common_screentitle_menu),
         textAlign = TextAlign.Center,
-        style = KompaktTypography900.titleMedium
+        style = AppTypography900.titleMedium
     )
 
 @Composable
 private fun Options(
     isMoveSuggestionsOn: Boolean,
+    isTwoPlayerMode: Boolean,
     onResumeClick: () -> Unit,
     onNewGameClick: () -> Unit,
     onExitClick: () -> Unit,
@@ -113,23 +117,24 @@ private fun Options(
             text = stringResource(id = RFrontitude.string.common_button_exit),
             onClick = onExitClick
         )
-        Spacer(modifier = Modifier.height(4.dp))
-        SwitchOption(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 4.dp),
-            text = stringResource(id = RFrontitude.string.chess_gamepausemenu_toggle_button_movesuggestions),
-            textStyle = KompaktTypography900.labelMedium,
-            isSwitchedOn = isMoveSuggestionsOn,
-            onSwitchToggle = onMoveSuggestionsSwitchToggle,
-            verticalTouchAreaPadding = 12.dp
-        )
+        if (!isTwoPlayerMode) {
+            Spacer(modifier = Modifier.height(4.dp))
+            SwitchOption(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 4.dp),
+                text = stringResource(id = RFrontitude.string.chess_gamepausemenu_toggle_button_movesuggestions),
+                textStyle = AppTypography900.labelMedium,
+                isSwitchedOn = isMoveSuggestionsOn,
+                onSwitchToggle = onMoveSuggestionsSwitchToggle
+            )
+        }
     }
 }
 
 @Composable
 private fun ResumeButton(onResumeClick: () -> Unit) {
-    KompaktPrimaryButton(
+    AppPrimaryButton(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp),
@@ -141,7 +146,7 @@ private fun ResumeButton(onResumeClick: () -> Unit) {
 
 @Composable
 private fun SecondaryButton(text: String, onClick: () -> Unit) {
-    KompaktSecondaryButton(
+    AppSecondaryButton(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp),
@@ -153,14 +158,14 @@ private fun SecondaryButton(text: String, onClick: () -> Unit) {
 
 @Composable
 private fun buttonAttributes() =
-    KompaktButtonAttributes.DynamicButton(
+    AppButtonAttributes(
         height = 48.dp,
-        textStyle = KompaktTypography900.labelLarge
+        textStyle = AppTypography900.labelLarge
     )
 
 @Preview
 @Composable
-private fun GameMenuPreview() = KompaktTheme {
+private fun GameMenuPreview() = AppTheme {
     Box {
         GameMenuDialog(
             modifier = Modifier.fillMaxWidth(),

@@ -1,9 +1,3 @@
-import com.mikepenz.aboutlibraries.plugin.DuplicateMode
-import com.mikepenz.aboutlibraries.plugin.DuplicateRule
-import com.mudita.sentry.plugins.tasks.SentryReleaseTask
-import com.mudita.sentry.plugins.tasks.model.AppMetadata
-import com.mudita.sentry.plugins.util.generateSentryUuid
-import com.mudita.tasks.DeployTask
 import com.mudita.tasks.GenerateChangelogTask
 
 plugins {
@@ -11,8 +5,6 @@ plugins {
     alias(libs.plugins.android.application.compose.convention)
     alias(libs.plugins.androidx.baselineprofile)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.aboutlibraries)
-    alias(libs.plugins.mudita.sentry)
 }
 
 android {
@@ -21,8 +13,6 @@ android {
         applicationId = project.libs.versions.app.version.appId.get()
         versionName = project.libs.versions.app.version.versionName.get()
         versionCode = System.getenv("VERSION_CODE")?.toIntOrNull() ?: 1
-        buildConfigField("String", "PROGUARD_UUID", "\"${generateSentryUuid()}\"")
-        buildConfigField("String", "SENTRY_DSN", "\"${gradle.extra["sentryDsn"]}\"")
     }
 
     signingConfigs {
@@ -76,9 +66,6 @@ android {
     }
 
     android.applicationVariants.all {
-        preBuildProvider.configure {
-            dependsOn("exportLibraryDefinitions")
-        }
         outputs.all {
             val outputImpl = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
             val appName = project.libs.versions.app.version.appId.get().split(".").last()
@@ -99,29 +86,6 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-}
-
-aboutLibraries {
-    val ghToken = System.getenv("GITHUB_TOKEN").orEmpty()
-    if (ghToken.isNotBlank()) {
-        fetchRemoteLicense = true
-        gitHubApiToken = ghToken
-    }
-
-    configPath = "config"
-
-    allowedLicenses = arrayOf("Apache-2.0")
-
-    allowedLicensesMap = mapOf(
-        "com.github.bhlangonijr:chesslib" to listOf("Apache-2.0")
-    )
-
-    exclusionPatterns = listOf(
-        Regex("com\\.mudita.*").toPattern()
-    )
-
-    duplicationMode = DuplicateMode.MERGE
-    duplicationRule = DuplicateRule.SIMPLE
 }
 
 baselineProfile {
@@ -171,21 +135,9 @@ dependencies {
     implementation(libs.koin.core)
     implementation(libs.koin.android)
 
-    implementation(libs.kompakt.ui)
+    implementation(libs.mmd)
 
     implementation(libs.logcat)
-
-    implementation(libs.sentry.sdk)
-    implementation(libs.about.libraries)
-}
-
-tasks.register("uploadApkToNexus", DeployTask::class) {
-    versionName = project.libs.versions.app.version.versionName.get()
-    tagPrefix = project.property("tagPrefix") as String? ?: "development"
-
-    nexusUrl = project.property("nexusUrl") as String? ?: ""
-    nexusUsername = gradle.extra["muditaUsername"].toString()
-    nexusPassword = gradle.extra["muditaPassword"].toString()
 }
 
 tasks.register("generateChangelog", GenerateChangelogTask::class) {
@@ -212,30 +164,4 @@ tasks.register("checkVersion") {
             throw GradleException("The version in build.gradle.kts ($currentVersion) does not match the tag version ($tagVersion).")
         }
     }
-}
-
-tasks.named("createReleaseAndUploadMapping", SentryReleaseTask::class) {
-    val variantOutput = project.android.applicationVariants
-        .firstOrNull {
-            gradle.startParameter.taskNames.any { taskName ->
-                taskName.contains(
-                    it.name,
-                    ignoreCase = true
-                )
-            }
-        } ?: throw IllegalStateException("No matching variant found for the task name.")
-
-    val buildVariant = variantOutput.buildType.name.takeIf {
-        it.equals("release", ignoreCase = true) || it.equals("qa", ignoreCase = true)
-    } ?: throw IllegalStateException(
-        "Invalid build variant: ${variantOutput.buildType.name}." +
-                " Supported variants are: \"release\", \"qa\""
-    )
-
-    appMetadata = AppMetadata(
-        buildVariant = buildVariant,
-        packageName = variantOutput.applicationId,
-        versionName = variantOutput.versionName,
-        versionCode = variantOutput.versionCode.toString()
-    )
 }

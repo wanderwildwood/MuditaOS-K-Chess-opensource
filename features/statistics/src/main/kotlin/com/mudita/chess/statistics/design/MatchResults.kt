@@ -13,9 +13,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mudita.chess.statistics.model.MatchResultUi
-import com.mudita.kompakt.commonUi.KompaktTheme
-import com.mudita.kompakt.commonUi.KompaktTypography900
-import com.mudita.kompakt.commonUi.components.DashedHorizontalDivider
+import com.mudita.chess.ui.design.AppDashedHorizontalDivider
+import com.mudita.chess.ui.design.AppTheme
+import com.mudita.chess.ui.design.AppTypography900
 import com.mudita.chess.frontitude.R as RFrontitude
 
 @Composable
@@ -28,7 +28,7 @@ internal fun MatchResults(
         text = stringResource(
             id = RFrontitude.string.chess_statistics_label_matchresults
         ),
-        style = KompaktTypography900.titleMedium
+        style = AppTypography900.titleMedium
     )
 
     val valueWidth = countValueWidth(matchResults)
@@ -40,7 +40,7 @@ internal fun MatchResults(
             valueWidth = valueWidth
         )
         if (index < matchResults.size - 1) {
-            DashedHorizontalDivider(
+            AppDashedHorizontalDivider(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = dividerStartPadding)
@@ -60,7 +60,7 @@ private const val DIGIT_WIDTH = 18
 
 @Preview
 @Composable
-internal fun MatchResultsPreview() = KompaktTheme {
+internal fun MatchResultsPreview() = AppTheme {
     Column {
         MatchResults(
             modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer),
