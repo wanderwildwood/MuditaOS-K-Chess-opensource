@@ -1,0 +1,58 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      VERSION_CODE: ${{ github.run_number }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'liberica'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        timeout-minutes: 5
+        with:
+          cache-read-only: true
+          gradle-home-cache-cleanup: true
+
+      - name: Build APK
+        run: ./gradlew :app-android:assembleRelease
+
+      - name: Rename APK and generate checksum
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          version="${version%-chessplus}"
+          apk_name="chessplus-${version}.apk"
+          apk_path=$(find app-android/build/outputs/apk/release -maxdepth 1 -name '*.apk')
+          cp "$apk_path" "$apk_name"
+          sha256sum "$apk_name" > "${apk_name}.sha256"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            chessplus-*.apk
+            chessplus-*.apk.sha256
+          generate_release_notes: true
