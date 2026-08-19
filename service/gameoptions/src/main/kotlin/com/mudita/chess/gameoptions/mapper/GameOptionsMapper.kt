@@ -7,11 +7,13 @@ import com.mudita.chess.gameoptions.model.GameOptionsPrefs
 internal fun GameOptionsPrefs.toDomain() = GameOptions(
     isMoveSuggestionsOn = isMoveSuggestionsOn,
     isPlayerWhite = isPlayerWhite,
-    difficultyLevel = DifficultyLevel(difficultyLevel)
+    difficultyLevel = DifficultyLevel(difficultyLevel),
+    isTwoPlayerMode = isTwoPlayerMode
 )
 
 internal fun GameOptions.toPrefs() = GameOptionsPrefs(
     isMoveSuggestionsOn = isMoveSuggestionsOn,
     isPlayerWhite = isPlayerWhite,
-    difficultyLevel = difficultyLevel.value
+    difficultyLevel = difficultyLevel.value,
+    isTwoPlayerMode = isTwoPlayerMode
 )

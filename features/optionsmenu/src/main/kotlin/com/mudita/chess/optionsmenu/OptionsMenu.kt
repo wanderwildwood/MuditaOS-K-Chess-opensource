@@ -29,6 +29,7 @@ import com.mudita.chess.navigation.NavActionsEffect
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.DifficultyLevelMinusIconClicked
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.DifficultyLevelPlusIconClicked
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.DifficultyLevelStepClicked
+import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.GameModeSelected
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.MoveSuggestionsSwitchToggled
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.NavigationUpClicked
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.PlayButtonClicked
@@ -91,24 +92,30 @@ private fun OptionsMenuScreen(
                 .padding(contentPadding)
                 .padding(bottom = 16.dp)
         ) {
-            SwitchOption(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 4.dp),
-                text = stringResource(id = RFrontitude.string.chess_gamepausemenu_toggle_button_movesuggestions),
-                textStyle = KompaktTypography900.titleMedium,
-                isSwitchedOn = uiState.isMoveSuggestionsOn,
-                onSwitchToggle = { uiEvent(MoveSuggestionsSwitchToggled) }
-            )
-            PlayerColor(
-                isWhiteSelected = uiState.isWhiteSelected,
+            GameMode(
+                isTwoPlayerMode = uiState.isTwoPlayerMode,
                 uiEvent = uiEvent
             )
-            DifficultyLevel(
-                difficultyLevelStep = uiState.difficultyLevelStep,
-                difficultyLevelLabel = uiState.difficultyLevelLabel,
-                uiEvent = uiEvent
-            )
+            if (!uiState.isTwoPlayerMode) {
+                SwitchOption(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 4.dp),
+                    text = stringResource(id = RFrontitude.string.chess_gamepausemenu_toggle_button_movesuggestions),
+                    textStyle = KompaktTypography900.titleMedium,
+                    isSwitchedOn = uiState.isMoveSuggestionsOn,
+                    onSwitchToggle = { uiEvent(MoveSuggestionsSwitchToggled) }
+                )
+                PlayerColor(
+                    isWhiteSelected = uiState.isWhiteSelected,
+                    uiEvent = uiEvent
+                )
+                DifficultyLevel(
+                    difficultyLevelStep = uiState.difficultyLevelStep,
+                    difficultyLevelLabel = uiState.difficultyLevelLabel,
+                    uiEvent = uiEvent
+                )
+            }
             Spacer(modifier = Modifier.weight(1f))
             KompaktPrimaryButton(
                 modifier = Modifier
@@ -129,6 +136,43 @@ private fun OptionsMenuTopAppBar(uiEvent: (OptionsMenuUiEvent) -> Unit) {
         navigationIconResId = RCommonUi.drawable.arrow_left,
         onNavigationIconClick = { uiEvent(NavigationUpClicked) }
     )
+}
+
+@Composable
+private fun GameMode(
+    isTwoPlayerMode: Boolean,
+    uiEvent: (OptionsMenuUiEvent) -> Unit
+) {
+    Column(modifier = Modifier.padding(horizontal = 12.dp)) {
+        Text(
+            text = stringResource(id = RFrontitude.string.chess_optionsmenu_label_gamemode),
+            style = KompaktTypography900.titleMedium
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            KompaktSecondaryButton(
+                modifier = Modifier.weight(1f),
+                text = stringResource(id = RFrontitude.string.chess_optionsmenu_button_oneplayer),
+                attributes = KompaktButtonAttributes.DynamicButton(
+                    borderStrokeWidth = if (!isTwoPlayerMode) 4.dp else 2.dp
+                ),
+                onClick = { uiEvent(GameModeSelected(isTwoPlayerMode = false)) }
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            KompaktSecondaryButton(
+                modifier = Modifier.weight(1f),
+                text = stringResource(id = RFrontitude.string.chess_optionsmenu_button_twoplayer),
+                attributes = KompaktButtonAttributes.DynamicButton(
+                    borderStrokeWidth = if (isTwoPlayerMode) 4.dp else 2.dp
+                ),
+                onClick = { uiEvent(GameModeSelected(isTwoPlayerMode = true)) }
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+    }
 }
 
 @Composable
@@ -219,6 +263,17 @@ private fun OptionsMenuScreenPreview() {
                     args = arrayOf(DifficultyLevel(1).elo())
                 )
             ),
+            uiEvent = {}
+        )
+    }
+}
+
+@KompaktPreview
+@Composable
+private fun OptionsMenuScreenTwoPlayerPreview() {
+    KompaktTheme {
+        OptionsMenuScreen(
+            uiState = OptionsMenuUiState(isTwoPlayerMode = true),
             uiEvent = {}
         )
     }

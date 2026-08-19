@@ -9,7 +9,8 @@ import kotlinx.serialization.Serializable
 data class OptionsMenuRoute(
     val isMoveSuggestionsOn: Boolean,
     val isPlayerWhite: Boolean,
-    val difficultyLevel: Int
+    val difficultyLevel: Int,
+    val isTwoPlayerMode: Boolean = false
 ) : Route {
     companion object {
         fun from(savedStateHandle: SavedStateHandle) =

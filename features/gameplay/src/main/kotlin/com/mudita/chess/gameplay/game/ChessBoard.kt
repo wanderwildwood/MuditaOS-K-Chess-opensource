@@ -17,6 +17,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.update
 import logcat.logcat
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 
 @Suppress("TooManyFunctions")
 internal class ChessBoard(
@@ -26,6 +28,24 @@ internal class ChessBoard(
 
     private val squares = squaresFromTopLeftToBottomRight(topParticipantSide)
     private val board = Board()
+
+    /**
+     * chesslib's [Board] is not thread-safe, and this instance is shared by every participant plus
+     * the game loop in [Game], all of which run on the multi-threaded IO dispatcher. In local
+     * 2-player mode a single square click fans out to *two* PlayerParticipants, so one participant
+     * can be inside [Board.doMove] while the other is reading [sideToMove] -- which transitively
+     * runs full legal-move generation over the same mutable bitboards.
+     *
+     * When a read observes a half-applied move it can see a from-square that is already empty,
+     * and chesslib's `Board.isMoveLegal` dereferences `Piece.NONE.getPieceType()` (which is null)
+     * without a guard when `fullValidation` is false -- crashing the app with a
+     * `MoveGeneratorException` wrapping an NPE.
+     *
+     * Every access to [board] and to the mutable state below is therefore serialized through this
+     * lock. It is reentrant so that [update] blocks can freely call the other members.
+     */
+    private val lock = ReentrantLock()
+
     private var highlighted: Set<Square> = emptySet()
 
     private var updating = false
@@ -46,53 +66,66 @@ internal class ChessBoard(
         get() = _state.value
 
     val sideToMove: Side
-        get() = if (isEndgame || !isLastMoveCompleted()) board.sideToMove.flip() else board.sideToMove
+        get() = lock.withLock {
+            if (isEndgame || !isLastMoveCompleted()) board.sideToMove.flip() else board.sideToMove
+        }
 
     val moves: List<Move>
         get() = movesBackup
             .map { it.move }
 
     val movesBackup: List<MoveBackup>
-        get() = when (isLastMoveConfirmed) {
-            true -> board.backup
-            false -> board.backup.dropLast(1)
+        get() = lock.withLock {
+            when (isLastMoveConfirmed) {
+                true -> board.backup.toList()
+                false -> board.backup.dropLast(1)
+            }
         }
 
     val context: GameContext
-        get() = board.context
+        get() = lock.withLock { board.context }
 
     val isEndgame: Boolean
-        get() = isMate || isDraw
+        get() = lock.withLock { isMate || isDraw }
 
     val isMate: Boolean
-        get() = isLastMoveConfirmed && board.isMated
+        get() = lock.withLock { isLastMoveConfirmed && board.isMated }
 
     val isDraw: Boolean
-        get() = isLastMoveConfirmed && board.isDraw
+        get() = lock.withLock { isLastMoveConfirmed && board.isDraw }
 
-    fun getPiece(square: Square): Piece = when (isPiecesPositionReady) {
-        true -> board.getPiece(square)
-        false -> Piece.NONE
+    fun getPiece(square: Square): Piece = lock.withLock {
+        when (isPiecesPositionReady) {
+            true -> board.getPiece(square)
+            false -> Piece.NONE
+        }
     }
 
     fun getLegalMoves(
         square: Square
-    ): List<Move> = when (isPiecesPositionReady) {
-        true -> board.legalMoves().filter { it.from == square }
-        false -> emptyList()
+    ): List<Move> = lock.withLock {
+        when (isPiecesPositionReady) {
+            true -> board.legalMoves().filter { it.from == square }
+            false -> emptyList()
+        }
     }
 
-    fun <R> update(block: ChessBoard.() -> R): R {
+    fun <R> update(block: ChessBoard.() -> R): R = lock.withLock {
         updating = true
-        val result = block(this)
-        rebuildState()
-        updating = false
-        return result
+        try {
+            val result = block(this)
+            rebuildState()
+            result
+        } finally {
+            // Without the finally, a throwing block would leave `updating` stuck true and
+            // silently suppress every later rebuildState() call.
+            updating = false
+        }
     }
 
     fun setHighlighted(square: Square) = setHighlighted(setOf(square))
 
-    fun setHighlighted(squares: Set<Square>) {
+    fun setHighlighted(squares: Set<Square>) = lock.withLock {
         highlighted = squares
         if (!updating) rebuildState()
     }
@@ -100,24 +133,24 @@ internal class ChessBoard(
     fun clearHighlighted() =
         setHighlighted(emptySet())
 
-    fun setPromotionManualConfirmationRequired() {
+    fun setPromotionManualConfirmationRequired() = lock.withLock {
         isPromotionManualConfirmationRequired = true
         if (!updating) rebuildState()
     }
 
-    fun clearPromotionManualConfirmationRequired() {
+    fun clearPromotionManualConfirmationRequired() = lock.withLock {
         isPromotionManualConfirmationRequired = false
         if (!updating) rebuildState()
     }
 
-    fun doUnconfirmedMove(move: Move, isManualConfirmationRequired: Boolean = false) {
+    fun doUnconfirmedMove(move: Move, isManualConfirmationRequired: Boolean = false) = lock.withLock {
         board.doMove(move)
         isLastMoveConfirmed = false
         isLastMoveManualConfirmationRequired = isManualConfirmationRequired
         if (!updating) rebuildState()
     }
 
-    fun undoUnconfirmedMove() {
+    fun undoUnconfirmedMove() = lock.withLock {
         check(!isLastMoveConfirmed) {
             "There is no unconfirmed move to undo"
         }
@@ -127,7 +160,7 @@ internal class ChessBoard(
         if (!updating) rebuildState()
     }
 
-    fun confirmMove(): MoveResult {
+    fun confirmMove(): MoveResult = lock.withLock {
         check(!isLastMoveConfirmed) {
             "There is no unconfirmed move to confirm"
         }
@@ -135,38 +168,40 @@ internal class ChessBoard(
         isLastMoveManualConfirmationRequired = false
         checkInfo = evaluateCheckInfo(checkAcknowledgeRequired = true)
         if (!updating) rebuildState()
-        return MoveResult(
+        MoveResult(
             opponentInCheck = checkInfo != null
         )
     }
 
-    fun clearCheckAcknowledgeRequired() {
+    fun clearCheckAcknowledgeRequired() = lock.withLock {
         checkInfo = checkInfo?.copy(acknowledgeRequired = false)
         if (!updating) rebuildState()
     }
 
     fun undoRound() {
-        if (moves.isEmpty()) {
-            logcat { "There is no move to undo" }
-            return
-        }
+        lock.withLock {
+            if (moves.isEmpty()) {
+                logcat { "There is no move to undo" }
+                return
+            }
 
-        if (!isLastMoveConfirmed) {
-            undoUnconfirmedMove()
-        }
-        repeat(moves.size.coerceAtMost(COMPLETE_ROUND_MOVES_COUNT)) {
-            board.undoMove()
-        }
-        checkInfo = evaluateCheckInfo(checkAcknowledgeRequired = false)
+            if (!isLastMoveConfirmed) {
+                undoUnconfirmedMove()
+            }
+            repeat(moves.size.coerceAtMost(COMPLETE_ROUND_MOVES_COUNT)) {
+                board.undoMove()
+            }
+            checkInfo = evaluateCheckInfo(checkAcknowledgeRequired = false)
 
-        if (!updating) rebuildState()
+            if (!updating) rebuildState()
+        }
     }
 
     fun states(): Flow<ChessBoardState> {
         return _state.asSharedFlow()
     }
 
-    fun loadMoves(moves: List<String>) {
+    fun loadMoves(moves: List<String>) = lock.withLock {
         generateSequence(WHITE, Side::flip)
             .zip(moves.asSequence())
             .map { (side, moveLAN) -> Move(moveLAN, side) }
@@ -177,7 +212,7 @@ internal class ChessBoard(
     }
 
     @VisibleForTesting
-    fun loadFen(fen: String) {
+    fun loadFen(fen: String) = lock.withLock {
         board.loadFromFen(fen)
         rebuildState()
     }

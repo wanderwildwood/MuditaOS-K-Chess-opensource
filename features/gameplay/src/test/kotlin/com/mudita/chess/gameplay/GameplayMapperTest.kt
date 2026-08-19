@@ -280,6 +280,20 @@ internal class GameplayMapperTest {
     }
 
     @Test
+    fun `toGameplayDialogUi when game status is stopped in two player mode maps to game menu dialog ui with two player mode`() {
+        val result = tested.toGameplayDialogUi(
+            STOPPED,
+            mockk(),
+            isMoveSuggestionsOn = true,
+            isPromotionManualConfirmationRequired = false,
+            checkInfo = null,
+            isTwoPlayerMode = true
+        )
+
+        assertThat(result).isEqualTo(GameMenuDialogUi(isMoveSuggestionsOn = true, isTwoPlayerMode = true))
+    }
+
+    @Test
     fun `toGameplayDialogUi when promotion confirmation is required maps to pawn promotion dialog ui for with side`() {
         val result = tested.toGameplayDialogUi(
             STARTED,

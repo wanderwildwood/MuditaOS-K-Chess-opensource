@@ -23,6 +23,9 @@
     <string name="chess_gameplay_notification_check">Schach</string>
     <string name="chess_gameplay_topbar_button_confirmmove">Zug bestätigen</string>
     <string name="chess_listofmoves_screentitle_listofmoves">Zugliste</string>
+    <string name="chess_optionsmenu_button_oneplayer">1 Spieler</string>
+    <string name="chess_optionsmenu_button_twoplayer">2 Spieler</string>
+    <string name="chess_optionsmenu_label_gamemode">Spielmodus</string>
     <string name="chess_optionsmenu_button_play">Spielen</string>
     <string name="chess_optionsmenu_label_advanced">FORTGESCHRITTEN (%d ELO)</string>
     <string name="chess_optionsmenu_label_beginner">ANFÄNGER (%d ELO)</string>

@@ -23,6 +23,9 @@
     <string name="chess_gameplay_notification_check">Jaque</string>
     <string name="chess_gameplay_topbar_button_confirmmove">Confirmar</string>
     <string name="chess_listofmoves_screentitle_listofmoves">Lista de movimientos</string>
+    <string name="chess_optionsmenu_button_oneplayer">1 Jugador</string>
+    <string name="chess_optionsmenu_button_twoplayer">2 Jugadores</string>
+    <string name="chess_optionsmenu_label_gamemode">Modo de juego</string>
     <string name="chess_optionsmenu_button_play">Jugar</string>
     <string name="chess_optionsmenu_label_advanced">AVANZADO (%d ELO)</string>
     <string name="chess_optionsmenu_label_beginner">PRINCIPIANTE (%d ELO)</string>

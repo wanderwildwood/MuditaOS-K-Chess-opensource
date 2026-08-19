@@ -15,6 +15,7 @@ import com.mudita.chess.navigation.routes.OptionsMenuRoute
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.DifficultyLevelMinusIconClicked
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.DifficultyLevelPlusIconClicked
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.DifficultyLevelStepClicked
+import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.GameModeSelected
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.MoveSuggestionsSwitchToggled
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.NavigationUpClicked
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.PlayButtonClicked
@@ -25,6 +26,7 @@ import kotlinx.coroutines.launch
 import logcat.logcat
 
 internal data class OptionsMenuUiState(
+    val isTwoPlayerMode: Boolean = false,
     val isMoveSuggestionsOn: Boolean = true,
     val isWhiteSelected: Boolean = true,
     val difficultyLevelStep: Int = 1,
@@ -33,6 +35,7 @@ internal data class OptionsMenuUiState(
 
 internal sealed interface OptionsMenuUiEvent {
     data object NavigationUpClicked : OptionsMenuUiEvent
+    data class GameModeSelected(val isTwoPlayerMode: Boolean) : OptionsMenuUiEvent
     data object MoveSuggestionsSwitchToggled : OptionsMenuUiEvent
     data class PlayerColorSelected(val isWhiteSelected: Boolean) : OptionsMenuUiEvent
     data object DifficultyLevelMinusIconClicked : OptionsMenuUiEvent
@@ -52,6 +55,7 @@ internal class OptionsMenuViewModel(
     fun handleUiEvent(uiEvent: OptionsMenuUiEvent) {
         when (uiEvent) {
             is NavigationUpClicked -> onNavigationUpClicked()
+            is GameModeSelected -> onGameModeSelected(uiEvent)
             is MoveSuggestionsSwitchToggled -> onMoveSuggestionsSwitchToggled()
             is PlayerColorSelected -> onPlayerColorSelected(uiEvent)
             is DifficultyLevelMinusIconClicked -> onDifficultyLevelMinusIconClicked()
@@ -65,6 +69,11 @@ internal class OptionsMenuViewModel(
     private fun onNavigationUpClicked() = viewModelScope.launch {
         emitNavAction(NavigateUp())
     }
+
+    private fun onGameModeSelected(uiEvent: GameModeSelected) =
+        updateState {
+            copy(isTwoPlayerMode = uiEvent.isTwoPlayerMode)
+        }
 
     private fun onMoveSuggestionsSwitchToggled() =
         updateState {
@@ -111,7 +120,14 @@ internal class OptionsMenuViewModel(
     }
 
     private fun onNavigateToGame() = viewModelScope.launch {
-        emitNavAction(NavigateTo(GameplayRoute(isPlayerWhite = state.isWhiteSelected)))
+        emitNavAction(
+            NavigateTo(
+                GameplayRoute(
+                    isPlayerWhite = state.isWhiteSelected,
+                    isTwoPlayerMode = state.isTwoPlayerMode
+                )
+            )
+        )
     }
 
     private fun onSaveGameState() = viewModelScope.launch {
@@ -119,7 +135,8 @@ internal class OptionsMenuViewModel(
             GameOptions(
                 isMoveSuggestionsOn = state.isMoveSuggestionsOn,
                 isPlayerWhite = state.isWhiteSelected,
-                difficultyLevel = DifficultyLevel(state.difficultyLevelStep)
+                difficultyLevel = DifficultyLevel(state.difficultyLevelStep),
+                isTwoPlayerMode = state.isTwoPlayerMode
             )
         ).onFailure { logcat { "Failed to save game options" } }
     }
@@ -130,6 +147,7 @@ private fun initialState(
     mapper: OptionsMenuMapper
 ): OptionsMenuUiState =
     OptionsMenuUiState(
+        isTwoPlayerMode = route.isTwoPlayerMode,
         isMoveSuggestionsOn = route.isMoveSuggestionsOn,
         isWhiteSelected = route.isPlayerWhite,
         difficultyLevelStep = route.difficultyLevel,

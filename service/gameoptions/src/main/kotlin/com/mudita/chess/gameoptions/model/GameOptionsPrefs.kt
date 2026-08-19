@@ -6,5 +6,6 @@ import kotlinx.serialization.Serializable
 internal data class GameOptionsPrefs(
     val isMoveSuggestionsOn: Boolean,
     val isPlayerWhite: Boolean,
-    val difficultyLevel: Int
+    val difficultyLevel: Int,
+    val isTwoPlayerMode: Boolean = false
 )

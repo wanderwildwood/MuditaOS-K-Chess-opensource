@@ -8,7 +8,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class GameplayRoute(
     val isPlayerWhite: Boolean,
-    val isNewGame: Boolean = true
+    val isNewGame: Boolean = true,
+    val isTwoPlayerMode: Boolean = false
 ) : Route {
     companion object {
         fun from(savedStateHandle: SavedStateHandle) =
