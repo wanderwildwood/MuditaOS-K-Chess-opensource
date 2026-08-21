@@ -27,6 +27,9 @@ import com.github.bhlangonijr.chesslib.Side.BLACK
 import com.mudita.chess.gameplay.GameplayUiEvent.AppMinimized
 import com.mudita.chess.gameplay.GameplayUiEvent.BackButtonClicked
 import com.mudita.chess.gameplay.GameplayUiEvent.ConfirmMoveButtonClicked
+import com.mudita.chess.gameplay.GameplayUiEvent.EndgameMainMenuButtonClicked
+import com.mudita.chess.gameplay.GameplayUiEvent.EndgameNewGameButtonClicked
+import com.mudita.chess.gameplay.GameplayUiEvent.EndgameUndoButtonClicked
 import com.mudita.chess.gameplay.GameplayUiEvent.GameMovesButtonClicked
 import com.mudita.chess.gameplay.GameplayUiEvent.PauseButtonClicked
 import com.mudita.chess.gameplay.GameplayUiEvent.ScreenStarted
@@ -34,6 +37,8 @@ import com.mudita.chess.gameplay.GameplayUiEvent.SquareClicked
 import com.mudita.chess.gameplay.GameplayUiEvent.UndoMoveButtonClicked
 import com.mudita.chess.gameplay.design.Board
 import com.mudita.chess.gameplay.design.BottomMenu
+import com.mudita.chess.gameplay.design.EndgameMenu
+import com.mudita.chess.gameplay.design.EndgameResult
 import com.mudita.chess.gameplay.design.GameplayDialog
 import com.mudita.chess.gameplay.design.Participant
 import com.mudita.chess.gameplay.game.ChessBoard
@@ -116,24 +121,48 @@ private fun GameplayScreen(
                     board = uiState.board,
                     onSquareClick = { uiEvent(SquareClicked(position = it)) }
                 )
-                Participant(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 12.dp, horizontal = 16.dp),
-                    participant = uiState.bottomParticipant
-                )
-                BottomMenu(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    onPauseButtonClick = { uiEvent(PauseButtonClicked) },
-                    isConfirmMoveButtonVisible = uiState.isConfirmMoveButtonVisible,
-                    onConfirmMoveButtonClicked = { uiEvent(ConfirmMoveButtonClicked) },
-                    isGameMovesButtonVisible = uiState.isGameMovesButtonVisible,
-                    onGameMovesButtonClicked = { uiEvent(GameMovesButtonClicked) },
-                    isUndoMoveButtonVisible = uiState.isUndoMoveButtonVisible,
-                    onUndoMoveButtonClicked = { uiEvent(UndoMoveButtonClicked) }
-                )
+                val endgame = uiState.endgame
+                if (endgame != null) {
+                    EndgameResult(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 12.dp, horizontal = 16.dp),
+                        endgame = endgame
+                    )
+                } else {
+                    Participant(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 12.dp, horizontal = 16.dp),
+                        participant = uiState.bottomParticipant
+                    )
+                }
+                // A finished game replaces the controls rather than covering the board with a
+                // card, so the move that ended it stays visible while you decide what to do.
+                if (endgame != null) {
+                    EndgameMenu(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        isUndoButtonVisible = uiState.isUndoMoveButtonVisible,
+                        onUndoButtonClicked = { uiEvent(EndgameUndoButtonClicked) },
+                        onNewGameButtonClicked = { uiEvent(EndgameNewGameButtonClicked) },
+                        onMainMenuButtonClicked = { uiEvent(EndgameMainMenuButtonClicked) }
+                    )
+                } else {
+                    BottomMenu(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        onPauseButtonClick = { uiEvent(PauseButtonClicked) },
+                        isConfirmMoveButtonVisible = uiState.isConfirmMoveButtonVisible,
+                        onConfirmMoveButtonClicked = { uiEvent(ConfirmMoveButtonClicked) },
+                        isGameMovesButtonVisible = uiState.isGameMovesButtonVisible,
+                        onGameMovesButtonClicked = { uiEvent(GameMovesButtonClicked) },
+                        isUndoMoveButtonVisible = uiState.isUndoMoveButtonVisible,
+                        onUndoMoveButtonClicked = { uiEvent(UndoMoveButtonClicked) }
+                    )
+                }
             }
             if (!boardBounds.isEmpty) {
                 uiState.dialog?.let {

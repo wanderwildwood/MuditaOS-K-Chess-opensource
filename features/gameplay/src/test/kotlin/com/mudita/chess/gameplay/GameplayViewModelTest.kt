@@ -49,6 +49,7 @@ import com.mudita.chess.gameplay.GameplayUiEvent.ConfirmPawnPromotionClicked
 import com.mudita.chess.gameplay.GameplayUiEvent.DialogDismissRequested
 import com.mudita.chess.gameplay.GameplayUiEvent.EndgameMainMenuButtonClicked
 import com.mudita.chess.gameplay.GameplayUiEvent.EndgameNewGameButtonClicked
+import com.mudita.chess.gameplay.GameplayUiEvent.EndgameUndoButtonClicked
 import com.mudita.chess.gameplay.GameplayUiEvent.ExitButtonClicked
 import com.mudita.chess.gameplay.GameplayUiEvent.GameMovesButtonClicked
 import com.mudita.chess.gameplay.GameplayUiEvent.MoveSuggestionsSwitchToggled
@@ -73,12 +74,11 @@ import com.mudita.chess.gameplay.fixtures.get
 import com.mudita.chess.gameplay.fixtures.neverReturningCoroutine
 import com.mudita.chess.gameplay.fixtures.replace
 import com.mudita.chess.gameplay.model.GameplayDialogType.GAME_MENU
+import com.mudita.chess.gameplay.model.EndgameUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi
-import com.mudita.chess.gameplay.model.GameplayDialogUi.DrawDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.GameMenuDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.LoadingDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.PawnPromotionDialogUi
-import com.mudita.chess.gameplay.model.GameplayDialogUi.VictoryDialogUi
 import com.mudita.chess.gameplay.model.ParticipantUi
 import com.mudita.chess.gameplay.model.SquareUi
 import com.mudita.chess.games.usecase.GetCurrentGameMovesUseCase
@@ -595,13 +595,13 @@ internal class GameplayViewModelTest {
     @MethodSource("provideInitEndgameParameters")
     fun `on init shows endgame when return to completed game which was started before`(
         fen: String,
-        dialog: GameplayDialogUi
+        endgame: EndgameUi
     ) = runTest {
         every { args.value } returns GameplayRoute(isPlayerWhite = true)
         every { savedStateHandle.get<Boolean>(KEY_GAME_STARTED_BEFORE) } returns true
         testGame.startingFen = fen
 
-        assertThat(tested.state.dialog).isEqualTo(dialog)
+        assertThat(tested.state.endgame).isEqualTo(endgame)
     }
 
     @Test
@@ -1067,7 +1067,7 @@ internal class GameplayViewModelTest {
         fen: String,
         isPlayerWhite: Boolean,
         type: StatisticsType,
-        dialog: GameplayDialogUi
+        endgame: EndgameUi
     ) = runTest {
         every { args.value } returns GameplayRoute(isPlayerWhite = isPlayerWhite)
         val gameOptions = GameOptions(
@@ -1079,7 +1079,7 @@ internal class GameplayViewModelTest {
         testGame.startingFen = fen
 
         tested.states.test {
-            assertThat(awaitItem().dialog).isEqualTo(dialog)
+            assertThat(awaitItem().endgame).isEqualTo(endgame)
         }
 
         tested.handleUiEvent(EndgameNewGameButtonClicked)
@@ -1091,13 +1091,39 @@ internal class GameplayViewModelTest {
         coVerify { removeCurrentGameUseCase() }
     }
 
+    @Test
+    fun `EndgameUndoButtonClicked takes the game back out of its endgame`() = runTest {
+        every { args.value } returns GameplayRoute(isPlayerWhite = true)
+        // Moves actually played, rather than a position loaded from a FEN: undo needs history
+        // behind it, and this repetition reaches a draw with twelve moves to take back.
+        testGame.playedMoves = listOf(
+            Move(A2, A4), Move(A7, A6),
+            Move(A1, A2), Move(A8, A7),
+            Move(A2, A1), Move(A7, A8),
+            Move(A1, A2), Move(A8, A7),
+            Move(A2, A1), Move(A7, A8),
+            Move(A1, A2), Move(A8, A7)
+        )
+
+        assertThat(tested.state.endgame)
+            .isEqualTo(EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_itsadraw))
+
+        tested.handleUiEvent(EndgameUndoButtonClicked)
+
+        // The strip goes because the game is genuinely running again, not because the UI was
+        // dismissed - and a game you undid is not a game you lost, so nothing is recorded.
+        assertThat(tested.state.endgame).isNull()
+        coVerify(exactly = 0) { addToGameStatisticsUseCase(any(), any()) }
+        coVerify(exactly = 0) { removeCurrentGameUseCase() }
+    }
+
     @ParameterizedTest
     @MethodSource("provideEndgameParameters")
     fun `EndgameMainMenuButtonClicked adds game results to statistics and navigates to main`(
         fen: String,
         isPlayerWhite: Boolean,
         type: StatisticsType,
-        dialog: GameplayDialogUi
+        endgame: EndgameUi
     ) = runTest {
         every { args.value } returns GameplayRoute(isPlayerWhite = isPlayerWhite)
         val gameOptions = GameOptions(
@@ -1109,7 +1135,7 @@ internal class GameplayViewModelTest {
         testGame.startingFen = fen
 
         tested.states.test {
-            assertThat(awaitItem().dialog).isEqualTo(dialog)
+            assertThat(awaitItem().endgame).isEqualTo(endgame)
         }
 
         tested.handleUiEvent(EndgameMainMenuButtonClicked)
@@ -1142,7 +1168,7 @@ internal class GameplayViewModelTest {
             Move(A1, A2), Move(A8, A7)
         )
 
-        assertThat(tested.state.dialog).isEqualTo(DrawDialogUi)
+        assertThat(tested.state.endgame).isEqualTo(EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_itsadraw))
 
         tested.handleUiEvent(EndgameNewGameButtonClicked)
 
@@ -1174,7 +1200,7 @@ internal class GameplayViewModelTest {
             Move(A1, A2), Move(A8, A7)
         )
 
-        assertThat(tested.state.dialog).isEqualTo(DrawDialogUi)
+        assertThat(tested.state.endgame).isEqualTo(EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_itsadraw))
 
         tested.handleUiEvent(EndgameMainMenuButtonClicked)
 
@@ -1381,9 +1407,9 @@ internal class GameplayViewModelTest {
         @JvmStatic
         fun provideInitEndgameParameters(): Stream<Arguments> =
             Stream.of(
-                Arguments.of(WHITE_PARTICIPANT_WON_FEN, VictoryDialogUi(RFrontitude.string.chess_endingscreen_dialog_h1_whitewins)),
-                Arguments.of(BLACK_PARTICIPANT_WON_FEN, VictoryDialogUi(RFrontitude.string.chess_endingscreen_dialog_h1_blackwins)),
-                Arguments.of(STALEMATE_FEN, DrawDialogUi),
+                Arguments.of(WHITE_PARTICIPANT_WON_FEN, EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_whitewins)),
+                Arguments.of(BLACK_PARTICIPANT_WON_FEN, EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_blackwins)),
+                Arguments.of(STALEMATE_FEN, EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_itsadraw)),
             )
 
         @JvmStatic
@@ -1393,32 +1419,32 @@ internal class GameplayViewModelTest {
                     WHITE_PARTICIPANT_WON_FEN,
                     true,
                     WON,
-                    VictoryDialogUi(RFrontitude.string.chess_endingscreen_dialog_h1_whitewins)
+                    EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_whitewins)
                 ),
                 Arguments.of(
                     WHITE_PARTICIPANT_WON_FEN,
                     false,
                     LOST,
-                    VictoryDialogUi(RFrontitude.string.chess_endingscreen_dialog_h1_whitewins)
+                    EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_whitewins)
                 ),
                 Arguments.of(
                     BLACK_PARTICIPANT_WON_FEN,
                     true,
                     LOST,
-                    VictoryDialogUi(RFrontitude.string.chess_endingscreen_dialog_h1_blackwins)
+                    EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_blackwins)
                 ),
                 Arguments.of(
                     BLACK_PARTICIPANT_WON_FEN,
                     false,
                     WON,
-                    VictoryDialogUi(RFrontitude.string.chess_endingscreen_dialog_h1_blackwins)
+                    EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_blackwins)
                 ),
-                Arguments.of(STALEMATE_FEN, true, DRAW, DrawDialogUi),
-                Arguments.of(STALEMATE_FEN, false, DRAW, DrawDialogUi),
-                Arguments.of(FIFTY_FIFTY_RULE_DRAW_FEN, true, DRAW, DrawDialogUi),
-                Arguments.of(FIFTY_FIFTY_RULE_DRAW_FEN, false, DRAW, DrawDialogUi),
-                Arguments.of(INSUFFICIENT_MATERIAL_DRAW_FEN, true, DRAW, DrawDialogUi),
-                Arguments.of(INSUFFICIENT_MATERIAL_DRAW_FEN, false, DRAW, DrawDialogUi)
+                Arguments.of(STALEMATE_FEN, true, DRAW, EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_itsadraw)),
+                Arguments.of(STALEMATE_FEN, false, DRAW, EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_itsadraw)),
+                Arguments.of(FIFTY_FIFTY_RULE_DRAW_FEN, true, DRAW, EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_itsadraw)),
+                Arguments.of(FIFTY_FIFTY_RULE_DRAW_FEN, false, DRAW, EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_itsadraw)),
+                Arguments.of(INSUFFICIENT_MATERIAL_DRAW_FEN, true, DRAW, EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_itsadraw)),
+                Arguments.of(INSUFFICIENT_MATERIAL_DRAW_FEN, false, DRAW, EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_itsadraw))
             )
     }
 }

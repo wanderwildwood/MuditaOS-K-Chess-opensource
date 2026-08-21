@@ -17,6 +17,7 @@ import com.mudita.chess.gameplay.game.Game
 import com.mudita.chess.gameplay.game.GameFactory
 import com.mudita.chess.gameplay.game.GameStatus
 import com.mudita.chess.gameplay.model.GameplayDialogType
+import com.mudita.chess.gameplay.model.EndgameUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.GameMenuDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.LoadingDialogUi
@@ -66,7 +67,8 @@ internal data class GameplayUiState(
     val isConfirmMoveButtonVisible: Boolean,
     val isGameMovesButtonVisible: Boolean = false,
     val isUndoMoveButtonVisible: Boolean = false,
-    val dialog: GameplayDialogUi? = null
+    val dialog: GameplayDialogUi? = null,
+    val endgame: EndgameUi? = null
 )
 
 internal sealed interface GameplayUiEvent {
@@ -80,6 +82,7 @@ internal sealed interface GameplayUiEvent {
     data object ExitButtonClicked : GameplayUiEvent
     data object EndgameNewGameButtonClicked : GameplayUiEvent
     data object EndgameMainMenuButtonClicked : GameplayUiEvent
+    data object EndgameUndoButtonClicked : GameplayUiEvent
     data class MoveSuggestionsSwitchToggled(val on: Boolean) : GameplayUiEvent
     data class SquareClicked(val position: PositionUi) : GameplayUiEvent
     data class ConfirmPawnPromotionClicked(val piece: PieceUi) : GameplayUiEvent
@@ -193,6 +196,7 @@ internal class GameplayViewModel(
             checkInfo = boardState.checkInfo,
             isTwoPlayerMode = isTwoPlayerMode
         )
+        val endgame = mapper.toEndgameUi(gameStatus)
         val isCompleteRoundMovesCountReached = boardState.moves.size >= COMPLETE_ROUND_MOVES_COUNT
         // Only relevant in vs-computer mode: true when the computer plays White and has already made
         // the opening move, so Undo should be offered even before a full round has been completed.
@@ -208,7 +212,8 @@ internal class GameplayViewModel(
             isConfirmMoveButtonVisible = boardState.isMoveManualConfirmationRequired,
             isGameMovesButtonVisible = isCompleteRoundMovesCountReached,
             isUndoMoveButtonVisible = isCompleteRoundMovesCountReached || topSideMovedFirst,
-            dialog = dialog
+            dialog = dialog,
+            endgame = endgame
         )
     }
 
@@ -218,6 +223,7 @@ internal class GameplayViewModel(
         collectExitGameClicks()
         collectEndgameNewGameClicks()
         collectEndgameMainMenuClicks()
+        collectEndgameUndoClicks()
         collectMoveSuggestionsSwitchToggles()
         collectEvents(
             merge(uiEvents.resumeClicks, uiEvents.cancelGameMenuClicks)
@@ -264,6 +270,12 @@ internal class GameplayViewModel(
         addGameToStatistics()
         removeCurrentGameUseCase()
         navigateToMain()
+    }
+
+    // Undo from a finished game. Nothing is written to statistics and the current game is left
+    // in place: the game is not over any more, so recording it as a loss would be a lie.
+    private fun collectEndgameUndoClicks() = collectEvents(uiEvents.endgameUndoClicks) {
+        game.undoRoundAndResume()
     }
 
     private fun collectMoveSuggestionsSwitchToggles() = collectEvents(uiEvents.moveSuggestionsSwitchToggles) {

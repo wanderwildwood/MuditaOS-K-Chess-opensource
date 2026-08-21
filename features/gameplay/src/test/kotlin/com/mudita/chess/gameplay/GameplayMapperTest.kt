@@ -75,11 +75,10 @@ import com.mudita.chess.gameplay.game.GameStatus.STARTED
 import com.mudita.chess.gameplay.game.GameStatus.STOPPED
 import com.mudita.chess.gameplay.game.GameStatus.WHITE_WON
 import com.mudita.chess.gameplay.game.LocatedPiece
+import com.mudita.chess.gameplay.model.EndgameUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.CheckInfoDialogUi
-import com.mudita.chess.gameplay.model.GameplayDialogUi.DrawDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.GameMenuDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.PawnPromotionDialogUi
-import com.mudita.chess.gameplay.model.GameplayDialogUi.VictoryDialogUi
 import com.mudita.chess.gameplay.model.ParticipantUi
 import com.mudita.chess.navigation.routes.MoveArg
 import com.mudita.chess.ui.model.PieceTypeUi.BISHOP
@@ -381,42 +380,24 @@ internal class GameplayMapperTest {
     }
 
     @Test
-    fun `toGameplayDialogUi when game status is white won maps to victory dialog ui for white participant`() {
-        val result = tested.toGameplayDialogUi(
-            status = WHITE_WON,
-            sideToMove = mockk(),
-            isMoveSuggestionsOn = true,
-            isPromotionManualConfirmationRequired = false,
-            checkInfo = null
-        )
+    fun `toEndgameUi when game status is white won maps to a white win result`() {
+        val result = tested.toEndgameUi(status = WHITE_WON)
 
-        assertThat(result).isEqualTo(VictoryDialogUi(RFrontitude.string.chess_endingscreen_dialog_h1_whitewins))
+        assertThat(result).isEqualTo(EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_whitewins))
     }
 
     @Test
-    fun `toGameplayDialogUi when game status is black won maps to victory dialog ui for black participant`() {
-        val result = tested.toGameplayDialogUi(
-            status = BLACK_WON,
-            sideToMove = mockk(),
-            isMoveSuggestionsOn = true,
-            isPromotionManualConfirmationRequired = false,
-            checkInfo = null
-        )
+    fun `toEndgameUi when game status is black won maps to a black win result`() {
+        val result = tested.toEndgameUi(status = BLACK_WON)
 
-        assertThat(result).isEqualTo(VictoryDialogUi(RFrontitude.string.chess_endingscreen_dialog_h1_blackwins))
+        assertThat(result).isEqualTo(EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_blackwins))
     }
 
     @Test
-    fun `toGameplayDialogUi when game status is draw maps to draw dialog ui`() {
-        val result = tested.toGameplayDialogUi(
-            status = DRAW,
-            sideToMove = mockk(),
-            isMoveSuggestionsOn = true,
-            isPromotionManualConfirmationRequired = false,
-            checkInfo = null
-        )
+    fun `toEndgameUi when game status is draw maps to a draw result`() {
+        val result = tested.toEndgameUi(status = DRAW)
 
-        assertThat(result).isEqualTo(DrawDialogUi)
+        assertThat(result).isEqualTo(EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_itsadraw))
     }
 
     @Test

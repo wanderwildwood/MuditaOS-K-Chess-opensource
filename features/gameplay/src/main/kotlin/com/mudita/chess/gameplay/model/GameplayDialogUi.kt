@@ -1,11 +1,8 @@
 package com.mudita.chess.gameplay.model
 
-import androidx.annotation.StringRes
 import com.mudita.chess.gameplay.model.DialogAlignment.BOARD_CENTER
 import com.mudita.chess.gameplay.model.DialogAlignment.BOTTOM
 import com.mudita.chess.gameplay.model.GameplayDialogType.CHECK_INFO
-import com.mudita.chess.gameplay.model.GameplayDialogType.ENDGAME_DRAW
-import com.mudita.chess.gameplay.model.GameplayDialogType.ENDGAME_VICTORY
 import com.mudita.chess.gameplay.model.GameplayDialogType.GAME_MENU
 import com.mudita.chess.gameplay.model.GameplayDialogType.LOADING
 import com.mudita.chess.gameplay.model.GameplayDialogType.PAWN_PROMOTION
@@ -20,9 +17,7 @@ internal enum class GameplayDialogType {
     LOADING,
     GAME_MENU,
     PAWN_PROMOTION,
-    CHECK_INFO,
-    ENDGAME_VICTORY,
-    ENDGAME_DRAW
+    CHECK_INFO
 }
 
 internal sealed class GameplayDialogUi(
@@ -44,10 +39,4 @@ internal sealed class GameplayDialogUi(
         val king: PieceUi,
         val attackedBy: List<PieceUi>
     ) : GameplayDialogUi(type = CHECK_INFO)
-
-    data class VictoryDialogUi(
-        @StringRes val titleResId: Int
-    ) : GameplayDialogUi(type = ENDGAME_VICTORY, alignment = BOTTOM)
-
-    data object DrawDialogUi : GameplayDialogUi(type = ENDGAME_DRAW, alignment = BOTTOM)
 }
