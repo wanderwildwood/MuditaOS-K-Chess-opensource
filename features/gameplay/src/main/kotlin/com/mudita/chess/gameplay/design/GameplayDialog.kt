@@ -4,12 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import com.mudita.chess.gameplay.GameplayUiEvent
 import com.mudita.chess.gameplay.GameplayUiEvent.ConfirmPawnPromotionClicked
 import com.mudita.chess.gameplay.GameplayUiEvent.DialogDismissRequested
-import com.mudita.chess.gameplay.GameplayUiEvent.EndgameMainMenuButtonClicked
-import com.mudita.chess.gameplay.GameplayUiEvent.EndgameNewGameButtonClicked
 import com.mudita.chess.gameplay.GameplayUiEvent.ExitButtonClicked
 import com.mudita.chess.gameplay.GameplayUiEvent.MoveSuggestionsSwitchToggled
 import com.mudita.chess.gameplay.GameplayUiEvent.NewGameButtonClicked
@@ -18,11 +15,9 @@ import com.mudita.chess.gameplay.model.DialogAlignment.BOARD_CENTER
 import com.mudita.chess.gameplay.model.DialogAlignment.BOTTOM
 import com.mudita.chess.gameplay.model.GameplayDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.CheckInfoDialogUi
-import com.mudita.chess.gameplay.model.GameplayDialogUi.DrawDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.GameMenuDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.LoadingDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.PawnPromotionDialogUi
-import com.mudita.chess.gameplay.model.GameplayDialogUi.VictoryDialogUi
 import com.mudita.chess.ui.KompaktPreview
 import com.mudita.chess.ui.R
 import com.mudita.chess.ui.compontent.DialogHost
@@ -30,10 +25,8 @@ import com.mudita.chess.ui.model.PieceTypeUi.BISHOP
 import com.mudita.chess.ui.model.PieceTypeUi.KNIGHT
 import com.mudita.chess.ui.model.PieceTypeUi.QUEEN
 import com.mudita.chess.ui.model.PieceTypeUi.ROOK
-import com.mudita.chess.ui.design.AppConfirmCard
 import com.mudita.chess.ui.design.AppTheme
 import com.mudita.chess.ui.model.PieceUi
-import com.mudita.chess.frontitude.R as RFrontitude
 
 @Composable
 internal fun GameplayDialog(
@@ -70,27 +63,6 @@ internal fun GameplayDialog(
                 attackedBy = dialog.attackedBy
             )
 
-            is VictoryDialogUi -> AppConfirmCard(
-                icon = R.drawable.ic_info,
-                title = stringResource(id = dialog.titleResId),
-                description = stringResource(id = RFrontitude.string.chess_endingscreen_dialog_body_letstestyourskills),
-                confirmText = stringResource(id = RFrontitude.string.chess_endingscreen_dialog_button_mainmenu),
-                cancelText = stringResource(id = RFrontitude.string.chess_endingscreen_dialog_button_newgame),
-                textAlignment = TextAlign.Center,
-                onConfirm = { uiEvent(EndgameMainMenuButtonClicked) },
-                onCancel = { uiEvent(EndgameNewGameButtonClicked) }
-            )
-
-            is DrawDialogUi -> AppConfirmCard(
-                icon = R.drawable.ic_info,
-                title = stringResource(id = RFrontitude.string.chess_endingscreen_dialog_h1_itsadraw),
-                description = stringResource(id = RFrontitude.string.chess_endingscreen_dialog_body_letstestyourskills),
-                confirmText = stringResource(id = RFrontitude.string.chess_endingscreen_dialog_button_mainmenu),
-                cancelText = stringResource(id = RFrontitude.string.chess_endingscreen_dialog_button_newgame),
-                textAlignment = TextAlign.Center,
-                onConfirm = { uiEvent(EndgameMainMenuButtonClicked) },
-                onCancel = { uiEvent(EndgameNewGameButtonClicked) }
-            )
         }
     }
 }
@@ -130,26 +102,6 @@ private fun PawnPromotionDialogUiPreview() = AppTheme {
                 PieceUi(type = KNIGHT, isWhite = true)
             )
         ),
-        uiEvent = {}
-    )
-}
-
-@KompaktPreview
-@Composable
-private fun VictoryDialogUiPreview() = AppTheme {
-    GameplayDialog(
-        boardBounds = Rect(0f, 0f, 0f, 0f),
-        dialog = VictoryDialogUi(RFrontitude.string.chess_endingscreen_dialog_h1_whitewins),
-        uiEvent = {}
-    )
-}
-
-@KompaktPreview
-@Composable
-private fun DrawDialogUiPreview() = AppTheme {
-    GameplayDialog(
-        boardBounds = Rect(0f, 0f, 0f, 0f),
-        dialog = DrawDialogUi,
         uiEvent = {}
     )
 }

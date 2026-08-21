@@ -73,6 +73,25 @@ internal class Game(
             false
         }
 
+    /**
+     * Take back the last round from a finished game and carry on playing.
+     *
+     * The game loop exits the moment the board reaches an endgame, which is why the ordinary
+     * undo button stops working once a game is decided: no participant is waiting for it any
+     * more. Undoing the round and starting a fresh loop puts the position back to before the
+     * losing move with the same side to move, which is the point of undo for someone studying a
+     * game rather than trying to win one.
+     */
+    suspend fun undoRoundAndResume(): Boolean =
+        if (status in setOf(WHITE_WON, BLACK_WON, DRAW)) {
+            withContext(ioDispatcher) { board.undoRound() }
+            gameJob = startGame()
+            setStatus(STARTED)
+            true
+        } else {
+            false
+        }
+
     suspend fun startIfPaused() {
         if (status == PAUSED) {
             gameJob = startGame()

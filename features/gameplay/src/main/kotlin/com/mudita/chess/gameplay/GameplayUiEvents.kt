@@ -7,6 +7,7 @@ import com.mudita.chess.gameplay.GameplayUiEvent.ConfirmPawnPromotionClicked
 import com.mudita.chess.gameplay.GameplayUiEvent.DialogDismissRequested
 import com.mudita.chess.gameplay.GameplayUiEvent.EndgameMainMenuButtonClicked
 import com.mudita.chess.gameplay.GameplayUiEvent.EndgameNewGameButtonClicked
+import com.mudita.chess.gameplay.GameplayUiEvent.EndgameUndoButtonClicked
 import com.mudita.chess.gameplay.GameplayUiEvent.ExitButtonClicked
 import com.mudita.chess.gameplay.GameplayUiEvent.GameMovesButtonClicked
 import com.mudita.chess.gameplay.GameplayUiEvent.MoveSuggestionsSwitchToggled
@@ -73,6 +74,9 @@ internal class GameplayUiEvents {
 
     val endgameMainMenuClicks = events
         .filterIsInstance<EndgameMainMenuButtonClicked>()
+
+    val endgameUndoClicks = events
+        .filterIsInstance<EndgameUndoButtonClicked>()
 
     val moveSuggestionsSwitchToggles = events
         .filterIsInstance<MoveSuggestionsSwitchToggled>()

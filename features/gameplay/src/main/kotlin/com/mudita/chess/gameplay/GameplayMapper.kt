@@ -9,7 +9,7 @@ import com.github.bhlangonijr.chesslib.Side.WHITE
 import com.github.bhlangonijr.chesslib.Square
 import com.mudita.chess.gameplay.GameplayMapper.DialogsMapping.createCheckInfoDialog
 import com.mudita.chess.gameplay.GameplayMapper.DialogsMapping.createPawnPromotionDialogFor
-import com.mudita.chess.gameplay.GameplayMapper.DialogsMapping.createVictoryDialogFor
+import com.mudita.chess.gameplay.GameplayMapper.DialogsMapping.createEndgameFor
 import com.mudita.chess.gameplay.GameplayMapper.PieceMapping.toDomain
 import com.mudita.chess.gameplay.GameplayMapper.PieceMapping.toUi
 import com.mudita.chess.gameplay.GameplayMapper.PieceTypeMapping.toDomain
@@ -25,12 +25,11 @@ import com.mudita.chess.gameplay.game.GameStatus.DRAW
 import com.mudita.chess.gameplay.game.GameStatus.STARTED
 import com.mudita.chess.gameplay.game.GameStatus.STOPPED
 import com.mudita.chess.gameplay.game.GameStatus.WHITE_WON
+import com.mudita.chess.gameplay.model.EndgameUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.CheckInfoDialogUi
-import com.mudita.chess.gameplay.model.GameplayDialogUi.DrawDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.GameMenuDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.PawnPromotionDialogUi
-import com.mudita.chess.gameplay.model.GameplayDialogUi.VictoryDialogUi
 import com.mudita.chess.gameplay.model.ParticipantUi
 import com.mudita.chess.gameplay.model.SquareUi
 import com.mudita.chess.navigation.routes.MoveArg
@@ -98,12 +97,6 @@ internal class GameplayMapper {
         when (status) {
             STOPPED -> GameMenuDialogUi(isMoveSuggestionsOn, isTwoPlayerMode)
 
-            WHITE_WON -> createVictoryDialogFor(side = WHITE)
-
-            BLACK_WON -> createVictoryDialogFor(side = BLACK)
-
-            DRAW -> DrawDialogUi
-
             STARTED -> when {
                 isPromotionManualConfirmationRequired ->
                     createPawnPromotionDialogFor(sideToMove)
@@ -116,6 +109,8 @@ internal class GameplayMapper {
 
             else -> null
         }
+
+    fun toEndgameUi(status: GameStatus): EndgameUi? = createEndgameFor(status)
 
     fun toSquare(positionUi: PositionUi) = positionUi.toDomain()
 
@@ -147,13 +142,11 @@ internal class GameplayMapper {
             return kingUi?.let { CheckInfoDialogUi(it, attackedBy) }
         }
 
-        fun createVictoryDialogFor(side: Side): VictoryDialogUi {
-            val titleResId = if (side == WHITE) {
-                RFrontitude.string.chess_endingscreen_dialog_h1_whitewins
-            } else {
-                RFrontitude.string.chess_endingscreen_dialog_h1_blackwins
-            }
-            return VictoryDialogUi(titleResId)
+        fun createEndgameFor(status: GameStatus): EndgameUi? = when (status) {
+            WHITE_WON -> EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_whitewins)
+            BLACK_WON -> EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_blackwins)
+            DRAW -> EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_itsadraw)
+            else -> null
         }
     }
 
