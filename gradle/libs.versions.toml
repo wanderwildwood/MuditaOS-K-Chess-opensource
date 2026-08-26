@@ -2,7 +2,7 @@
 android-compileSdk = "36"
 android-minSdk = "31"
 android-targetSdk = "31"
-app-version-versionName = "1.3.2"
+app-version-versionName = "1.3.3"
 app-version-appId = "com.wanderwildwood.chessplus"
 # Android/Kotlin
 android-gradle-plugin = "8.13.1"

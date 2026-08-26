@@ -2,11 +2,14 @@
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE.md)
 
-**A chess app for the Mudita Kompakt (e-ink Android phone) with a local two-player mode.**
-
 This is a personal fork of Mudita's own open-source [Kompakt Chess app](https://github.com/mudita/MuditaOS-K-Chess-opensource). It keeps everything the stock app does — play against the Stockfish engine, adjustable difficulty, move suggestions, game statistics — and adds one feature Mudita's version doesn't have:
 
 - **Local 2-player (pass-and-play) mode**: a toggle at the top of New Game options. Selecting it hides Move Suggestions, Difficulty, and Player Color (both in the New Game screen and the in-game pause menu), since none of those apply when two people are playing on the same board.
+
+It also fixes two things about how a game ends:
+
+- **The result no longer covers the board.** Checkmate and draw used to be announced over the position that caused them, which is the one thing you want to look at. The result now sits in the turn-indicator slot, leaving the final position visible.
+- **Undo works after the game is over**, so a checkmate or a draw can be taken back and play resumed, rather than the board being frozen the moment it ends.
 
 ## Why this exists as a separate app
 
@@ -14,7 +17,18 @@ The stock app depends on `com.mudita:kompakt-ui`, a private Mudita library that 
 
 ## Download
 
-Grab the latest APK from [Releases](https://github.com/wanderwildwood/MuditaOS-K-Chess-opensource/releases) and sideload it with `adb install`. Every release is signed with the same fixed keystore (checked into the repo — see [release workflow](.github/workflows/release.yml)), so installing a newer release over an older one works like a normal app update instead of requiring an uninstall first.
+Grab the latest APK from [Releases](https://github.com/wanderwildwood/MuditaOS-K-Chess-opensource/releases), check it against the published `.sha256`, and sideload it with `adb install`.
+
+### Upgrading from an older copy needs an uninstall
+
+Android will not install this over an older copy, and stops with `INSTALL_FAILED_UPDATE_INCOMPATIBLE`. Uninstall first:
+
+```sh
+adb uninstall com.wanderwildwood.chessplus
+adb install chessplus-<version>.apk
+```
+
+**Uninstalling clears game statistics and settings.** It does not touch the Chess app the phone came with — Chess+ installs alongside it. Updates after this one install normally.
 
 Or build it yourself: `./gradlew :app-android:assembleRelease`.
 
