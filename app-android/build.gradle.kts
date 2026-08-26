@@ -1,4 +1,5 @@
 import com.mudita.tasks.GenerateChangelogTask
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application.convention)
@@ -13,6 +14,25 @@ android {
         applicationId = project.libs.versions.app.version.appId.get()
         versionName = project.libs.versions.app.version.versionName.get()
         versionCode = System.getenv("VERSION_CODE")?.toIntOrNull() ?: 1
+    }
+
+    // The checked-in certs/debug.keystore is the AOSP test key, whose private half ships with
+    // AOSP - anyone can build an APK this app's own signature check would accept as an update.
+    // A real keystore in signing/ replaces it for every build type when one is present; the
+    // release workflow writes it there from repository secrets.
+    val signingPropertiesFile = rootProject.file("signing/signing.properties")
+    val realSigningConfig = if (signingPropertiesFile.isFile) {
+        val signingProperties = Properties().apply {
+            signingPropertiesFile.inputStream().use(::load)
+        }
+        signingConfigs.create("release") {
+            storeFile = rootProject.file("signing/signing.keystore")
+            storePassword = signingProperties.getProperty("STORE_PASSWORD")
+            keyAlias = signingProperties.getProperty("KEY_ALIAS")
+            keyPassword = signingProperties.getProperty("KEY_PASSWORD")
+        }
+    } else {
+        null
     }
 
     signingConfigs {
@@ -32,7 +52,7 @@ android {
         getByName("debug") {
             isDebuggable = true
             isMinifyEnabled = false
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = realSigningConfig ?: signingConfigs.getByName("debug")
         }
         create("qa") {
             isDebuggable = false
@@ -43,13 +63,13 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = realSigningConfig ?: signingConfigs.getByName("debug")
         }
 
         create("benchmark") {
             initWith(getByName("release"))
             matchingFallbacks += listOf("release")
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = realSigningConfig ?: signingConfigs.getByName("debug")
             proguardFiles("benchmark-rules.pro")
         }
         getByName("release") {
@@ -61,7 +81,7 @@ android {
                 "proguard-rules.pro"
             )
             // TODO use a proper release signing
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = realSigningConfig ?: signingConfigs.getByName("debug")
         }
     }
 
