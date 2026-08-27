@@ -23,6 +23,9 @@
     <string name="chess_gameplay_notification_check">Schaak</string>
     <string name="chess_gameplay_topbar_button_confirmmove">Bevestig zet</string>
     <string name="chess_listofmoves_screentitle_listofmoves">Lijst met zetten</string>
+    <string name="chess_optionsmenu_button_oneplayer">1 speler</string>
+    <string name="chess_optionsmenu_button_twoplayer">2 spelers</string>
+    <string name="chess_optionsmenu_label_gamemode">Spelmodus</string>
     <string name="chess_optionsmenu_button_play">Spelen</string>
     <string name="chess_optionsmenu_label_advanced">GEAVANCEERD (%d ELO)</string>
     <string name="chess_optionsmenu_label_beginner">BEGINNER (%d ELO)</string>

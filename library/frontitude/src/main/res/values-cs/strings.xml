@@ -23,6 +23,9 @@
     <string name="chess_gameplay_notification_check">Šach</string>
     <string name="chess_gameplay_topbar_button_confirmmove">Potvrdit tah</string>
     <string name="chess_listofmoves_screentitle_listofmoves">Seznam tahů</string>
+    <string name="chess_optionsmenu_button_oneplayer">1 hráč</string>
+    <string name="chess_optionsmenu_button_twoplayer">2 hráči</string>
+    <string name="chess_optionsmenu_label_gamemode">Herní režim</string>
     <string name="chess_optionsmenu_button_play">Hrát</string>
     <string name="chess_optionsmenu_label_advanced">POKROČILÝ (%d ELO)</string>
     <string name="chess_optionsmenu_label_beginner">ZAČÁTEČNÍK (%d ELO)</string>

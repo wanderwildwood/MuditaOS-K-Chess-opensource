@@ -38,6 +38,15 @@ internal class TestGame(
         }
     }
 
+    fun twoPlayerLocalFactory(): GameFactory = mockk {
+        every { createTwoPlayerLocal(any(), any()) } answers {
+            createTwoPlayerLocalGame(
+                isPiecesPositionReady = args[0] as Boolean,
+                uiEvents = args[1] as GameplayUiEvents
+            )
+        }
+    }
+
     private fun createPlayerVsComputerGame(
         playerSide: Side,
         isPiecesPositionReady: Boolean,
@@ -54,6 +63,29 @@ internal class TestGame(
         val participants = listOf(
             PlayerParticipant(playerSide, board, moveResultNotifier, uiEvents, mapper),
             ComputerParticipant(computerSide, board, moveResultNotifier, mockk(relaxed = true), computerMoveUseCase)
+        ).associateBy { it.side }
+        return Game(
+            board = board,
+            whiteParticipant = participants.getValue(WHITE),
+            blackParticipant = participants.getValue(BLACK),
+            ioDispatcher = dispatcher ?: UnconfinedTestDispatcher()
+        )
+    }
+
+    private fun createTwoPlayerLocalGame(
+        isPiecesPositionReady: Boolean,
+        uiEvents: GameplayUiEvents
+    ): Game {
+        val board = ChessBoard(
+            topParticipantSide = BLACK,
+            isPiecesPositionReady = isPiecesPositionReady
+        )
+        val moveResultNotifier = MoveResultNotifier(board, uiEvents)
+        startingFen?.let(board::loadFen)
+        playedMoves?.map { it.toString() }?.let(board::loadMoves)
+        val participants = listOf(
+            PlayerParticipant(WHITE, board, moveResultNotifier, uiEvents, mapper),
+            PlayerParticipant(BLACK, board, moveResultNotifier, uiEvents, mapper)
         ).associateBy { it.side }
         return Game(
             board = board,

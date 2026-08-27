@@ -54,6 +54,7 @@ internal fun GameplayDialog(
             LoadingDialogUi -> LoadingDialog()
             is GameMenuDialogUi -> GameMenuDialog(
                 isMoveSuggestionsOn = dialog.isMoveSuggestionsOn,
+                isTwoPlayerMode = dialog.isTwoPlayerMode,
                 onResumeClick = { uiEvent(ResumeButtonClicked) },
                 onNewGameClick = { uiEvent(NewGameButtonClicked) },
                 onExitClick = { uiEvent(ExitButtonClicked) },

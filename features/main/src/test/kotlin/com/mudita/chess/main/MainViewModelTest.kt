@@ -67,6 +67,24 @@ class MainViewModelTest {
     }
 
     @Test
+    fun `on init navigates to gameplay in two player mode when the current game is a two player game`() = runTest {
+        val gameOptions = GameOptions(
+            isPlayerWhite = false,
+            isMoveSuggestionsOn = true,
+            difficultyLevel = DifficultyLevel(4),
+            isTwoPlayerMode = true
+        )
+        coEvery { getGameOptionsUseCase() } returns Result.success(gameOptions)
+        coEvery { hasCurrentGameUseCase() } returns true
+
+        tested.navActions.test {
+            assertThat(awaitItem()).isEqualTo(
+                NavigateTo(GameplayRoute(isPlayerWhite = false, isNewGame = false, isTwoPlayerMode = true))
+            )
+        }
+    }
+
+    @Test
     fun `on init does not navigate to gameplay when unable load game options`() = runTest {
         coEvery { getGameOptionsUseCase() } returns Result.failure(Error("read exception!"))
         coEvery { hasCurrentGameUseCase() } returns true
@@ -154,6 +172,33 @@ class MainViewModelTest {
             )
         }
     }
+
+    @Test
+    fun `PlayButtonClicked event navigates to options menu with two player mode when loaded options are two player`() =
+        runTest {
+            val gameOptions = GameOptions(
+                isMoveSuggestionsOn = true,
+                isPlayerWhite = false,
+                difficultyLevel = DifficultyLevel(4),
+                isTwoPlayerMode = true
+            )
+            coEvery { getGameOptionsUseCase() } returns Result.success(gameOptions)
+
+            tested.navActions.test {
+                tested.handleUiEvent(PlayButtonClicked)
+
+                assertThat(awaitItem()).isEqualTo(
+                    NavigateTo(
+                        OptionsMenuRoute(
+                            isMoveSuggestionsOn = true,
+                            isPlayerWhite = false,
+                            difficultyLevel = 4,
+                            isTwoPlayerMode = true
+                        )
+                    )
+                )
+            }
+        }
 
     @Test
     fun `StatisticsButtonClicked event should navigate to statistics`() = runTest {

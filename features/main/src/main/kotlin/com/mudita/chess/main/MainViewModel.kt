@@ -72,7 +72,8 @@ internal class MainViewModel(
         val optionsMenuRoute = OptionsMenuRoute(
             isPlayerWhite = gameOptions.isPlayerWhite,
             isMoveSuggestionsOn = gameOptions.isMoveSuggestionsOn,
-            difficultyLevel = gameOptions.difficultyLevel.value
+            difficultyLevel = gameOptions.difficultyLevel.value,
+            isTwoPlayerMode = gameOptions.isTwoPlayerMode
         )
         emitNavAction(NavigateTo(optionsMenuRoute))
     }
@@ -87,7 +88,15 @@ internal class MainViewModel(
         val (gameExists, gameOptions) = awaitAll(gameExistsDeferred, gameOptionsDeferred)
             .let { (existsResult, optionsResult) -> existsResult as Boolean to optionsResult as GameOptions? }
         if (gameExists && gameOptions != null) {
-            emitNavAction(NavigateTo(GameplayRoute(isPlayerWhite = gameOptions.isPlayerWhite, isNewGame = false)))
+            emitNavAction(
+                NavigateTo(
+                    GameplayRoute(
+                        isPlayerWhite = gameOptions.isPlayerWhite,
+                        isNewGame = false,
+                        isTwoPlayerMode = gameOptions.isTwoPlayerMode
+                    )
+                )
+            )
         }
     }
 

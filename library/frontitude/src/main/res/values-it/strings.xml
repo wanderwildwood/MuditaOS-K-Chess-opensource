@@ -23,6 +23,9 @@
     <string name="chess_gameplay_notification_check">Scacco</string>
     <string name="chess_gameplay_topbar_button_confirmmove">Conferma</string>
     <string name="chess_listofmoves_screentitle_listofmoves">Lista mosse</string>
+    <string name="chess_optionsmenu_button_oneplayer">1 giocatore</string>
+    <string name="chess_optionsmenu_button_twoplayer">2 giocatori</string>
+    <string name="chess_optionsmenu_label_gamemode">Modalità di gioco</string>
     <string name="chess_optionsmenu_button_play">Gioca</string>
     <string name="chess_optionsmenu_label_advanced">AVANZATO (%d ELO)</string>
     <string name="chess_optionsmenu_label_beginner">PRINCIPIANTE (%d ELO)</string>

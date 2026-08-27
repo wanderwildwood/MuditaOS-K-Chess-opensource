@@ -23,6 +23,9 @@
     <string name="chess_gameplay_notification_check">Xeque</string>
     <string name="chess_gameplay_topbar_button_confirmmove">Confirme</string>
     <string name="chess_listofmoves_screentitle_listofmoves">Lista de jogadas</string>
+    <string name="chess_optionsmenu_button_oneplayer">1 jogador</string>
+    <string name="chess_optionsmenu_button_twoplayer">2 jogadores</string>
+    <string name="chess_optionsmenu_label_gamemode">Modo de jogo</string>
     <string name="chess_optionsmenu_button_play">Jogar</string>
     <string name="chess_optionsmenu_label_advanced">EXPERIENTE (%d ELO)</string>
     <string name="chess_optionsmenu_label_beginner">INICIANTE (%d ELO)</string>

@@ -105,7 +105,7 @@ private fun GameplayScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 12.dp, horizontal = 16.dp),
-                    participant = uiState.computer
+                    participant = uiState.topParticipant
                 )
                 Board(
                     modifier = Modifier
@@ -120,7 +120,7 @@ private fun GameplayScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 12.dp, horizontal = 16.dp),
-                    participant = uiState.player
+                    participant = uiState.bottomParticipant
                 )
                 BottomMenu(
                     modifier = Modifier
@@ -155,12 +155,12 @@ private fun GameplayScreenPreview() = KompaktTheme {
     GameplayScreen(
         uiState = GameplayUiState(
             board = mapper.toBoardUi(ChessBoard(topParticipantSide = BLACK).state),
-            computer = ParticipantUi(
+            topParticipant = ParticipantUi(
                 nameResId = RFrontitude.string.common_label_computer,
                 isWhite = false,
                 isSelected = false
             ),
-            player = ParticipantUi(
+            bottomParticipant = ParticipantUi(
                 nameResId = RFrontitude.string.common_label_you,
                 isWhite = true,
                 isSelected = true
