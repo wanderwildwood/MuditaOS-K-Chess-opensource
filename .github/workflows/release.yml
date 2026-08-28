@@ -68,23 +68,26 @@ jobs:
         run: ./gradlew :app-android:assembleRelease
 
       # A release signed with the wrong key cannot be taken back once people have installed it.
-      # The forbidden fingerprint is read from the repo's own keystore rather than matched by
-      # name, because this one is the AOSP test key (CN=Android), not CN=Android Debug.
-      - name: Verify the APK is not signed with the checked-in key
+      # This asserts positively that the APK carries the one key this fork has ever used. The
+      # check used to say only that the APK was not signed with the keystore checked in at
+      # app-android/certs/debug.keystore - which is upstream's AOSP test key (CN=Android, not
+      # CN=Android Debug) and stays where it is, this being Mudita's app. But a check shaped
+      # that way passes for every wrong key except the one it names.
+      - name: Verify the signing certificate
+        env:
+          EXPECTED: 30ead42dd3c02414067c31a0693e803a0a5cb18bbdd951a6bcd525d9fa9b8f3b
         run: |
           apk=$(find app-android/build/outputs/apk/release -maxdepth 1 -name '*.apk')
           apksigner=$(ls "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -1)
           certs=$("$apksigner" verify --print-certs "$apk")
           echo "$certs"
-          apk_digest=$(echo "$certs" | grep -m1 -oE 'certificate SHA-256 digest: [0-9a-f]+' | awk '{print $NF}')
-          repo_digest=$(keytool -list -v -keystore app-android/certs/debug.keystore -storepass android \
-            | grep -m1 'SHA256:' | awk '{print $2}' | tr -d ':' | tr 'A-Z' 'a-z')
-          if [ -z "$apk_digest" ] || [ -z "$repo_digest" ]; then
+          digest=$(echo "$certs" | grep -m1 -oE 'certificate SHA-256 digest: [0-9a-f]+' | awk '{print $NF}')
+          if [ -z "$digest" ]; then
             echo "::error::Could not read a signing certificate - refusing to release unchecked."
             exit 1
           fi
-          if [ "$apk_digest" = "$repo_digest" ]; then
-            echo "::error::APK is signed with the keystore checked into this repo."
+          if [ "$digest" != "$EXPECTED" ]; then
+            echo "::error::APK is signed with $digest, expected $EXPECTED."
             exit 1
           fi
 
