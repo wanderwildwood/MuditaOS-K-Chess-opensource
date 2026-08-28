@@ -108,9 +108,9 @@ jobs:
           cp "$apk_path" chessplus.apk
           sha256sum chessplus.apk > chessplus.apk.sha256
 
-      # The generated notes are a list of commits; they cannot say what someone has to do
-      # before installing. This goes above them, and can be emptied once nobody is still
-      # upgrading from a build signed with the AOSP test key.
+      # The generated notes are a list of commits, which says nothing about the app. This
+      # goes above them and holds only what stays true release to release; whatever is new
+      # in a given version is written into that release by hand.
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
