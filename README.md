@@ -8,6 +8,11 @@ Fork of Mudita's own open-source
 app does is still here: play against Stockfish, adjustable difficulty, move suggestions, game
 statistics.
 
+| | |
+|---|---|
+| ![The title screen](screenshots/1-title.png) | ![Two-player selected, and the engine options gone with it](screenshots/2-options.png) |
+| ![A two-player game, black to move](screenshots/3-two-player.png) | ![The result beside the board rather than over it](screenshots/4-finished.png) |
+
 ## What is different
 
 Two people can play on one board, passing it back and forth. The toggle is at the top of New
