@@ -63,6 +63,19 @@ private val appColorScheme = eInkColorScheme.copy(
 )
 
 /**
+ * The filled button's own colours, taken from MMD's scheme *before* the override above.
+ *
+ * `ButtonDefaultsMMD.buttonColors` fills with `primaryContainer` and writes in
+ * `onPrimaryContainer`, so the override that makes those two the page's white and black --
+ * correct for a page -- also painted every filled button white on a white page. The label
+ * stayed black and legible, which is why this reads as text floating with no button around
+ * it rather than as something obviously broken. Passing the pair explicitly keeps the page
+ * white and gives the button back the ink fill it is supposed to have.
+ */
+private val filledButtonContainer = eInkColorScheme.primaryContainer
+private val filledButtonContent = eInkColorScheme.onPrimaryContainer
+
+/**
  * App-level design system, built on the public com.mudita:MMD library (Mudita Mindful Design).
  * Replaces the private com.mudita:kompakt-ui artifact this app previously depended on, which is
  * not publicly resolvable outside Mudita's own infrastructure.
@@ -126,6 +139,10 @@ fun AppPrimaryButton(
         onClick = onClick,
         modifier = size.height?.let { modifier.height(it) } ?: modifier,
         shape = RoundedCornerShape(size.cornerRadius),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = filledButtonContainer,
+            contentColor = filledButtonContent
+        ),
         contentPadding = size.contentPadding ?: ButtonDefaultsMMD.contentPadding
     ) {
         Text(text = text, style = size.textStyle ?: MaterialTheme.typography.labelLarge)
