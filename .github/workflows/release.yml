@@ -34,6 +34,10 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+        # The action's default also asks for the old `tools` package, which the
+        # command-line tools on current runners (16.0) no longer carry, and the step fails.
+        with:
+          packages: 'platform-tools'
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
