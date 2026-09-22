@@ -18,8 +18,10 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.mudita.chess.frontitude.R as RFrontitude
 import com.mudita.chess.ui.R
 import com.mudita.chess.ui.design.AppTheme
 import com.mudita.chess.ui.design.AppTypography500
@@ -48,7 +50,7 @@ internal fun PlayerColorResult(
         contentDescription = null
     )
     Text(
-        text = "$percentage%",
+        text = stringResource(RFrontitude.string.chess_statistics_label_percentage, percentage.toString()),
         style = AppTypography900.titleLarge
     )
     Text(

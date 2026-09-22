@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Chess+</string>
+
+    <!-- The build-info dialog, only in the QA build, opened by five quick taps anywhere -->
+    <string name="qa_build_info_title">QA Version</string>
+    <!-- %1$s is the version name, e.g. "1.3.6"; %2$s is the version code, a whole number -->
+    <string name="qa_build_info_message">Build: %1$s (%2$s)</string>
+    <string name="qa_build_info_ok">OK</string>
 </resources>

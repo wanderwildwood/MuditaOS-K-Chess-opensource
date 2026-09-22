@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.view.MotionEvent
 import android.view.Window
 import com.mudita.chess.BuildConfig
+import com.mudita.chess.R
 
 private const val REQUIRED_TAP_COUNT = 5
 private const val TAP_INTERVAL_MS = 300
@@ -40,9 +41,15 @@ fun Activity.displayBuildInfoOnTap() {
 
                 if (tapCount == REQUIRED_TAP_COUNT) {
                     AlertDialog.Builder(this@displayBuildInfoOnTap)
-                        .setTitle("QA Version")
-                        .setMessage("Build: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")
-                        .setPositiveButton("OK", null)
+                        .setTitle(R.string.qa_build_info_title)
+                        .setMessage(
+                            getString(
+                                R.string.qa_build_info_message,
+                                BuildConfig.VERSION_NAME,
+                                BuildConfig.VERSION_CODE.toString()
+                            )
+                        )
+                        .setPositiveButton(R.string.qa_build_info_ok, null)
                         .show()
                     tapCount = 0
                 }
