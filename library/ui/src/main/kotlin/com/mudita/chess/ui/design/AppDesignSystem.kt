@@ -5,7 +5,9 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -34,6 +36,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -41,8 +44,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mudita.mmd.ThemeMMD
 import com.mudita.mmd.black
-import com.mudita.mmd.components.buttons.ButtonMMD
 import com.mudita.mmd.components.buttons.ButtonDefaultsMMD
+import com.mudita.mmd.components.buttons.ButtonMMD
 import com.mudita.mmd.components.buttons.OutlinedButtonMMD
 import com.mudita.mmd.components.divider.HorizontalDividerMMD
 import com.mudita.mmd.components.switcher.SwitchMMD
@@ -188,11 +191,15 @@ fun AppIconButton(
     iconSize: Dp = 24.dp,
     touchAreaPadding: PaddingValues = PaddingValues(0.dp)
 ) {
-    // Ripple is already disabled app-wide by ThemeMMD, so a plain IconButton behaves like the
-    // previous no-ripple KompaktIconButton.
-    IconButton(
-        onClick = onClick,
-        modifier = modifier.padding(touchAreaPadding)
+    // The padding is touch area, so the click goes on the outside of it: callers draw a border
+    // around the whole padded box, and a tap anywhere inside that border has to count. Ripple is
+    // already disabled app-wide by ThemeMMD.
+    Box(
+        modifier = modifier
+            .clickable(role = Role.Button, onClick = onClick)
+            .padding(touchAreaPadding)
+            .size(48.dp),
+        contentAlignment = Alignment.Center
     ) {
         Icon(
             painter = painterResource(id = iconResId),

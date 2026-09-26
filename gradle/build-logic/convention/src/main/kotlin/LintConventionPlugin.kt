@@ -39,6 +39,8 @@ class LintConventionPlugin : Plugin<Project> {
             "JavaPluginLanguageLevel",
             "AndroidGradlePluginVersion",
             "EnsureInitializerMetadata",
+            // EnsureInitializerMetadata is defined only where androidx.startup is on the classpath
+            "UnknownIssueId",
             "VectorPath",
             "Aligned16KB",
             "ExpiredTargetSdkVersion"

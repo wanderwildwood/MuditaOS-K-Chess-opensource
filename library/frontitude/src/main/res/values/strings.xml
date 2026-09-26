@@ -41,7 +41,7 @@
     <string name="chess_statistics_label_matchresults">Match results</string>
     <string name="chess_statistics_label_percentageofwins">Percentage of wins</string>
     <!-- Inside the circle for each colour. %1$s is a whole number from 0 to 100, e.g. "25%" -->
-    <string name="chess_statistics_label_percentage">%1$s%%</string>
+    <string name="chess_statistics_label_percentage" translatable="false">%1$s%%</string>
     <string name="chess_statistics_label_won">Won</string>
     <string name="chess_statistics_label_youplayedas">You played as:</string>
     <string name="common_button_exit">Exit</string>
