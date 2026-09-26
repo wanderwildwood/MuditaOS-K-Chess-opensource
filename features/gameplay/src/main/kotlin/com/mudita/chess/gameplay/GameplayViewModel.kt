@@ -193,11 +193,11 @@ internal class GameplayViewModel(
             sideToMove = boardState.sideToMove,
             isMoveSuggestionsOn = gameOptions.isMoveSuggestionsOn,
             isPromotionManualConfirmationRequired = boardState.isPromotionManualConfirmationRequired,
-            checkInfo = boardState.checkInfo,
-            isTwoPlayerMode = isTwoPlayerMode
+            checkInfo = boardState.checkInfo
         )
         val endgame = mapper.toEndgameUi(gameStatus)
         val isCompleteRoundMovesCountReached = boardState.moves.size >= COMPLETE_ROUND_MOVES_COUNT
+        val isUndoMovesCountReached = boardState.moves.size >= game.board.movesPerUndo
         // Only relevant in vs-computer mode: true when the computer plays White and has already made
         // the opening move, so Undo should be offered even before a full round has been completed.
         val topSideMovedFirst = topParticipant.isWhite && boardState.moves.isNotEmpty()
@@ -211,7 +211,7 @@ internal class GameplayViewModel(
             ),
             isConfirmMoveButtonVisible = boardState.isMoveManualConfirmationRequired,
             isGameMovesButtonVisible = isCompleteRoundMovesCountReached,
-            isUndoMoveButtonVisible = isCompleteRoundMovesCountReached || topSideMovedFirst,
+            isUndoMoveButtonVisible = isUndoMovesCountReached || topSideMovedFirst,
             dialog = dialog,
             endgame = endgame
         )
@@ -225,6 +225,7 @@ internal class GameplayViewModel(
         collectEndgameMainMenuClicks()
         collectEndgameUndoClicks()
         collectMoveSuggestionsSwitchToggles()
+        collectEvents(uiEvents.undoMoveClicks) { game.undoMove() }
         collectEvents(
             merge(uiEvents.resumeClicks, uiEvents.cancelGameMenuClicks)
         ) { game.start() }

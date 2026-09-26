@@ -78,7 +78,8 @@ internal class TestGame(
     ): Game {
         val board = ChessBoard(
             topParticipantSide = BLACK,
-            isPiecesPositionReady = isPiecesPositionReady
+            isPiecesPositionReady = isPiecesPositionReady,
+            movesPerUndo = 1
         )
         val moveResultNotifier = MoveResultNotifier(board, uiEvents)
         startingFen?.let(board::loadFen)

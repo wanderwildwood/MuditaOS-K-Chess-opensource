@@ -54,6 +54,15 @@ internal class Game(
 
     private var gameJob: Job? = null
 
+    /**
+     * The participant the game loop is waiting on. Undo is routed here, once per tap, rather than
+     * broadcast: in 2-player mode both participants are human and hear every tap, and because undo
+     * changes whose turn it is, the second one to hear the tap would take it as its own and undo a
+     * second move.
+     */
+    @Volatile
+    private var participantToMove: Participant? = null
+
     suspend fun setup(options: GameOptions) = withContext(ioDispatcher) {
         whiteParticipant.setup(options)
         blackParticipant.setup(options)
@@ -122,6 +131,10 @@ internal class Game(
         }
     }
 
+    fun undoMove() {
+        if (status == STARTED) participantToMove?.undoMove()
+    }
+
     suspend fun cleanup() = withContext(ioDispatcher) {
         whiteParticipant.cleanup()
         blackParticipant.cleanup()
@@ -146,8 +159,10 @@ internal class Game(
                     WHITE -> whiteParticipant
                     BLACK -> blackParticipant
                 }
+                participantToMove = participant
                 participant.doMove()
             }
+            participantToMove = null
             setStatus(requireNotNull(board.endgameStatus))
         }
         return supervisorJob

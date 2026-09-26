@@ -36,7 +36,6 @@ import com.mudita.chess.gameplay.GameplayUiEvent.ConfirmPawnPromotionClicked
 import com.mudita.chess.gameplay.GameplayUiEvent.DialogDismissRequested
 import com.mudita.chess.gameplay.GameplayUiEvent.MoveSuggestionsSwitchToggled
 import com.mudita.chess.gameplay.GameplayUiEvent.SquareClicked
-import com.mudita.chess.gameplay.GameplayUiEvent.UndoMoveButtonClicked
 import com.mudita.chess.gameplay.GameplayUiEvents
 import com.mudita.chess.gameplay.fixtures.BoardSquaresData.WHITE_PLAYER_SQUARES
 import com.mudita.chess.gameplay.fixtures.ChessBoardStateData.WHITE_PLAYER_BOARD
@@ -828,7 +827,7 @@ class PlayerParticipantTest {
         board.states().test {
             skipItems(1)
 
-            uiEvents.handleUiEvent(UndoMoveButtonClicked)
+            tested.undoMove()
 
             verifyWhitePlayerInitialBoard(awaitItem())
             assertThat(tested.state).isEqualTo(AbandonedMove)

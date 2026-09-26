@@ -73,10 +73,6 @@ internal class PlayerParticipant(
         uiEvents.moveSuggestionsSwitchToggles
             .onEach { onMoveSuggestionsSwitchToggled(isMoveSuggestionsOn = it.on) }
             .launchIn(scope)
-        uiEvents.undoMoveClicks
-            .filter { side == board.sideToMove }
-            .onEach { onUndoMoveClicked() }
-            .launchIn(scope)
         uiEventsScope = scope
     }
 
@@ -90,23 +86,35 @@ internal class PlayerParticipant(
             throw e
         }
 
-        if (state is AbandonedMove) {
-            moveToState(Idle)
-        } else {
-            val moveResult = board.update {
-                clearHighlighted()
-                confirmMove()
+        // Decided under the board lock: an undo tap can land between the confirm tap and here, and
+        // it takes the move back, so a stale ConfirmedMove must not be confirmed a second time.
+        val moveResult = atomically {
+            if (state == ConfirmedMove) {
+                board.update {
+                    clearHighlighted()
+                    confirmMove()
+                }
+            } else {
+                null
             }
-            moveToState(Idle)
-            moveResultNotifier.maybeNotifyCheck(moveResult)
         }
+        moveToState(Idle)
+        moveResult?.let { moveResultNotifier.maybeNotifyCheck(it) }
     }
 
     override suspend fun cleanup() {
         uiEventsScope?.cancel()
     }
 
-    private fun onSquareClicked(square: Square) {
+    /**
+     * Every handler reads [state] and acts on the board, and runs on the multi-threaded IO
+     * dispatcher alongside the game loop's [doMove]. Holding the board lock across the read and
+     * the act keeps them from interleaving: a square tapped just as a move is confirmed would
+     * otherwise undo an "unconfirmed" move that is already confirmed, and crash.
+     */
+    private fun onSquareClicked(square: Square) = atomically { handleSquareClick(square) }
+
+    private fun handleSquareClick(square: Square) {
         when (val currentState = state) {
             Idle -> {
                 selectPieceIfMine(square, undoUnconfirmed = false)
@@ -140,13 +148,13 @@ internal class PlayerParticipant(
         }
     }
 
-    private fun onConfirmPawnPromotionClicked(piece: Piece) {
+    private fun onConfirmPawnPromotionClicked(piece: Piece) = atomically {
         ifState<PromotionConfirmationRequired> { promoting ->
             doUnconfirmedMove(Move(promoting.from, promoting.to, piece))
         }
     }
 
-    private fun onConfirmMoveClicked() {
+    private fun onConfirmMoveClicked() = atomically {
         ifState<UnconfirmedMove> {
             moveToState(ConfirmedMove)
         }
@@ -160,12 +168,15 @@ internal class PlayerParticipant(
         }
     }
 
-    private fun onUndoMoveClicked() {
-        board.update {
-            clearHighlighted()
-            undoRound()
+    override fun undoMove() = atomically {
+        // The turn may have passed between the tap and now; the tap was not meant for that turn
+        if (side == board.sideToMove) {
+            board.update {
+                clearHighlighted()
+                undoRound()
+            }
+            moveToState(AbandonedMove)
         }
-        moveToState(AbandonedMove)
     }
 
     private fun selectPieceIfMine(square: Square, undoUnconfirmed: Boolean) {
@@ -205,7 +216,7 @@ internal class PlayerParticipant(
         moveToState(PromotionConfirmationRequired(from, to))
     }
 
-    private fun cancelPawnPromotion() {
+    private fun cancelPawnPromotion() = atomically {
         ifState<PromotionConfirmationRequired> {
             board.update {
                 clearPromotionManualConfirmationRequired()
@@ -240,6 +251,9 @@ internal class PlayerParticipant(
             add(move)
             addAll(board.context.getAssociatedMoves(move))
         }.any { it.from == this || it.to == this }
+
+    /** Runs [block] under the board lock, without making the board its receiver. */
+    private fun <R> atomically(block: () -> R): R = board.update { block() }
 
     private suspend fun awaitState(predicate: suspend (MoveState) -> Boolean) =
         _state.dropWhile { !predicate(it) }.first()
