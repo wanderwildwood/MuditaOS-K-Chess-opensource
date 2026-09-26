@@ -115,6 +115,9 @@ internal class PlayerParticipant(
     private fun onSquareClicked(square: Square) = atomically { handleSquareClick(square) }
 
     private fun handleSquareClick(square: Square) {
+        // Once the game is decided the side that just moved still reads as "to move", so without
+        // this the winner could pick up a piece on the finished board.
+        if (board.isEndgame) return
         when (val currentState = state) {
             Idle -> {
                 selectPieceIfMine(square, undoUnconfirmed = false)

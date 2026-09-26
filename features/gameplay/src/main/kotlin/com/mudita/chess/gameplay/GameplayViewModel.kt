@@ -120,6 +120,8 @@ internal class GameplayViewModel(
         isTwoPlayerMode = isTwoPlayerMode
     )
 
+    private var isFinishedGameLeft = false
+
     private val uiState: StateHandler<GameplayUiState>
 
     val states: StateFlow<GameplayUiState>
@@ -203,11 +205,12 @@ internal class GameplayViewModel(
         val topSideMovedFirst = topParticipant.isWhite && boardState.moves.isNotEmpty()
         copy(
             board = mapper.toBoardUi(boardState),
+            // The frame means "to move", and nobody is to move in a finished game
             bottomParticipant = bottomParticipant.copy(
-                isSelected = boardState.sideToMove == bottomSide
+                isSelected = endgame == null && boardState.sideToMove == bottomSide
             ),
             topParticipant = topParticipant.copy(
-                isSelected = boardState.sideToMove == topSide
+                isSelected = endgame == null && boardState.sideToMove == topSide
             ),
             isConfirmMoveButtonVisible = boardState.isMoveManualConfirmationRequired,
             isGameMovesButtonVisible = isCompleteRoundMovesCountReached,
@@ -221,9 +224,7 @@ internal class GameplayViewModel(
         collectGameMovesClicks()
         collectNewGameClicks()
         collectExitGameClicks()
-        collectEndgameNewGameClicks()
-        collectEndgameMainMenuClicks()
-        collectEndgameUndoClicks()
+        collectEndgameClicks()
         collectMoveSuggestionsSwitchToggles()
         collectEvents(uiEvents.undoMoveClicks) { game.undoMove() }
         collectEvents(
@@ -261,22 +262,32 @@ internal class GameplayViewModel(
         navigateToMain()
     }
 
-    private fun collectEndgameNewGameClicks() = collectEvents(uiEvents.endgameNewGameMenuClicks) {
-        addGameToStatistics()
-        removeCurrentGameUseCase()
-        navigateToOptionsMenu()
+    /**
+     * The three endgame buttons share one collector so that taps are handled one at a time, in
+     * order. Separate collectors could run Undo and New game over each other: the result recorded
+     * and the game removed, then the undone game saved back and resumed on the next launch.
+     * Leaving records the result once; a second tap on the way out finds nothing left to leave.
+     */
+    private fun collectEndgameClicks() = collectEvents(
+        merge(uiEvents.endgameNewGameMenuClicks, uiEvents.endgameMainMenuClicks, uiEvents.endgameUndoClicks)
+    ) { click ->
+        when (click) {
+            // Undo from a finished game. Nothing is written to statistics and the current game is
+            // left in place: the game is not over any more, so recording it as a loss would be a lie.
+            GameplayUiEvent.EndgameUndoButtonClicked -> game.undoRoundAndResume()
+            GameplayUiEvent.EndgameNewGameButtonClicked -> if (leaveFinishedGame()) navigateToOptionsMenu()
+            GameplayUiEvent.EndgameMainMenuButtonClicked -> if (leaveFinishedGame()) navigateToMain()
+            else -> Unit
+        }
     }
 
-    private fun collectEndgameMainMenuClicks() = collectEvents(uiEvents.endgameMainMenuClicks) {
+    private suspend fun leaveFinishedGame(): Boolean {
+        val isFinished = game.status in setOf(GameStatus.WHITE_WON, GameStatus.BLACK_WON, GameStatus.DRAW)
+        if (!isFinished || isFinishedGameLeft) return false
+        isFinishedGameLeft = true
         addGameToStatistics()
         removeCurrentGameUseCase()
-        navigateToMain()
-    }
-
-    // Undo from a finished game. Nothing is written to statistics and the current game is left
-    // in place: the game is not over any more, so recording it as a loss would be a lie.
-    private fun collectEndgameUndoClicks() = collectEvents(uiEvents.endgameUndoClicks) {
-        game.undoRoundAndResume()
+        return true
     }
 
     private fun collectMoveSuggestionsSwitchToggles() = collectEvents(uiEvents.moveSuggestionsSwitchToggles) {

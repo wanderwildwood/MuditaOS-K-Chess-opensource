@@ -3,22 +3,25 @@ package com.mudita.chess.gameplay.design
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Text
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.mudita.chess.gameplay.model.EndgameUi
 import com.mudita.chess.ui.R
 import com.mudita.chess.ui.design.AppButtonAttributes
@@ -107,9 +110,14 @@ internal fun EndgameResult(
         modifier = modifier.height(50.dp),
         contentAlignment = Alignment.Center
     ) {
-        Text(
+        // One line, shrinking to fit: the strip is a fixed height, so a long translation such as
+        // "ZWART HEEFT GEWONNEN!" would otherwise wrap and lose its second line.
+        val style = AppTypography900.displaySmall
+        BasicText(
             text = stringResource(id = endgame.resultResId).uppercase(),
-            style = AppTypography900.displaySmall
+            style = style.merge(color = LocalContentColor.current),
+            maxLines = 1,
+            autoSize = TextAutoSize.StepBased(minFontSize = 12.sp, maxFontSize = style.fontSize)
         )
     }
 }

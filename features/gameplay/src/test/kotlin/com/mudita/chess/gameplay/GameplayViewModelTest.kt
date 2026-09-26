@@ -1163,6 +1163,47 @@ internal class GameplayViewModelTest {
     }
 
     @Test
+    fun `a finished game shows nobody to move and records its result once however often it is left`() = runTest {
+        every { args.value } returns GameplayRoute(isPlayerWhite = true)
+        coEvery { getGameOptionsUseCase() } returns Result.success(gameOptions)
+        testGame.startingFen = WHITE_PARTICIPANT_WON_FEN
+
+        tested.states.test {
+            val finishedState = awaitItem()
+            assertThat(finishedState.endgame).isNotNull()
+            assertThat(finishedState.topParticipant.isSelected).isFalse()
+            assertThat(finishedState.bottomParticipant.isSelected).isFalse()
+        }
+
+        tested.navActions.test {
+            tested.handleUiEvent(EndgameNewGameButtonClicked)
+            tested.handleUiEvent(EndgameMainMenuButtonClicked)
+            tested.handleUiEvent(EndgameNewGameButtonClicked)
+
+            verifyNavigatedToOptionsMenu(awaitItem(), gameOptions)
+            expectNoEvents()
+        }
+        coVerify(exactly = 1) { addToGameStatisticsUseCase(type = any(), isWhitePlayer = any()) }
+        coVerify(exactly = 1) { removeCurrentGameUseCase() }
+    }
+
+    @Test
+    fun `board taps on a finished game select nothing`() = runTest {
+        every { args.value } returns GameplayRoute(isPlayerWhite = true, isTwoPlayerMode = true)
+        testGame.startingFen = WHITE_PARTICIPANT_WON_FEN
+
+        testedTwoPlayerLocal.states.test {
+            val finishedState = awaitItem()
+            assertThat(finishedState.endgame).isNotNull()
+
+            finishedState.board.flatten().filter { it.piece?.isWhite == true }.forEach {
+                testedTwoPlayerLocal.handleUiEvent(SquareClicked(it.position))
+            }
+            expectNoEvents()
+        }
+    }
+
+    @Test
     fun `EndgameUndoButtonClicked takes the game back out of its endgame`() = runTest {
         every { args.value } returns GameplayRoute(isPlayerWhite = true)
         // Moves actually played, rather than a position loaded from a FEN: undo needs history
