@@ -10,14 +10,14 @@ statistics.
 
 | | |
 |---|---|
-| ![The title screen](screenshots/1-title.png) | ![Two-player selected, and the engine options gone with it](screenshots/2-options.png) |
-| ![A two-player game, black to move](screenshots/3-two-player.png) | ![The result beside the board rather than over it](screenshots/4-finished.png) |
+| ![The game menu](screenshots/1-title.png) | ![Two-player selected, and the engine options gone with it](screenshots/2-options.png) |
+| ![A two-player game, white to move](screenshots/3-two-player.png) | ![The result beside the board rather than over it](screenshots/4-finished.png) |
 
 ## What is different
 
-Two people can play on one board, passing it back and forth. The toggle is at the top of New
-Game options; selecting it hides Move Suggestions, Difficulty and Player Color — in the New
-Game screen and in the in-game pause menu — since none of them apply.
+Two people can play on one board, passing it back and forth. Choose 2 Players at the top of
+New Game options; Difficulty and Player Color go away, since neither applies, and Move
+Suggestions stays for both players. Undo takes back one move, whoever made it.
 
 The result no longer covers the board. Checkmate and draw used to be announced over the
 position that caused them, which is the one thing you want to look at. The result now sits in
