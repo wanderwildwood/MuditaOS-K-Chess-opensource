@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
@@ -26,6 +28,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,6 +45,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.mudita.mmd.ThemeMMD
 import com.mudita.mmd.black
 import com.mudita.mmd.components.buttons.ButtonDefaultsMMD
@@ -117,7 +121,9 @@ data class AppButtonAttributes(
     val textStyle: TextStyle? = null,
     val borderStrokeWidth: Dp = 2.dp,
     val iconSize: Dp = 24.dp,
-    val spaceBetweenIconAndText: Dp = 8.dp
+    val spaceBetweenIconAndText: Dp = 8.dp,
+    /** Keep the label on one line and shrink it to fit, for buttons with a fixed height. */
+    val isLabelShrunkToFit: Boolean = false
 ) {
     companion object {
         val Small = AppButtonAttributes(
@@ -148,7 +154,7 @@ fun AppPrimaryButton(
         ),
         contentPadding = size.contentPadding ?: ButtonDefaultsMMD.contentPadding
     ) {
-        Text(text = text, style = size.textStyle ?: MaterialTheme.typography.labelLarge)
+        ButtonLabel(text, size)
     }
 }
 
@@ -179,7 +185,22 @@ fun AppSecondaryButton(
             )
             Spacer(modifier = Modifier.width(attributes.spaceBetweenIconAndText))
         }
-        Text(text = text, style = attributes.textStyle ?: MaterialTheme.typography.labelLarge)
+        ButtonLabel(text, attributes)
+    }
+}
+
+@Composable
+private fun ButtonLabel(text: String, attributes: AppButtonAttributes) {
+    val style = attributes.textStyle ?: MaterialTheme.typography.labelLarge
+    if (attributes.isLabelShrunkToFit) {
+        BasicText(
+            text = text,
+            style = style.merge(color = LocalContentColor.current),
+            maxLines = 1,
+            autoSize = TextAutoSize.StepBased(minFontSize = 8.sp, maxFontSize = style.fontSize)
+        )
+    } else {
+        Text(text = text, style = style)
     }
 }
 

@@ -3,13 +3,13 @@ package com.mudita.chess.gameplay.design
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.TextAutoSize
@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mudita.chess.frontitude.R as RFrontitude
 import com.mudita.chess.gameplay.model.EndgameUi
 import com.mudita.chess.ui.R
 import com.mudita.chess.ui.design.AppButtonAttributes
@@ -31,7 +32,6 @@ import com.mudita.chess.ui.design.AppSecondaryButton
 import com.mudita.chess.ui.design.AppTheme
 import com.mudita.chess.ui.design.AppTypography900
 import com.mudita.chess.ui.design.appColorWhite
-import com.mudita.chess.frontitude.R as RFrontitude
 
 /**
  * What a finished game shows, in the strip where the game controls normally live.
@@ -54,7 +54,8 @@ internal fun EndgameMenu(
         height = 36.dp,
         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
         cornerRadius = 8.dp,
-        textStyle = AppTypography900.labelSmall
+        textStyle = AppTypography900.labelSmall,
+        isLabelShrunkToFit = true
     )
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -78,18 +79,28 @@ internal fun EndgameMenu(
         }
         // Undo sits hard left where the in-play undo button is, and the actions that end this
         // game sit right where Confirm move does. Nothing moves position when a game finishes.
-        Spacer(modifier = Modifier.weight(1f))
-        AppSecondaryButton(
-            text = stringResource(id = RFrontitude.string.chess_endingscreen_dialog_button_mainmenu),
-            attributes = buttonAttributes,
-            onClick = onMainMenuButtonClicked
-        )
-        Spacer(modifier = Modifier.width(6.dp))
-        AppPrimaryButton(
-            text = stringResource(id = RFrontitude.string.chess_endingscreen_dialog_button_newgame),
-            size = buttonAttributes,
-            onClick = onNewGameButtonClicked
-        )
+        // The two share what Undo leaves, and shrink their labels rather than wrap them in the
+        // fixed-height strip ("Menu principale" and "Nueva partida" at a large font size).
+        Row(
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 6.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.End),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AppSecondaryButton(
+                modifier = Modifier.weight(1f, fill = false),
+                text = stringResource(id = RFrontitude.string.chess_endingscreen_dialog_button_mainmenu),
+                attributes = buttonAttributes,
+                onClick = onMainMenuButtonClicked
+            )
+            AppPrimaryButton(
+                modifier = Modifier.weight(1f, fill = false),
+                text = stringResource(id = RFrontitude.string.chess_endingscreen_dialog_button_newgame),
+                size = buttonAttributes,
+                onClick = onNewGameButtonClicked
+            )
+        }
     }
 }
 
