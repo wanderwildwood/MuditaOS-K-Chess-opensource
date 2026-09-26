@@ -33,8 +33,7 @@ fun GameMenuDialog(
     onNewGameClick: () -> Unit,
     onExitClick: () -> Unit,
     onMoveSuggestionsSwitchToggle: (Boolean) -> Unit,
-    modifier: Modifier = Modifier,
-    isTwoPlayerMode: Boolean = false
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier.fillMaxWidth()
@@ -51,7 +50,6 @@ fun GameMenuDialog(
         ) {
             Content(
                 isMoveSuggestionsOn = isMoveSuggestionsOn,
-                isTwoPlayerMode = isTwoPlayerMode,
                 onResumeClick = onResumeClick,
                 onNewGameClick = onNewGameClick,
                 onExitClick = onExitClick,
@@ -64,7 +62,6 @@ fun GameMenuDialog(
 @Composable
 private fun Content(
     isMoveSuggestionsOn: Boolean,
-    isTwoPlayerMode: Boolean,
     onResumeClick: () -> Unit,
     onNewGameClick: () -> Unit,
     onExitClick: () -> Unit,
@@ -75,7 +72,6 @@ private fun Content(
     Spacer(modifier = Modifier.height(24.dp))
     Options(
         isMoveSuggestionsOn = isMoveSuggestionsOn,
-        isTwoPlayerMode = isTwoPlayerMode,
         onResumeClick = onResumeClick,
         onNewGameClick = onNewGameClick,
         onExitClick = onExitClick,
@@ -95,7 +91,6 @@ private fun Title() =
 @Composable
 private fun Options(
     isMoveSuggestionsOn: Boolean,
-    isTwoPlayerMode: Boolean,
     onResumeClick: () -> Unit,
     onNewGameClick: () -> Unit,
     onExitClick: () -> Unit,
@@ -118,19 +113,17 @@ private fun Options(
             text = stringResource(id = RFrontitude.string.common_button_exit),
             onClick = onExitClick
         )
-        if (!isTwoPlayerMode) {
-            Spacer(modifier = Modifier.height(4.dp))
-            SwitchOption(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 4.dp),
-                text = stringResource(id = RFrontitude.string.chess_gamepausemenu_toggle_button_movesuggestions),
-                textStyle = KompaktTypography900.labelMedium,
-                isSwitchedOn = isMoveSuggestionsOn,
-                onSwitchToggle = onMoveSuggestionsSwitchToggle,
-                verticalTouchAreaPadding = 12.dp
-            )
-        }
+        Spacer(modifier = Modifier.height(4.dp))
+        SwitchOption(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 4.dp),
+            text = stringResource(id = RFrontitude.string.chess_gamepausemenu_toggle_button_movesuggestions),
+            textStyle = KompaktTypography900.labelMedium,
+            isSwitchedOn = isMoveSuggestionsOn,
+            onSwitchToggle = onMoveSuggestionsSwitchToggle,
+            verticalTouchAreaPadding = 12.dp
+        )
     }
 }
 

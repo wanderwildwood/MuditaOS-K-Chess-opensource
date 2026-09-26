@@ -96,16 +96,16 @@ private fun OptionsMenuScreen(
                 isTwoPlayerMode = uiState.isTwoPlayerMode,
                 uiEvent = uiEvent
             )
+            SwitchOption(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 4.dp),
+                text = stringResource(id = RFrontitude.string.chess_gamepausemenu_toggle_button_movesuggestions),
+                textStyle = KompaktTypography900.titleMedium,
+                isSwitchedOn = uiState.isMoveSuggestionsOn,
+                onSwitchToggle = { uiEvent(MoveSuggestionsSwitchToggled) }
+            )
             if (!uiState.isTwoPlayerMode) {
-                SwitchOption(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 4.dp),
-                    text = stringResource(id = RFrontitude.string.chess_gamepausemenu_toggle_button_movesuggestions),
-                    textStyle = KompaktTypography900.titleMedium,
-                    isSwitchedOn = uiState.isMoveSuggestionsOn,
-                    onSwitchToggle = { uiEvent(MoveSuggestionsSwitchToggled) }
-                )
                 PlayerColor(
                     isWhiteSelected = uiState.isWhiteSelected,
                     uiEvent = uiEvent

@@ -8,4 +8,7 @@ interface Participant {
     suspend fun setup(options: GameOptions)
     suspend fun doMove()
     suspend fun cleanup()
+
+    /** Take back the last move(s) on this participant's turn. Only a human participant can. */
+    fun undoMove() = Unit
 }

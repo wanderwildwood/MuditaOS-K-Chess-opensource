@@ -17,7 +17,7 @@ internal class GameFactory : KoinComponent {
         uiEvents: GameplayUiEvents
     ): Game {
         val computerSide = playerSide.flip()
-        val board = get<ChessBoard> { parametersOf(isPiecesPositionReady, computerSide) }
+        val board = get<ChessBoard> { parametersOf(isPiecesPositionReady, computerSide, ChessBoard.COMPLETE_ROUND_MOVES_COUNT) }
         val moveResultNotifier = get<MoveResultNotifier> { parametersOf(board, uiEvents) }
         val participants = listOf(
             get<PlayerParticipant> { parametersOf(playerSide, board, moveResultNotifier, uiEvents) },
@@ -34,7 +34,7 @@ internal class GameFactory : KoinComponent {
     ): Game {
         // Fixed orientation, no per-move flipping: Black always on top, White always on bottom,
         // matching how a real board sits between two people playing over the board.
-        val board = get<ChessBoard> { parametersOf(isPiecesPositionReady, BLACK) }
+        val board = get<ChessBoard> { parametersOf(isPiecesPositionReady, BLACK, 1) }
         val moveResultNotifier = get<MoveResultNotifier> { parametersOf(board, uiEvents) }
         val participants = listOf(
             get<PlayerParticipant> { parametersOf(WHITE, board, moveResultNotifier, uiEvents) },

@@ -582,13 +582,11 @@ internal class GameplayViewModelTest {
     }
 
     @Test
-    fun `on init shows game menu with two player mode when returning to an ongoing two player game`() = runTest {
+    fun `on init shows game menu with the move suggestions switch when returning to an ongoing two player game`() = runTest {
         every { args.value } returns GameplayRoute(isPlayerWhite = true, isTwoPlayerMode = true)
         every { savedStateHandle.get<Boolean>(KEY_GAME_STARTED_BEFORE) } returns true
 
-        assertThat(testedTwoPlayerLocal.state.dialog).isEqualTo(
-            GameMenuDialogUi(isMoveSuggestionsOn = true, isTwoPlayerMode = true)
-        )
+        assertThat(testedTwoPlayerLocal.state.dialog).isEqualTo(GameMenuDialogUi(isMoveSuggestionsOn = true))
     }
 
     @ParameterizedTest
@@ -652,6 +650,79 @@ internal class GameplayViewModelTest {
 
             assertThat(blackMoveConfirmedState.topParticipant.isSelected).isFalse()
             assertThat(blackMoveConfirmedState.bottomParticipant.isSelected).isTrue()
+        }
+    }
+
+    @Test
+    fun `UndoMoveButtonClicked in two player mode takes back only the last move`() = runTest {
+        every { args.value } returns GameplayRoute(isPlayerWhite = true, isTwoPlayerMode = true)
+        val pawnUi = PieceUi(PAWN, isWhite = true)
+        val afterWhiteMoveBoard = WHITE_PLAYER_INITIAL_BOARD_UI
+            .replace(SquareUi(position = Ui.E2, isWhite = true, piece = null))
+            .replace(SquareUi(position = Ui.E4, isWhite = true, piece = pawnUi))
+
+        testedTwoPlayerLocal.states.test {
+            skipItems(1)
+
+            testedTwoPlayerLocal.handleUiEvent(SquareClicked(Ui.E2))
+            awaitItem()
+            testedTwoPlayerLocal.handleUiEvent(SquareClicked(Ui.E4))
+            awaitItem()
+            testedTwoPlayerLocal.handleUiEvent(ConfirmMoveButtonClicked)
+            val whiteMovedState = awaitItem()
+            assertThat(whiteMovedState.isUndoMoveButtonVisible).isTrue()
+
+            testedTwoPlayerLocal.handleUiEvent(SquareClicked(Ui.E7))
+            awaitItem()
+            testedTwoPlayerLocal.handleUiEvent(SquareClicked(Ui.E5))
+            awaitItem()
+            testedTwoPlayerLocal.handleUiEvent(ConfirmMoveButtonClicked)
+            awaitItem()
+
+            testedTwoPlayerLocal.handleUiEvent(UndoMoveButtonClicked)
+            val blackUndoneState = awaitItem()
+            assertThat(blackUndoneState.board).isEqualTo(afterWhiteMoveBoard)
+            assertThat(blackUndoneState.topParticipant.isSelected).isTrue()
+            assertThat(blackUndoneState.bottomParticipant.isSelected).isFalse()
+
+            testedTwoPlayerLocal.handleUiEvent(UndoMoveButtonClicked)
+            val whiteUndoneState = awaitItem()
+            assertThat(whiteUndoneState.board).isEqualTo(WHITE_PLAYER_INITIAL_BOARD_UI)
+            assertThat(whiteUndoneState.bottomParticipant.isSelected).isTrue()
+            assertThat(whiteUndoneState.isUndoMoveButtonVisible).isFalse()
+
+            // White is on move again, and can play
+            testedTwoPlayerLocal.handleUiEvent(SquareClicked(Ui.D2))
+            awaitItem()
+            testedTwoPlayerLocal.handleUiEvent(SquareClicked(Ui.D4))
+            awaitItem()
+            testedTwoPlayerLocal.handleUiEvent(ConfirmMoveButtonClicked)
+            val replayedState = awaitItem()
+            assertThat(replayedState.topParticipant.isSelected).isTrue()
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = [true, false])
+    fun `two player mode follows the move suggestions setting`(isMoveSuggestionsOn: Boolean) = runTest {
+        every { args.value } returns GameplayRoute(isPlayerWhite = true, isTwoPlayerMode = true)
+        coEvery { getGameOptionsUseCase() } returns Result.success(
+            gameOptions.copy(isMoveSuggestionsOn = isMoveSuggestionsOn, isTwoPlayerMode = true)
+        )
+
+        testedTwoPlayerLocal.states.test {
+            skipItems(1)
+
+            testedTwoPlayerLocal.handleUiEvent(SquareClicked(Ui.E2))
+            val pieceSelectedState = awaitItem()
+            assertThat(pieceSelectedState.board[Ui.E2].isHighlighted).isTrue()
+            assertThat(pieceSelectedState.board[Ui.E4].isHighlighted).isEqualTo(isMoveSuggestionsOn)
+
+            testedTwoPlayerLocal.handleUiEvent(MoveSuggestionsSwitchToggled(on = !isMoveSuggestionsOn))
+            val toggledState = awaitItem()
+            assertThat(toggledState.board[Ui.E4].isHighlighted).isEqualTo(!isMoveSuggestionsOn)
+            cancelAndIgnoreRemainingEvents()
         }
     }
 

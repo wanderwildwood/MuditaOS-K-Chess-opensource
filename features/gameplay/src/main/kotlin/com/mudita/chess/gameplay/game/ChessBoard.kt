@@ -23,7 +23,13 @@ import kotlin.concurrent.withLock
 @Suppress("TooManyFunctions")
 internal class ChessBoard(
     topParticipantSide: Side,
-    private var isPiecesPositionReady: Boolean = true
+    private var isPiecesPositionReady: Boolean = true,
+    /**
+     * How many moves [undoRound] takes back. Against the computer that is a full round, the
+     * player's move and the reply, so the player is to move again. Between two people at one board
+     * it is a single move: taking back your opponent's move along with your own is not an undo.
+     */
+    val movesPerUndo: Int = COMPLETE_ROUND_MOVES_COUNT
 ) {
 
     private val squares = squaresFromTopLeftToBottomRight(topParticipantSide)
@@ -188,7 +194,7 @@ internal class ChessBoard(
             if (!isLastMoveConfirmed) {
                 undoUnconfirmedMove()
             }
-            repeat(moves.size.coerceAtMost(COMPLETE_ROUND_MOVES_COUNT)) {
+            repeat(moves.size.coerceAtMost(movesPerUndo)) {
                 board.undoMove()
             }
             checkInfo = evaluateCheckInfo(checkAcknowledgeRequired = false)

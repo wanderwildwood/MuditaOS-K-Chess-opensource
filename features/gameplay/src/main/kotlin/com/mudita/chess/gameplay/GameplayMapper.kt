@@ -92,11 +92,10 @@ internal class GameplayMapper {
         sideToMove: Side,
         isMoveSuggestionsOn: Boolean,
         isPromotionManualConfirmationRequired: Boolean,
-        checkInfo: CheckInfo?,
-        isTwoPlayerMode: Boolean = false
+        checkInfo: CheckInfo?
     ): GameplayDialogUi? =
         when (status) {
-            STOPPED -> GameMenuDialogUi(isMoveSuggestionsOn, isTwoPlayerMode)
+            STOPPED -> GameMenuDialogUi(isMoveSuggestionsOn)
 
             WHITE_WON -> createVictoryDialogFor(side = WHITE)
 
