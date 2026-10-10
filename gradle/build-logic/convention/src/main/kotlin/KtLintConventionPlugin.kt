@@ -24,8 +24,11 @@ class KtLintConventionPlugin : Plugin<Project> {
                 outputs.file("build/reports/ktlint-report.xml")
                 outputs.cacheIf { true }
 
+                // Monochrome.kt and EInkDialog.kt are kept byte-identical with the other apps
+                // that carry them, so they keep those apps' style rather than this one's.
                 args = listOf(
                     "src/**/*.kt", "!src/test/**/*.kt", "!src/androidTest/**/*.kt",
+                    "!src/**/Monochrome.kt", "!src/**/EInkDialog.kt",
                     "--editorconfig=${rootDir}/.codeStyleConfig/.editorconfig",
                     "--reporter=checkstyle,output=build/reports/ktlint-report.xml",
                     "--reporter=plain"

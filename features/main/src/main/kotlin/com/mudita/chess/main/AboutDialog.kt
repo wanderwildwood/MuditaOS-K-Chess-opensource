@@ -2,7 +2,6 @@ package com.mudita.chess.main
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -23,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import com.mudita.chess.ui.design.EInkDialog
 import com.mudita.mmd.components.buttons.OutlinedButtonMMD
 import com.mudita.mmd.components.text.TextMMD
@@ -119,7 +119,7 @@ private fun Llama() {
 
 private fun Context.openWebPage(address: String) {
     runCatching {
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(address)))
+        startActivity(Intent(Intent.ACTION_VIEW, address.toUri()))
     }.onFailure {
         Toast.makeText(this, getString(RFrontitude.string.chess_about_no_browser), Toast.LENGTH_SHORT).show()
     }

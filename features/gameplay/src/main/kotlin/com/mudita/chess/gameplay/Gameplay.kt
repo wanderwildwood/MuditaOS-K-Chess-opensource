@@ -89,6 +89,7 @@ private fun GameplayInternal(
     }
 }
 
+@Suppress("LongMethod")
 @Composable
 private fun GameplayScreen(
     uiState: GameplayUiState,

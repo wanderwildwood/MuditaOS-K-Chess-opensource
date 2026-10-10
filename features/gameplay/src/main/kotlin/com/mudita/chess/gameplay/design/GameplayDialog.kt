@@ -61,7 +61,6 @@ internal fun GameplayDialog(
                 king = dialog.king,
                 attackedBy = dialog.attackedBy
             )
-
         }
     }
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" xmlns:tools="http://schemas.android.com/tools">
     <string name="chess_common_label_blackbishop">Black bishop</string>
     <string name="chess_common_label_blackking">Black king</string>
     <string name="chess_common_label_blackknight">Black knight</string>
@@ -25,11 +25,11 @@
     <string name="chess_optionsmenu_button_oneplayer">1 Player</string>
     <string name="chess_optionsmenu_button_play">Play</string>
     <string name="chess_optionsmenu_button_twoplayer">2 Players</string>
-    <string name="chess_optionsmenu_label_advanced">Advanced (%d Elo)</string>
-    <string name="chess_optionsmenu_label_beginner">Beginner (%d Elo)</string>
+    <string name="chess_optionsmenu_label_advanced" tools:ignore="PluralsCandidate">Advanced (%d Elo)</string>
+    <string name="chess_optionsmenu_label_beginner" tools:ignore="PluralsCandidate">Beginner (%d Elo)</string>
     <string name="chess_optionsmenu_label_difficultylevel">Difficulty level</string>
     <string name="chess_optionsmenu_label_gamemode">Game mode</string>
-    <string name="chess_optionsmenu_label_intermediate">Intermediate (%d Elo)</string>
+    <string name="chess_optionsmenu_label_intermediate" tools:ignore="PluralsCandidate">Intermediate (%d Elo)</string>
     <string name="chess_optionsmenu_label_selectplayercolor">Select player color</string>
     <string name="chess_statistics_dialog_body_thiswillgiveyou">This will give you a fresh start, but it can’t be undone</string>
     <string name="chess_statistics_dialog_button_clearstatistics">Clear statistics</string>
@@ -58,18 +58,19 @@
     <string name="common_topbar_button_clearall">Clear all</string>
     <string name="maps_common_screentitle_menu">Menu</string>
 
-    <!-- Chess+'s own words, below Mudita's. -->
+    <!-- Chess+'s own words, below Mudita's. Untranslated ones show in English until someone who
+         speaks the language offers a translation. -->
     <!-- A button for something that cannot be undone, after its first tap. %1$s is the button's own label, e.g. "New game — tap again" -->
-    <string name="chess_common_button_tapagain">%1$s — tap again</string>
+    <string name="chess_common_button_tapagain" tools:ignore="MissingTranslation">%1$s — tap again</string>
 
     <!-- About, opened by the i at the top right of the first screen. %1$s is the version, e.g. "1.3.10" -->
-    <string name="chess_about_title">Chess+ %1$s</string>
-    <string name="chess_about_what">Mudita\'s own Chess for the Kompakt, with a second player added: two people at one board, passing the phone between moves.</string>
-    <string name="chess_about_licence">GNU General Public License v3</string>
-    <string name="chess_about_engine">Fairy-Stockfish 14 — © the Stockfish developers and Fabian Fichter, same licence</string>
-    <string name="chess_about_feed_the_llamas">feed the llamas</string>
-    <string name="chess_about_no_browser">There is no browser on this phone to open that with.</string>
-    <string name="chess_about_close">Close</string>
+    <string name="chess_about_title" translatable="false">Chess+ %1$s</string>
+    <string name="chess_about_what" tools:ignore="MissingTranslation">Mudita\'s own Chess for the Kompakt, with a second player added: two people at one board, passing the phone between moves.</string>
+    <string name="chess_about_licence" translatable="false">GNU General Public License v3</string>
+    <string name="chess_about_engine" translatable="false">Fairy-Stockfish 14 — © the Stockfish developers and Fabian Fichter, same licence</string>
+    <string name="chess_about_feed_the_llamas" tools:ignore="MissingTranslation">feed the llamas</string>
+    <string name="chess_about_no_browser" tools:ignore="MissingTranslation">There is no browser on this phone to open that with.</string>
+    <string name="chess_about_close" tools:ignore="MissingTranslation">Close</string>
     <!-- The i at the top right of the first screen, for a screen reader -->
-    <string name="chess_main_button_about">About</string>
+    <string name="chess_main_button_about" tools:ignore="MissingTranslation">About</string>
 </resources>

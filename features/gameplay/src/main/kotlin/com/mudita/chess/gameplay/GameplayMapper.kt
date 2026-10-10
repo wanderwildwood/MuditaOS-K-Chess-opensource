@@ -38,6 +38,7 @@ import com.mudita.chess.ui.model.PieceUi
 import com.mudita.chess.ui.model.PositionUi
 import com.mudita.chess.frontitude.R as RFrontitude
 
+@Suppress("TooManyFunctions")
 internal class GameplayMapper {
 
     fun toBoardUi(chessBoardState: ChessBoardState): BoardUi = with(chessBoardState) {

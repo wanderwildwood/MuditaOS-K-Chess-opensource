@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions")
+
 package com.mudita.chess.ui.design
 
 import androidx.annotation.DrawableRes
