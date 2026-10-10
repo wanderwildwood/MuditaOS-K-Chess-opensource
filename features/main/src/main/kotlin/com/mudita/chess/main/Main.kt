@@ -17,10 +17,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.mudita.chess.main.MainUiEvent.PlayButtonClicked
 import com.mudita.chess.main.MainUiEvent.StatisticsButtonClicked
@@ -28,6 +33,7 @@ import com.mudita.chess.navigation.AppNavigator
 import com.mudita.chess.navigation.NavActionsEffect
 import com.mudita.chess.ui.KompaktPreview
 import com.mudita.chess.ui.design.AppButtonAttributes
+import com.mudita.chess.ui.design.AppIconButton
 import com.mudita.chess.ui.design.AppPrimaryButton
 import com.mudita.chess.ui.design.AppSecondaryButton
 import com.mudita.chess.ui.design.AppTheme
@@ -66,7 +72,7 @@ private fun MainScreen(
     uiEvent: (MainUiEvent) -> Unit
 ) {
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.primaryContainer
+        containerColor = MaterialTheme.colorScheme.background
     ) { contentPadding ->
         Box(
             modifier = Modifier
@@ -100,6 +106,19 @@ private fun BoxScope.MainLoading() {
 
 @Composable
 private fun BoxScope.MainLoaded(uiEvent: (MainUiEvent) -> Unit) {
+    var isAboutOpen by rememberSaveable { mutableStateOf(false) }
+    val aboutLabel = stringResource(RFrontitude.string.chess_main_button_about)
+    AppIconButton(
+        modifier = Modifier
+            .align(Alignment.TopEnd)
+            .padding(top = 8.dp, end = 4.dp)
+            .semantics { contentDescription = aboutLabel },
+        iconResId = RCommonUi.drawable.ic_info,
+        onClick = { isAboutOpen = true }
+    )
+    if (isAboutOpen) {
+        AboutDialog(onDismiss = { isAboutOpen = false })
+    }
     Image(
         modifier = Modifier
             .align(Alignment.TopCenter)

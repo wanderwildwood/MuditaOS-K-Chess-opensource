@@ -62,4 +62,14 @@
     <!-- A button for something that cannot be undone, after its first tap. %1$s is the button's own label, e.g. "New game — tap again" -->
     <string name="chess_common_button_tapagain">%1$s — tap again</string>
 
+    <!-- About, opened by the i at the top right of the first screen. %1$s is the version, e.g. "1.3.10" -->
+    <string name="chess_about_title">Chess+ %1$s</string>
+    <string name="chess_about_what">Mudita\'s own Chess for the Kompakt, with a second player added: two people at one board, passing the phone between moves.</string>
+    <string name="chess_about_licence">GNU General Public License v3</string>
+    <string name="chess_about_engine">Fairy-Stockfish 14 — © the Stockfish developers and Fabian Fichter, same licence</string>
+    <string name="chess_about_feed_the_llamas">feed the llamas</string>
+    <string name="chess_about_no_browser">There is no browser on this phone to open that with.</string>
+    <string name="chess_about_close">Close</string>
+    <!-- The i at the top right of the first screen, for a screen reader -->
+    <string name="chess_main_button_about">About</string>
 </resources>
