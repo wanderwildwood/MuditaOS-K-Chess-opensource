@@ -1,19 +1,31 @@
-# Privacy Policy
+# Privacy
 
-This is a personal fork of [Mudita's Kompakt Chess app](https://github.com/mudita/MuditaOS-K-Chess-opensource), built for a single device. It collects no data of any kind.
+Chess+ collects nothing, sends nothing, and asks for no permissions.
 
-## What this app does not do
+That is the whole policy. The rest of this page is the evidence for it, because a privacy
+policy that cannot be checked is only a promise.
 
-- No `INTERNET` permission at all — the app is physically incapable of making a network request
-- No analytics, no crash reporting, no telemetry of any kind (upstream's Sentry error-tracking integration was removed as part of migrating off Mudita's private dependencies — see [README](README.md))
-- No account, no sign-up, no login
-- No advertising, no ad ID
+## No permissions
 
-## What this app does
+The app's manifest asks for no permission a person could be asked to grant: not network, not
+storage, not contacts, not identifiers. Android will not give an app anything it has not asked
+for, so there is nothing of yours it can reach.
 
-- Plays chess entirely on-device, either against the bundled Stockfish engine or in local pass-and-play mode between two people sharing the phone.
-- Stores game history/statistics locally on the device only.
+## No network
+
+There is no networking code in the app and no dependency that provides any. Without the
+`INTERNET` permission it could not open a connection if there were. The engine runs on the
+phone, as a program inside the app.
+
+## What it keeps
+
+The game in progress, the options you chose, and the statistics of games against the
+computer, in the app's own storage on the phone. Nothing else, and none of it leaves the
+phone. Uninstalling the app removes all of it.
+
+It began as Mudita's Chess app, which reported crashes to Sentry; that was taken out when the
+interface moved to Mudita's public libraries, and nothing has replaced it.
 
 ## Changes
 
-If this policy changes, this file will be updated in place — there's no separate notification mechanism, since there's no way to reach users of a self-built app.
+If this changes, this file changes with it, in the same repository as the code.
