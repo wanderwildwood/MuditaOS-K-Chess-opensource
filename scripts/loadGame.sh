@@ -2,7 +2,7 @@
 
 player_side=${2:-white}
 difficulty=${3:-1}
-app_package=com.mudita.chess
+app_package=com.wanderwildwood.chessplus
 
 pgn=$(cat scripts/game.pgn)
 pgn="${pgn//$'\r\n'/\\;}"

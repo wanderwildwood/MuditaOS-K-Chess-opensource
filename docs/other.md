@@ -21,14 +21,3 @@ To check if baseline profile improved the app performance, run the corresponding
 `CompilationMode.Partial()` represents results with baseline profile.
 
 Baseline profile generators can be found in the [baselineprofile](../baselineprofile) module.
-
-# Licenses
-Licenses list is collected by the [AboutLibraries](https://github.com/mikepenz/AboutLibraries) plugin.
-
-The report is generated **automatically** during every build process and saved to:
-`app/src/main/res/raw/aboutlibraries.json`
-
-To generate it manually, run:
-```bash
-./gradlew exportLibraryDefinitions
-```

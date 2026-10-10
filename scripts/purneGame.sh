@@ -1,6 +1,6 @@
 #!/bin/bash
 
-app_package=com.mudita.chess
+app_package=com.wanderwildwood.chessplus
 
 adb shell "run-as $app_package rm /data/data/$app_package/databases/chess.db"
 adb shell "run-as $app_package rm /data/data/$app_package/databases/chess.db-journal"

@@ -3,6 +3,8 @@ android-compileSdk = "36"
 android-minSdk = "31"
 android-targetSdk = "31"
 app-version-versionName = "1.3.9"
+# Raise by one with every release. It used to come from the CI run number, which is gone.
+app-version-versionCode = "14"
 app-version-appId = "com.wanderwildwood.chessplus"
 # Android/Kotlin
 android-gradle-plugin = "8.13.1"
@@ -12,7 +14,6 @@ kotlin = "2.2.21"
 # Quality
 detekt = "1.23.8"
 ktlint = "1.8.0"
-leakcanary = "2.14"
 # Testing
 junit = "6.0.1"
 truth = "1.4.5"
@@ -58,7 +59,6 @@ chessLib = "1.3.4"
 detekt = { module = "io.gitlab.arturbosch.detekt:detekt-cli", version.ref = "detekt" }
 detekt-rules-libraries = { module = "io.gitlab.arturbosch.detekt:detekt-rules-libraries", version.ref = "detekt" }
 ktlint = { module = "com.pinterest.ktlint:ktlint-cli", version.ref = "ktlint" }
-leakcanary = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary" }
 # Testing
 junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
 junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }

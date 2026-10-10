@@ -1,4 +1,3 @@
-import com.mudita.tasks.GenerateChangelogTask
 import java.util.Properties
 
 plugins {
@@ -13,19 +12,20 @@ android {
     defaultConfig {
         applicationId = project.libs.versions.app.version.appId.get()
         versionName = project.libs.versions.app.version.versionName.get()
-        versionCode = System.getenv("VERSION_CODE")?.toIntOrNull() ?: 1
+        versionCode = project.libs.versions.app.version.versionCode.get().toInt()
     }
 
-    // The checked-in certs/debug.keystore is the AOSP test key, whose private half ships with
-    // AOSP - anyone can build an APK this app's own signature check would accept as an update.
-    // A real keystore in signing/ replaces it for every build type when one is present; the
-    // release workflow writes it there from repository secrets.
+    // A real keystore in signing/ signs every build type when it is present. It is gitignored,
+    // and there is no fallback: without it a release builds unsigned, which will not install
+    // anywhere. A key in a public repository is not a signing key, and a missing one should
+    // stop a release rather than produce something installable. Debug builds without it get
+    // the ordinary Android debug key from AGP.
     val signingPropertiesFile = rootProject.file("signing/signing.properties")
     val realSigningConfig = if (signingPropertiesFile.isFile) {
         val signingProperties = Properties().apply {
             signingPropertiesFile.inputStream().use(::load)
         }
-        signingConfigs.create("release") {
+        signingConfigs.create("real") {
             storeFile = rootProject.file("signing/signing.keystore")
             storePassword = signingProperties.getProperty("STORE_PASSWORD")
             keyAlias = signingProperties.getProperty("KEY_ALIAS")
@@ -33,15 +33,6 @@ android {
         }
     } else {
         null
-    }
-
-    signingConfigs {
-        getByName("debug") {
-            storeFile = rootProject.file("app-android/certs/debug.keystore")
-            storePassword = "android"
-            keyAlias = "system-debug"
-            keyPassword = "android"
-        }
     }
 
     buildFeatures {
@@ -52,31 +43,18 @@ android {
         getByName("debug") {
             isDebuggable = true
             isMinifyEnabled = false
-            signingConfig = realSigningConfig ?: signingConfigs.getByName("debug")
+            realSigningConfig?.let { signingConfig = it }
         }
-        create("qa") {
-            isDebuggable = false
-            isMinifyEnabled = true
-            isShrinkResources = true
-            matchingFallbacks += listOf("release")
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-            signingConfig = realSigningConfig ?: signingConfigs.getByName("debug")
-        }
-
         create("benchmark") {
             initWith(getByName("release"))
             matchingFallbacks += listOf("release")
+            // Benchmarks are run here, never published, so the debug key will do.
             signingConfig = realSigningConfig ?: signingConfigs.getByName("debug")
             proguardFiles("benchmark-rules.pro")
         }
         getByName("release") {
-            // The one thing that differs between a release built here and the one GitHub
-            // publishes: AGP stamps the git revision into META-INF, and the build box works
-            // from an rsync with no .git, so it writes NO_SUPPORTED_VCS_FOUND where the CI
-            // runner writes the commit. Off, so the two have identical contents.
+            // AGP stamps the git revision into META-INF, and the build box works from an rsync
+            // with no .git. Off, so a release built anywhere has the same contents.
             vcsInfo {
                 include = false
             }
@@ -88,8 +66,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            // TODO use a proper release signing
-            signingConfig = realSigningConfig ?: signingConfigs.getByName("debug")
+            signingConfig = realSigningConfig
         }
     }
 
@@ -140,12 +117,9 @@ dependencies {
     implementation(projects.features.gameplay)
     implementation(projects.features.optionsmenu)
     debugImplementation(projects.features.gameloader)
-    "qaImplementation"(projects.features.gameloader)
     implementation(projects.features.statistics)
 
     "baselineProfile"(projects.baselineprofile)
-
-    debugImplementation(libs.leakcanary)
 
     implementation(libs.androidx.activity)
     implementation(libs.androidx.core)
@@ -166,30 +140,4 @@ dependencies {
     implementation(libs.mmd)
 
     implementation(libs.logcat)
-}
-
-tasks.register("generateChangelog", GenerateChangelogTask::class) {
-    // e.g.: com.mudita.notes -> notes
-    appName = project.libs.versions.app.version.appId.get().split(".").last()
-    // MAJOR.MINOR.PATCH versioning
-    versionName = project.libs.versions.app.version.versionName.get()
-}
-
-tasks.register("checkVersion") {
-    doFirst {
-        val currentVersion = project.libs.versions.app.version.versionName.get()
-
-        // Extracting the tag from the GITHUB_REF environment variable
-        val githubRef = System.getenv("GITHUB_REF") ?: throw GradleException("GITHUB_REF not found.")
-        // Example of githubRef: refs/tags/release.0.0.1
-
-        val pattern = Regex("(release|qa)\\.(\\d+\\.\\d+\\.\\d+(-rc\\d+)?)")
-        val matchResult = pattern.find(githubRef.removePrefix("refs/tags/"))
-            ?: throw GradleException("The git tag does not follow the required 'type.x.y.z' pattern.")
-        val tagVersion = matchResult.groupValues[2]
-
-        if (currentVersion != tagVersion) {
-            throw GradleException("The version in build.gradle.kts ($currentVersion) does not match the tag version ($tagVersion).")
-        }
-    }
 }
