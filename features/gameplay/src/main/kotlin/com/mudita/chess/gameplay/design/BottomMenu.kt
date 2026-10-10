@@ -65,7 +65,7 @@ internal fun BottomMenu(
         if (isConfirmMoveButtonVisible) {
             Spacer(modifier = Modifier.width(6.dp))
             AppPrimaryButton(
-                text = stringResource(id = RFrontitude.string.chess_gameplay_topbar_button_confirmmove).uppercase(),
+                text = stringResource(id = RFrontitude.string.chess_gameplay_topbar_button_confirmmove),
                 size = AppButtonAttributes(
                     height = 36.dp,
                     contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),

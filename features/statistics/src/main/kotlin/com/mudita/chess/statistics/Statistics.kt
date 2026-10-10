@@ -39,7 +39,6 @@ import com.mudita.chess.ui.design.AppSecondaryButton
 import com.mudita.chess.ui.design.AppTheme
 import com.mudita.chess.ui.design.AppTopAppBar
 import com.mudita.chess.ui.design.AppTypography500
-import com.mudita.chess.ui.design.AppTypography900
 import org.koin.androidx.compose.koinViewModel
 import com.mudita.chess.frontitude.R as RFrontitude
 
@@ -76,7 +75,7 @@ private fun StatisticsScreen(
     uiEvent: (StatisticsUiEvent) -> Unit
 ) {
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.primaryContainer,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = { StatisticsTopAppBar(uiEvent, uiState.isClearAllButtonVisible) }
     ) { contentPadding ->
         val contentModifier = Modifier
@@ -106,12 +105,6 @@ private fun EmptyContent(modifier: Modifier = Modifier) =
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = stringResource(id = RFrontitude.string.common_search_error_h1_wecouldntfind),
-            textAlign = TextAlign.Center,
-            style = AppTypography900.titleMedium
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
             text = stringResource(id = RFrontitude.string.chess_statistics_emptystate_body_asyouwin),
             textAlign = TextAlign.Center,
             style = AppTypography500.bodyMedium
@@ -138,6 +131,7 @@ private fun Content(
             onDismissRequest = { uiEvent(DialogDismissRequested) }
         ) {
             AppConfirmCard(
+                modifier = Modifier.padding(start = 12.dp, end = 12.dp, bottom = 16.dp),
                 title = stringResource(id = RFrontitude.string.chess_statistics_dialog_h1_clearallstatistics),
                 description = stringResource(id = RFrontitude.string.chess_statistics_dialog_body_thiswillgiveyou),
                 confirmText = stringResource(id = RFrontitude.string.chess_statistics_dialog_button_clearstatistics),

@@ -36,7 +36,11 @@ internal fun MatchResults(
     matchResults.forEachIndexed { index, result ->
         MatchResultItem(
             title = stringResource(id = result.titleResId),
-            value = result.value,
+            value = if (result.isPercentage) {
+                stringResource(RFrontitude.string.chess_statistics_label_percentage, result.value.toString())
+            } else {
+                result.value.toString()
+            },
             valueWidth = valueWidth
         )
         if (index < matchResults.size - 1) {
@@ -51,7 +55,7 @@ internal fun MatchResults(
 
 @Composable
 private fun countValueWidth(matchResults: List<MatchResultUi>): Dp {
-    val maxDigits = matchResults.maxOf { it.value.toString().length }
+    val maxDigits = matchResults.maxOf { it.value.toString().length + if (it.isPercentage) 1 else 0 }
     val valueWidth = maxDigits * DIGIT_WIDTH
     return valueWidth.dp
 }
@@ -63,7 +67,7 @@ private const val DIGIT_WIDTH = 18
 internal fun MatchResultsPreview() = AppTheme {
     Column {
         MatchResults(
-            modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer),
+            modifier = Modifier.background(MaterialTheme.colorScheme.background),
             matchResults = listOf(
                 MatchResultUi(
                     titleResId = RFrontitude.string.chess_statistics_label_won,
@@ -76,7 +80,7 @@ internal fun MatchResultsPreview() = AppTheme {
             )
         )
         MatchResults(
-            modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer),
+            modifier = Modifier.background(MaterialTheme.colorScheme.background),
             matchResults = listOf(
                 MatchResultUi(
                     titleResId = RFrontitude.string.chess_statistics_label_won,
@@ -89,7 +93,7 @@ internal fun MatchResultsPreview() = AppTheme {
             )
         )
         MatchResults(
-            modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer),
+            modifier = Modifier.background(MaterialTheme.colorScheme.background),
             matchResults = listOf(
                 MatchResultUi(
                     titleResId = RFrontitude.string.chess_statistics_label_won,
@@ -102,7 +106,7 @@ internal fun MatchResultsPreview() = AppTheme {
             )
         )
         MatchResults(
-            modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer),
+            modifier = Modifier.background(MaterialTheme.colorScheme.background),
             matchResults = listOf(
                 MatchResultUi(
                     titleResId = RFrontitude.string.chess_statistics_label_won,

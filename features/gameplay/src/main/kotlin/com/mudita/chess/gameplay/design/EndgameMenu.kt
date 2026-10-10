@@ -125,7 +125,7 @@ internal fun EndgameResult(
         // "ZWART HEEFT GEWONNEN!" would otherwise wrap and lose its second line.
         val style = AppTypography900.displaySmall
         BasicText(
-            text = stringResource(id = endgame.resultResId).uppercase(),
+            text = stringResource(id = endgame.resultResId),
             style = style.merge(color = LocalContentColor.current),
             maxLines = 1,
             autoSize = TextAutoSize.StepBased(minFontSize = 12.sp, maxFontSize = style.fontSize)

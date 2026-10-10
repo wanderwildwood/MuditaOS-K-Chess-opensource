@@ -7,29 +7,29 @@ internal val MATCH_RESULTS_WON_5 = listOf(
     MatchResultUi(titleResId = RFrontitude.string.chess_statistics_label_won, value = 5),
     MatchResultUi(titleResId = RFrontitude.string.chess_statistics_label_drawn, value = 0),
     MatchResultUi(titleResId = RFrontitude.string.chess_statistics_label_lost, value = 0),
-    MatchResultUi(titleResId = RFrontitude.string.chess_statistics_label_percentageofwins, value = 100)
+    MatchResultUi(titleResId = RFrontitude.string.chess_statistics_label_percentageofwins, value = 100, isPercentage = true)
 )
 internal val MATCH_RESULTS_WON_7 = listOf(
     MatchResultUi(titleResId = RFrontitude.string.chess_statistics_label_won, value = 7),
     MatchResultUi(titleResId = RFrontitude.string.chess_statistics_label_drawn, value = 0),
     MatchResultUi(titleResId = RFrontitude.string.chess_statistics_label_lost, value = 0),
-    MatchResultUi(titleResId = RFrontitude.string.chess_statistics_label_percentageofwins, value = 100)
+    MatchResultUi(titleResId = RFrontitude.string.chess_statistics_label_percentageofwins, value = 100, isPercentage = true)
 )
 internal val MATCH_RESULTS_LOST_1 = listOf(
     MatchResultUi(titleResId = RFrontitude.string.chess_statistics_label_won, value = 0),
     MatchResultUi(titleResId = RFrontitude.string.chess_statistics_label_drawn, value = 0),
     MatchResultUi(titleResId = RFrontitude.string.chess_statistics_label_lost, value = 1),
-    MatchResultUi(titleResId = RFrontitude.string.chess_statistics_label_percentageofwins, value = 0)
+    MatchResultUi(titleResId = RFrontitude.string.chess_statistics_label_percentageofwins, value = 0, isPercentage = true)
 )
 internal val MATCH_RESULTS_WON_5_LOST_1 = listOf(
     MatchResultUi(titleResId = RFrontitude.string.chess_statistics_label_won, value = 5),
     MatchResultUi(titleResId = RFrontitude.string.chess_statistics_label_drawn, value = 0),
     MatchResultUi(titleResId = RFrontitude.string.chess_statistics_label_lost, value = 1),
-    MatchResultUi(titleResId = RFrontitude.string.chess_statistics_label_percentageofwins, value = 83)
+    MatchResultUi(titleResId = RFrontitude.string.chess_statistics_label_percentageofwins, value = 83, isPercentage = true)
 )
 internal val MATCH_RESULTS_WON_5_LOST_1_DRAW_10 = listOf(
     MatchResultUi(titleResId = RFrontitude.string.chess_statistics_label_won, value = 5),
     MatchResultUi(titleResId = RFrontitude.string.chess_statistics_label_drawn, value = 10),
     MatchResultUi(titleResId = RFrontitude.string.chess_statistics_label_lost, value = 1),
-    MatchResultUi(titleResId = RFrontitude.string.chess_statistics_label_percentageofwins, value = 31)
+    MatchResultUi(titleResId = RFrontitude.string.chess_statistics_label_percentageofwins, value = 31, isPercentage = true)
 )

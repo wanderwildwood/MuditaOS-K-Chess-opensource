@@ -56,7 +56,7 @@ internal fun Participant(
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = stringResource(id = participant.nameResId).uppercase(),
+                text = stringResource(id = participant.nameResId),
                 style = AppTypography900.displaySmall
             )
         }

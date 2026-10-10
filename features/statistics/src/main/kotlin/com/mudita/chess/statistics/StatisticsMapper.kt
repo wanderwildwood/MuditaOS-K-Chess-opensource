@@ -50,7 +50,8 @@ internal class StatisticsMapper {
     private fun toPercentageOfWinsResultUi(winsCount: Int, allGamesCount: Int) =
         MatchResultUi(
             titleResId = RFrontitude.string.chess_statistics_label_percentageofwins,
-            value = calculatePercentage(value = winsCount, all = allGamesCount)
+            value = calculatePercentage(value = winsCount, all = allGamesCount),
+            isPercentage = true
         )
 
     private fun calculatePercentage(value: Int, all: Int) =

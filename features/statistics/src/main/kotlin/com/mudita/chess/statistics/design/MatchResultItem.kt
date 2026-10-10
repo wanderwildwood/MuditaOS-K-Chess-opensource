@@ -23,7 +23,7 @@ import com.mudita.chess.ui.design.AppTypography900
 @Composable
 internal fun MatchResultItem(
     title: String,
-    value: Int,
+    value: String,
     valueWidth: Dp,
     modifier: Modifier = Modifier
 ) = Row(
@@ -36,7 +36,7 @@ internal fun MatchResultItem(
     Spacer(modifier = Modifier.width(16.dp))
     Text(
         modifier = Modifier.width(valueWidth),
-        text = value.toString(),
+        text = value,
         style = AppTypography900.titleLarge
     )
     Spacer(modifier = Modifier.width(16.dp))
@@ -53,25 +53,25 @@ private fun MatchResultItemPreview() = AppTheme {
         val valueWidth = 72.dp
         MatchResultItem(
             title = "Title",
-            value = 10,
+            value = "10",
             valueWidth = valueWidth
         )
         HorizontalDivider()
         MatchResultItem(
             title = "Title",
-            value = 5,
+            value = "5",
             valueWidth = valueWidth
         )
         HorizontalDivider()
         MatchResultItem(
             title = "Title",
-            value = 500,
+            value = "500",
             valueWidth = valueWidth
         )
         HorizontalDivider()
         MatchResultItem(
             title = "Title",
-            value = 1000,
+            value = "1000",
             valueWidth = valueWidth
         )
     }
