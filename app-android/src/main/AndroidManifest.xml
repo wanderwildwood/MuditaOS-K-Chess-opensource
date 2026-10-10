@@ -6,7 +6,8 @@
     <application
         android:name=".App"
         android:allowBackup="false"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/ic_launcher_mudita"
+        android:roundIcon="@drawable/ic_launcher_mudita"
         android:label="@string/common_label_chess"
         android:supportsRtl="false"
         android:theme="@style/Theme.Splash"
