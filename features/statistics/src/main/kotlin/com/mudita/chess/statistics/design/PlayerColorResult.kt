@@ -88,7 +88,7 @@ private fun DrawScope.drawPercentageProgress(percentage: Int) {
 @Composable
 private fun PlayerColorResultPreview() = AppTheme {
     PlayerColorResult(
-        modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer),
+        modifier = Modifier.background(MaterialTheme.colorScheme.background),
         iconResId = R.drawable.ic_knight_white_outline_black,
         percentage = 25,
         label = "WHITE"

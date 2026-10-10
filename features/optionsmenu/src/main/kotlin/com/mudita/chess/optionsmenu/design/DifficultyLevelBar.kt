@@ -9,16 +9,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -53,12 +54,12 @@ internal fun DifficultyLevelBar(
                 iconResId = R.drawable.ic_minus_circle_border,
                 onClick = onMinusIconClick
             )
-            Spacer(modifier = Modifier.width(13.dp))
+            Spacer(modifier = Modifier.width(8.dp))
             Steps(
                 difficultyLevelStep = difficultyLevelStep,
                 onStepClick = onStepClick
             )
-            Spacer(modifier = Modifier.width(13.dp))
+            Spacer(modifier = Modifier.width(8.dp))
             ControllerIcon(
                 iconResId = R.drawable.ic_plus_circle_border,
                 onClick = onPlusIconClick
@@ -82,8 +83,12 @@ private fun ControllerIcon(
     )
 }
 
+/**
+ * The steps share whatever width the two buttons leave. At a fixed width each, fourteen of them
+ * and the buttons came to more than the Kompakt's 360dp, and the plus was squeezed to a dot.
+ */
 @Composable
-private fun Steps(
+private fun RowScope.Steps(
     difficultyLevelStep: Int,
     onStepClick: (Int) -> Unit
 ) {
@@ -96,10 +101,12 @@ private fun Steps(
         }
         Image(
             modifier = Modifier
-                .size(width = 21.67.dp, height = 30.dp)
+                .weight(1f)
+                .height(30.dp)
                 .clickable { onStepClick(i) }
-                .padding(horizontal = 3.dp),
+                .padding(horizontal = 2.dp),
             painter = painterResource(id = stepResId),
+            contentScale = ContentScale.FillBounds,
             contentDescription = null
         )
     }

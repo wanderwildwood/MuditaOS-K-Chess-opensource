@@ -32,13 +32,20 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -54,33 +61,9 @@ import com.mudita.mmd.components.buttons.OutlinedButtonMMD
 import com.mudita.mmd.components.divider.HorizontalDividerMMD
 import com.mudita.mmd.components.switcher.SwitchMMD
 import com.mudita.mmd.components.top_app_bar.TopAppBarMMD
-import com.mudita.mmd.eInkColorScheme
 import com.mudita.mmd.white
-
-/**
- * This app's screens use `primaryContainer` as their main page background color (e.g.
- * `Scaffold(containerColor = MaterialTheme.colorScheme.primaryContainer)`), but MMD's own
- * eInkColorScheme assigns that role a black "ink accent" tone (meant for filled buttons, not a
- * full-page canvas). Overriding it back to a light page/black-ink pairing keeps every existing
- * MaterialTheme.colorScheme.* call site correct without having to touch each screen individually.
- */
-private val appColorScheme = eInkColorScheme.copy(
-    primaryContainer = white,
-    onPrimaryContainer = black
-)
-
-/**
- * The filled button's own colours, taken from MMD's scheme *before* the override above.
- *
- * `ButtonDefaultsMMD.buttonColors` fills with `primaryContainer` and writes in
- * `onPrimaryContainer`, so the override that makes those two the page's white and black --
- * correct for a page -- also painted every filled button white on a white page. The label
- * stayed black and legible, which is why this reads as text floating with no button around
- * it rather than as something obviously broken. Passing the pair explicitly keeps the page
- * white and gives the button back the ink fill it is supposed to have.
- */
-private val filledButtonContainer = eInkColorScheme.primaryContainer
-private val filledButtonContent = eInkColorScheme.onPrimaryContainer
+import kotlinx.coroutines.delay
+import com.mudita.chess.frontitude.R as RFrontitude
 
 /**
  * App-level design system, built on the public com.mudita:MMD library (Mudita Mindful Design).
@@ -88,7 +71,7 @@ private val filledButtonContent = eInkColorScheme.onPrimaryContainer
  * not publicly resolvable outside Mudita's own infrastructure.
  */
 @Composable
-fun AppTheme(content: @Composable () -> Unit) = ThemeMMD(colorScheme = appColorScheme, content = content)
+fun AppTheme(content: @Composable () -> Unit) = ThemeMMD(colorScheme = monochrome, content = content)
 
 val appColorBlack: Color = black
 val appColorWhite: Color = white
@@ -149,8 +132,8 @@ fun AppPrimaryButton(
         modifier = size.height?.let { modifier.height(it) } ?: modifier,
         shape = RoundedCornerShape(size.cornerRadius),
         colors = ButtonDefaults.buttonColors(
-            containerColor = filledButtonContainer,
-            contentColor = filledButtonContent
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
         ),
         contentPadding = size.contentPadding ?: ButtonDefaultsMMD.contentPadding
     ) {
@@ -188,6 +171,42 @@ fun AppSecondaryButton(
         ButtonLabel(text, attributes)
     }
 }
+
+/**
+ * A button for something that cannot be taken back. The first tap arms it, and it says so in its
+ * own face rather than stacking a dialog over the game; a second tap does it. Left alone for four
+ * seconds it disarms, so a stray tap leaves nothing live for whoever picks the phone up next.
+ */
+@Composable
+fun AppArmedSecondaryButton(
+    text: String,
+    onConfirm: () -> Unit,
+    modifier: Modifier = Modifier,
+    attributes: AppButtonAttributes = AppButtonAttributes()
+) {
+    var isArmed by remember { mutableStateOf(false) }
+    LaunchedEffect(isArmed) {
+        if (isArmed) {
+            delay(ARMED_TIMEOUT_MILLIS)
+            isArmed = false
+        }
+    }
+    AppSecondaryButton(
+        modifier = modifier,
+        text = if (isArmed) stringResource(RFrontitude.string.chess_common_button_tapagain, text) else text,
+        attributes = attributes.copy(isLabelShrunkToFit = true),
+        onClick = {
+            if (isArmed) {
+                isArmed = false
+                onConfirm()
+            } else {
+                isArmed = true
+            }
+        }
+    )
+}
+
+private const val ARMED_TIMEOUT_MILLIS = 4_000L
 
 @Composable
 private fun ButtonLabel(text: String, attributes: AppButtonAttributes) {
@@ -233,7 +252,7 @@ fun AppIconButton(
 @Composable
 fun AppSwitch(
     checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit,
+    onCheckedChange: ((Boolean) -> Unit)?,
     modifier: Modifier = Modifier
 ) {
     SwitchMMD(
@@ -272,6 +291,17 @@ fun AppTopAppBar(
     )
 }
 
+/**
+ * The frame a card on the game screen sits in: the same rim and corner as [EInkDialog], so a
+ * card drawn into the layout and a dialog in its own window read as one thing.
+ */
+fun Modifier.eInkFrame(): Modifier = composed {
+    val shape = RoundedCornerShape(12.dp)
+    clip(shape)
+        .border(2.dp, MaterialTheme.colorScheme.onSurface, shape)
+        .background(MaterialTheme.colorScheme.surface)
+}
+
 @Composable
 fun AppHorizontalDivider(modifier: Modifier = Modifier) {
     HorizontalDividerMMD(modifier = modifier)
@@ -297,9 +327,7 @@ fun AppConfirmCard(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
-            .border(3.dp, MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(16.dp))
-            .background(color = MaterialTheme.colorScheme.secondary)
+            .eInkFrame()
             .padding(16.dp)
     ) {
         if (icon != null) {

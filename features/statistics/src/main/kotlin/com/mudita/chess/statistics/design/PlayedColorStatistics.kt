@@ -56,7 +56,7 @@ internal fun PlayedColorStatistics(
 @Composable
 private fun PlayedColorStatisticsPreview() = AppTheme {
     PlayedColorStatistics(
-        modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer),
+        modifier = Modifier.background(MaterialTheme.colorScheme.background),
         playedAsWhitePercentage = 50,
         playedAsBlackPercentage = 50
     )

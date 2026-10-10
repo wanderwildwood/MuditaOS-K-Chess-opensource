@@ -63,4 +63,9 @@
     <string name="common_status_loading">Loading...</string>
     <string name="common_topbar_button_clearall">Clear all </string>
     <string name="maps_common_screentitle_menu">Menu</string>
+
+    <!-- Chess+'s own words, below Mudita's. -->
+    <!-- A button for something that cannot be undone, after its first tap. %1$s is the button's own label, e.g. "New game — tap again" -->
+    <string name="chess_common_button_tapagain">%1$s — tap again</string>
+
 </resources>

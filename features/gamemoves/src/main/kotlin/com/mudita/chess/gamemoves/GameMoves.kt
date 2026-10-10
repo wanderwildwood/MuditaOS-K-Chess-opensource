@@ -68,7 +68,7 @@ private fun GameMovesScreen(
     uiEvent: (GameMovesUiEvent) -> Unit
 ) {
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.primaryContainer,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = { GameMovesTopAppBar(uiEvent) }
     ) { contentPadding ->
         LazyColumnMMD(

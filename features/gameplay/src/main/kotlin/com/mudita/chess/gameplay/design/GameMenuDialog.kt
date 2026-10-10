@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.mudita.chess.ui.compontent.SwitchOption
 import com.mudita.chess.ui.design.AppButtonAttributes
 import com.mudita.chess.ui.design.AppPrimaryButton
-import com.mudita.chess.ui.design.AppSecondaryButton
+import com.mudita.chess.ui.design.AppArmedSecondaryButton
 import com.mudita.chess.ui.design.AppTheme
 import com.mudita.chess.ui.design.AppTypography900
 import com.mudita.chess.frontitude.R as RFrontitude
@@ -99,24 +99,25 @@ private fun Options(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.primaryContainer)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         ResumeButton { onResumeClick() }
+        // Both of these end the game in progress, so each asks with a second tap.
         Spacer(modifier = Modifier.height(16.dp))
-        SecondaryButton(
+        ArmedButton(
             text = stringResource(id = RFrontitude.string.chess_endingscreen_dialog_button_newgame),
             onClick = onNewGameClick
         )
         Spacer(modifier = Modifier.height(16.dp))
-        SecondaryButton(
+        ArmedButton(
             text = stringResource(id = RFrontitude.string.common_button_exit),
             onClick = onExitClick
         )
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         SwitchOption(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 4.dp),
+                .padding(start = 4.dp, end = 12.dp, bottom = 16.dp),
             text = stringResource(id = RFrontitude.string.chess_gamepausemenu_toggle_button_movesuggestions),
             textStyle = AppTypography900.labelMedium,
             isSwitchedOn = isMoveSuggestionsOn,
@@ -138,14 +139,14 @@ private fun ResumeButton(onResumeClick: () -> Unit) {
 }
 
 @Composable
-private fun SecondaryButton(text: String, onClick: () -> Unit) {
-    AppSecondaryButton(
+private fun ArmedButton(text: String, onClick: () -> Unit) {
+    AppArmedSecondaryButton(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp),
         text = text,
         attributes = buttonAttributes(),
-        onClick = onClick
+        onConfirm = onClick
     )
 }
 

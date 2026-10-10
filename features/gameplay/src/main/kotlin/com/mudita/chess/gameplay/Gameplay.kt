@@ -95,7 +95,7 @@ private fun GameplayScreen(
     uiEvent: (GameplayUiEvent) -> Unit
 ) {
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.primaryContainer
+        containerColor = MaterialTheme.colorScheme.background
     ) { contentPadding ->
         var boardBounds by remember {
             mutableStateOf(Rect(0f, 0f, 0f, 0f))

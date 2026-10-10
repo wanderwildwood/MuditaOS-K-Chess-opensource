@@ -4,11 +4,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,8 +27,13 @@ fun SwitchOption(
     textStyle: TextStyle,
     modifier: Modifier = Modifier
 ) {
+    // The whole row takes the press, label included; the switch only shows the state.
     Box(
-        modifier = modifier,
+        modifier = modifier.toggleable(
+            value = isSwitchedOn,
+            role = Role.Switch,
+            onValueChange = onSwitchToggle
+        ),
         contentAlignment = Alignment.CenterStart
     ) {
         Text(
@@ -40,7 +47,7 @@ fun SwitchOption(
         AppSwitch(
             modifier = Modifier.align(Alignment.CenterEnd),
             checked = isSwitchedOn,
-            onCheckedChange = onSwitchToggle
+            onCheckedChange = null
         )
     }
 }
@@ -48,7 +55,7 @@ fun SwitchOption(
 @Preview
 @Composable
 private fun SwitchOptionPreview() = AppTheme {
-    Box(modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer)) {
+    Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
         SwitchOption(
             modifier = Modifier.fillMaxWidth(),
             text = "Move suggestions",

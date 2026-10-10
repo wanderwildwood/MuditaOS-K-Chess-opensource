@@ -4,7 +4,6 @@ package com.mudita.chess.optionsmenu
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -82,14 +81,14 @@ private fun OptionsMenuScreen(
     uiEvent: (OptionsMenuUiEvent) -> Unit
 ) {
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.primaryContainer,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = { OptionsMenuTopAppBar(uiEvent) }
     ) { contentPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(contentPadding)
-                .padding(bottom = 16.dp)
+                .padding(top = 16.dp, bottom = 16.dp)
         ) {
             GameMode(
                 isTwoPlayerMode = uiState.isTwoPlayerMode,
@@ -98,7 +97,7 @@ private fun OptionsMenuScreen(
             SwitchOption(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 4.dp),
+                    .padding(start = 4.dp, end = 12.dp, bottom = 16.dp),
                 text = stringResource(id = RFrontitude.string.chess_gamepausemenu_toggle_button_movesuggestions),
                 textStyle = AppTypography900.titleMedium,
                 isSwitchedOn = uiState.isMoveSuggestionsOn,
@@ -194,11 +193,7 @@ private fun PlayerColor(
                 modifier = Modifier.weight(1f),
                 text = stringResource(id = RFrontitude.string.common_label_white),
                 iconResId = R.drawable.ic_knight_white_transparent,
-                attributes = AppButtonAttributes(
-                    spaceBetweenIconAndText = 0.dp,
-                    borderStrokeWidth = if (isWhiteSelected) 4.dp else 2.dp,
-                    iconSize = 24.dp
-                ),
+                attributes = colorButtonAttributes(isSelected = isWhiteSelected),
                 onClick = { uiEvent(PlayerColorSelected(isWhiteSelected = true)) }
             )
             Spacer(modifier = Modifier.width(8.dp))
@@ -206,19 +201,20 @@ private fun PlayerColor(
                 modifier = Modifier.weight(1f),
                 text = stringResource(id = RFrontitude.string.common_label_black),
                 iconResId = R.drawable.ic_knight_black_transparent,
-                attributes = AppButtonAttributes(
-                    spaceBetweenIconAndText = 0.dp,
-                    borderStrokeWidth = if (!isWhiteSelected) 4.dp else 2.dp,
-                    height = 40.dp,
-                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
-                    cornerRadius = 8.dp,
-                    iconSize = 24.dp
-                ),
+                attributes = colorButtonAttributes(isSelected = !isWhiteSelected),
                 onClick = { uiEvent(PlayerColorSelected(isWhiteSelected = false)) }
             )
         }
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
+
+/** White and Black alike, so the two sit level and the same size whichever is chosen. */
+private fun colorButtonAttributes(isSelected: Boolean) = AppButtonAttributes(
+    spaceBetweenIconAndText = 0.dp,
+    borderStrokeWidth = if (isSelected) 4.dp else 2.dp,
+    iconSize = 24.dp
+)
 
 @Composable
 private fun DifficultyLevel(
@@ -226,7 +222,6 @@ private fun DifficultyLevel(
     difficultyLevelLabel: TextUi?,
     uiEvent: (OptionsMenuUiEvent) -> Unit
 ) {
-    Spacer(modifier = Modifier.height(16.dp))
     Text(
         modifier = Modifier.padding(horizontal = 12.dp),
         text = stringResource(
