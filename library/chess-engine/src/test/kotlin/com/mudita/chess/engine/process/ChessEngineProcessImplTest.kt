@@ -1,7 +1,5 @@
 package com.mudita.chess.engine.process
 
-import android.content.Context
-import android.content.pm.ApplicationInfo
 import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import com.mudita.chess.engine.ChessEngineTokens.ENGINE_INTRO
@@ -11,17 +9,15 @@ import io.mockk.verify
 import kotlinx.coroutines.test.TestCoroutineScheduler
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
+import java.io.File
 import java.io.OutputStream
 
 class ChessEngineProcessImplTest {
 
     private val testScheduler = TestCoroutineScheduler()
 
-    private val appContext = mockk<Context> {
-        every { applicationInfo } returns ApplicationInfo().apply {
-            nativeLibraryDir = "test-files/data/app/com.mudita.chess/lib/arm64"
-        }
-    }
+    private val engineFile = File("/data/app/com.wanderwildwood.chessplus/lib/arm64/libstockfish.so")
+    private var requestedCommand: String? = null
     private val process = mockk<Process>(relaxed = true) {
         every { inputStream } returns "$ENGINE_INTRO\n".byteInputStream()
         every { isAlive } returns true
@@ -31,7 +27,8 @@ class ChessEngineProcessImplTest {
         every { start() } returns process
     }
 
-    private val tested = ChessEngineProcessImpl(testScheduler) { _ ->
+    private val tested = ChessEngineProcessImpl(testScheduler, engineFile) { command ->
+        requestedCommand = command
         processBuilder
     }
 
@@ -40,6 +37,14 @@ class ChessEngineProcessImplTest {
         tested.start()
 
         verify { processBuilder.start() }
+    }
+
+    @Test
+    fun `start runs the engine the app ships, not one from the system`() {
+        tested.start()
+
+        assertThat(requestedCommand).isEqualTo(engineFile.absolutePath)
+        verify { processBuilder.directory(engineFile.parentFile) }
     }
 
     @Test

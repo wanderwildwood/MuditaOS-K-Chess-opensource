@@ -15,6 +15,10 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import java.io.File
+
+/** Packed as a library so the installer unpacks it where it may be executed. */
+private const val ENGINE_BINARY = "libstockfish.so"
 
 val chessEngineModule = module {
     single<ChessEngineNet> { ChessEngineNetImpl(androidContext()) }
@@ -22,7 +26,8 @@ val chessEngineModule = module {
     single<ChessEngineProcess> {
         val ioDispatcher = get<CoroutineDispatcher>(named(IO))
         val engineContext = CoroutineName("EngineProcess") + ioDispatcher
-        ChessEngineProcessImpl(engineContext, ProcessBuilderProvider.DEFAULT)
+        val engineFile = File(androidContext().applicationInfo.nativeLibraryDir, ENGINE_BINARY)
+        ChessEngineProcessImpl(engineContext, engineFile, ProcessBuilderProvider.DEFAULT)
     }
 
     singleOf(::ChessEngineImpl) bind ChessEngine::class

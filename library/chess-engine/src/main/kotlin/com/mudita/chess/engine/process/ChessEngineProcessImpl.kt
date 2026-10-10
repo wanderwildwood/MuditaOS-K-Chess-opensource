@@ -13,8 +13,16 @@ import java.io.File
 import java.io.IOException
 import kotlin.coroutines.CoroutineContext
 
+/**
+ * Runs the engine this app ships, `libstockfish.so` from its own native library directory.
+ *
+ * It used to run `./stockfish` in `/system/bin`, which is a copy the Kompakt's firmware carries
+ * for Mudita's own Chess app. That left the engine built from this repository unused, and
+ * one-player games depending on whatever the phone's firmware happened to hold.
+ */
 internal class ChessEngineProcessImpl(
     private val engineContext: CoroutineContext,
+    private val engineFile: File,
     private val processBuilderProvider: ProcessBuilderProvider
 ) : ChessEngineProcess {
 
@@ -26,8 +34,8 @@ internal class ChessEngineProcessImpl(
     override fun start() {
         if (process != null) return
 
-        val processBuilder = processBuilderProvider.provide("./stockfish")
-        processBuilder.directory(File("/system/bin/"))
+        val processBuilder = processBuilderProvider.provide(engineFile.absolutePath)
+        processBuilder.directory(engineFile.parentFile)
         process = processBuilder.start()
     }
 
