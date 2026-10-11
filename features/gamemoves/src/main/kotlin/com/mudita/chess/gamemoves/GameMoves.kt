@@ -74,7 +74,8 @@ private fun GameMovesScreen(
         LazyColumnMMD(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(contentPadding)
+                .padding(contentPadding),
+            isScrollbarVisible = false,
         ) {
             items(uiState.moves) { moveUi ->
                 GameMoveListItem(moveUi = moveUi)
