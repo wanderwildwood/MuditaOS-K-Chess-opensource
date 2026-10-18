@@ -32,7 +32,7 @@ import com.mudita.chess.ui.model.PositionUi.E2
 import com.mudita.chess.ui.model.PositionUi.E4
 import com.mudita.chess.ui.design.AppDashedHorizontalDivider
 import com.mudita.chess.ui.design.AppTheme
-import com.mudita.mmd.components.lazy.LazyColumnMMD
+import com.mudita.chess.ui.PagedColumn
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -71,11 +71,10 @@ private fun GameMovesScreen(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = { GameMovesTopAppBar(uiEvent) }
     ) { contentPadding ->
-        LazyColumnMMD(
+        PagedColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(contentPadding),
-            isScrollbarVisible = false,
         ) {
             items(uiState.moves) { moveUi ->
                 GameMoveListItem(moveUi = moveUi)
