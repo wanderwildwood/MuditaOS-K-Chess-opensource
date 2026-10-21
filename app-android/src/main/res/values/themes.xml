@@ -16,6 +16,17 @@
         <item name="postSplashScreenTheme">@style/Theme.App</item>
     </style>
 
-    <style name="Theme.App" parent="Theme.AppCompat.DayNight.NoActionBar" />
+    <!--
+      A white status bar with dark icons, as the board's own white. MuditaOS paints its status
+      bar over the app and hides this, but LineageOS and other Android builds draw the app's
+      own, and without these the clock and battery came out white on white or on Android's
+      default dark bar.
+    -->
+    <style name="Theme.App" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@android:color/white</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">@android:color/white</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
 
 </resources>
