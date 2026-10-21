@@ -1,7 +1,8 @@
 # Chess+
 
 Chess for the [Mudita Kompakt](https://mudita.com/products/kompakt/), against the computer or
-against the person across the table.
+against the person across the table. It will install on any device with Android 11 or later,
+Supernote's tablets among them.
 
 | | |
 |---|---|
