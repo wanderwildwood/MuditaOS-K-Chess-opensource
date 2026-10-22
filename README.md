@@ -11,7 +11,7 @@ Supernote's tablets among them.
 
 ## What it does
 
-- Play the computer, as White or Black, at fourteen strengths from about 500 Elo to about
+- Play the computer, as White or Black, at twelve strengths from about 500 Elo to about
   2150. The engine is Fairy-Stockfish, and it runs on the phone.
 - Or play another person on one phone, passing it back and forth between moves. Undo takes
   back one move, whoever made it.
