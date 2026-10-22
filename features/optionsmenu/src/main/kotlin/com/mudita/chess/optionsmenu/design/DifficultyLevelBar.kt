@@ -84,7 +84,7 @@ private fun ControllerIcon(
 }
 
 /**
- * The steps share whatever width the two buttons leave. At a fixed width each, fourteen of them
+ * The steps share whatever width the two buttons leave. At a fixed width each, twelve of them
  * and the buttons came to more than the Kompakt's 360dp, and the plus was squeezed to a dot.
  */
 @Composable
