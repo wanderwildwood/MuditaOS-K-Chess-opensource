@@ -31,6 +31,7 @@
     <string name="chess_optionsmenu_label_gamemode">Game mode</string>
     <string name="chess_optionsmenu_label_intermediate" tools:ignore="PluralsCandidate">Intermediate (%d Elo)</string>
     <string name="chess_optionsmenu_label_selectplayercolor">Select player color</string>
+    <string name="chess_optionsmenu_toggle_button_vibrate">Vibrate when a move registers</string>
     <string name="chess_statistics_dialog_body_thiswillgiveyou">This will give you a fresh start, but it can’t be undone</string>
     <string name="chess_statistics_dialog_button_clearstatistics">Clear statistics</string>
     <string name="chess_statistics_dialog_h1_clearallstatistics">Clear all statistics\?</string>

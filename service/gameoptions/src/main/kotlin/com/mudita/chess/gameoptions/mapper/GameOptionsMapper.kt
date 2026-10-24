@@ -8,12 +8,14 @@ internal fun GameOptionsPrefs.toDomain() = GameOptions(
     isMoveSuggestionsOn = isMoveSuggestionsOn,
     isPlayerWhite = isPlayerWhite,
     difficultyLevel = DifficultyLevel(difficultyLevel),
-    isTwoPlayerMode = isTwoPlayerMode
+    isTwoPlayerMode = isTwoPlayerMode,
+    isVibrateOn = isVibrateOn
 )
 
 internal fun GameOptions.toPrefs() = GameOptionsPrefs(
     isMoveSuggestionsOn = isMoveSuggestionsOn,
     isPlayerWhite = isPlayerWhite,
     difficultyLevel = difficultyLevel.value,
-    isTwoPlayerMode = isTwoPlayerMode
+    isTwoPlayerMode = isTwoPlayerMode,
+    isVibrateOn = isVibrateOn
 )

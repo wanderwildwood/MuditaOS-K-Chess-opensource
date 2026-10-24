@@ -99,6 +99,8 @@ internal class PlayerParticipant(
             }
         }
         moveToState(Idle)
+        // Before the check notice, which holds this coroutine for a couple of seconds.
+        if (moveResult != null) uiEvents.tickMoveAccepted()
         moveResult?.let { moveResultNotifier.maybeNotifyCheck(it) }
     }
 
@@ -179,6 +181,7 @@ internal class PlayerParticipant(
                 undoRound()
             }
             moveToState(AbandonedMove)
+            uiEvents.tickMoveAccepted()
         }
     }
 

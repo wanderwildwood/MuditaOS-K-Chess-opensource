@@ -34,6 +34,7 @@ import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.NavigationUpClicked
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.PlayButtonClicked
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.PlayerColorSelected
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.SaveGameState
+import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.VibrateSwitchToggled
 import com.mudita.chess.optionsmenu.design.DifficultyLevelBar
 import com.mudita.chess.ui.KompaktPreview
 import com.mudita.chess.ui.OnLifecycleEvent
@@ -102,6 +103,15 @@ private fun OptionsMenuScreen(
                 textStyle = AppTypography900.titleMedium,
                 isSwitchedOn = uiState.isMoveSuggestionsOn,
                 onSwitchToggle = { uiEvent(MoveSuggestionsSwitchToggled) }
+            )
+            SwitchOption(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 4.dp, end = 12.dp, bottom = 16.dp),
+                text = stringResource(id = RFrontitude.string.chess_optionsmenu_toggle_button_vibrate),
+                textStyle = AppTypography900.titleMedium,
+                isSwitchedOn = uiState.isVibrateOn,
+                onSwitchToggle = { uiEvent(VibrateSwitchToggled) }
             )
             if (!uiState.isTwoPlayerMode) {
                 PlayerColor(

@@ -87,4 +87,13 @@ class GameOptionsMapperTest {
             )
         )
     }
+
+    @Test
+    fun `vibrate is off unless set, and survives the trip to prefs and back`() {
+        assertThat(GameOptions.DEFAULT.isVibrateOn).isFalse()
+        val model = GameOptions.DEFAULT.copy(isVibrateOn = true)
+
+        assertThat(model.toPrefs().isVibrateOn).isTrue()
+        assertThat(model.toPrefs().toDomain()).isEqualTo(model)
+    }
 }

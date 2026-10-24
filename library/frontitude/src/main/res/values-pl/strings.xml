@@ -31,6 +31,7 @@
     <string name="chess_optionsmenu_label_gamemode">Tryb gry</string>
     <string name="chess_optionsmenu_label_intermediate">Średniozaawansowany (%d Elo)</string>
     <string name="chess_optionsmenu_label_selectplayercolor">Kolor gracza</string>
+    <string name="chess_optionsmenu_toggle_button_vibrate">Wibracja przy ruchu</string>
     <string name="chess_statistics_dialog_body_thiswillgiveyou">Zaczniesz grę od nowa. Nie można tego cofnąć</string>
     <string name="chess_statistics_dialog_button_clearstatistics">Wyczyść statystyki</string>
     <string name="chess_statistics_dialog_h1_clearallstatistics">Wyczyścić wszystkie statystyki\?</string>

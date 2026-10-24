@@ -47,6 +47,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
@@ -128,6 +129,10 @@ internal class GameplayViewModel(
         get() = uiState.states
     val state: GameplayUiState
         get() = uiState.state
+
+    /** One item per accepted move or undo of the player's own, and only while the setting is on. */
+    val moveTicks: Flow<Unit>
+        get() = uiEvents.moveTicks.filter { gameOptions.isVibrateOn }
 
     init {
         val isNewGame = args.value.isNewGame
@@ -274,7 +279,7 @@ internal class GameplayViewModel(
         when (click) {
             // Undo from a finished game. Nothing is written to statistics and the current game is
             // left in place: the game is not over any more, so recording it as a loss would be a lie.
-            GameplayUiEvent.EndgameUndoButtonClicked -> game.undoRoundAndResume()
+            GameplayUiEvent.EndgameUndoButtonClicked -> if (game.undoRoundAndResume()) uiEvents.tickMoveAccepted()
             GameplayUiEvent.EndgameNewGameButtonClicked -> if (leaveFinishedGame()) navigateToOptionsMenu()
             GameplayUiEvent.EndgameMainMenuButtonClicked -> if (leaveFinishedGame()) navigateToMain()
             else -> Unit
@@ -337,7 +342,8 @@ internal class GameplayViewModel(
             .getOrDefault(GameOptions.DEFAULT)
         gameOptions = gameOptions.copy(
             isMoveSuggestionsOn = options.isMoveSuggestionsOn,
-            difficultyLevel = options.difficultyLevel
+            difficultyLevel = options.difficultyLevel,
+            isVibrateOn = options.isVibrateOn
         )
         game.setup(options)
     }
@@ -396,7 +402,8 @@ internal class GameplayViewModel(
                 isPlayerWhite = gameOptions.isPlayerWhite,
                 isMoveSuggestionsOn = gameOptions.isMoveSuggestionsOn,
                 difficultyLevel = gameOptions.difficultyLevel.value,
-                isTwoPlayerMode = gameOptions.isTwoPlayerMode
+                isTwoPlayerMode = gameOptions.isTwoPlayerMode,
+                isVibrateOn = gameOptions.isVibrateOn
             ),
             options = navOptions { popUpTo<MainRoute>() }
         )

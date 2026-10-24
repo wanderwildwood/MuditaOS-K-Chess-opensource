@@ -73,7 +73,8 @@ internal class MainViewModel(
             isPlayerWhite = gameOptions.isPlayerWhite,
             isMoveSuggestionsOn = gameOptions.isMoveSuggestionsOn,
             difficultyLevel = gameOptions.difficultyLevel.value,
-            isTwoPlayerMode = gameOptions.isTwoPlayerMode
+            isTwoPlayerMode = gameOptions.isTwoPlayerMode,
+            isVibrateOn = gameOptions.isVibrateOn
         )
         emitNavAction(NavigateTo(optionsMenuRoute))
     }

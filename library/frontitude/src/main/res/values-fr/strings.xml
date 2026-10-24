@@ -31,6 +31,7 @@
     <string name="chess_optionsmenu_label_gamemode">Mode de jeu</string>
     <string name="chess_optionsmenu_label_intermediate">Intermédiaire (%d Elo)</string>
     <string name="chess_optionsmenu_label_selectplayercolor">Couleur du joueur</string>
+    <string name="chess_optionsmenu_toggle_button_vibrate">Vibrer à chaque coup</string>
     <string name="chess_statistics_dialog_body_thiswillgiveyou">Ceci vous fera repartir de zéro de façon irréversible</string>
     <string name="chess_statistics_dialog_button_clearstatistics">Effacer</string>
     <string name="chess_statistics_dialog_h1_clearallstatistics">Effacer l’intégralité des statistiques \?</string>

@@ -7,5 +7,6 @@ internal data class GameOptionsPrefs(
     val isMoveSuggestionsOn: Boolean,
     val isPlayerWhite: Boolean,
     val difficultyLevel: Int,
-    val isTwoPlayerMode: Boolean = false
+    val isTwoPlayerMode: Boolean = false,
+    val isVibrateOn: Boolean = false
 )

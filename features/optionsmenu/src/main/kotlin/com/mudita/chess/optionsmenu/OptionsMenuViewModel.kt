@@ -21,6 +21,7 @@ import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.NavigationUpClicked
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.PlayButtonClicked
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.PlayerColorSelected
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.SaveGameState
+import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.VibrateSwitchToggled
 import com.mudita.chess.ui.model.TextUi
 import kotlinx.coroutines.launch
 import logcat.logcat
@@ -28,6 +29,7 @@ import logcat.logcat
 internal data class OptionsMenuUiState(
     val isTwoPlayerMode: Boolean = false,
     val isMoveSuggestionsOn: Boolean = true,
+    val isVibrateOn: Boolean = false,
     val isWhiteSelected: Boolean = true,
     val difficultyLevelStep: Int = 1,
     val difficultyLevelLabel: TextUi? = null
@@ -37,6 +39,7 @@ internal sealed interface OptionsMenuUiEvent {
     data object NavigationUpClicked : OptionsMenuUiEvent
     data class GameModeSelected(val isTwoPlayerMode: Boolean) : OptionsMenuUiEvent
     data object MoveSuggestionsSwitchToggled : OptionsMenuUiEvent
+    data object VibrateSwitchToggled : OptionsMenuUiEvent
     data class PlayerColorSelected(val isWhiteSelected: Boolean) : OptionsMenuUiEvent
     data object DifficultyLevelMinusIconClicked : OptionsMenuUiEvent
     data object DifficultyLevelPlusIconClicked : OptionsMenuUiEvent
@@ -57,6 +60,7 @@ internal class OptionsMenuViewModel(
             is NavigationUpClicked -> onNavigationUpClicked()
             is GameModeSelected -> onGameModeSelected(uiEvent)
             is MoveSuggestionsSwitchToggled -> onMoveSuggestionsSwitchToggled()
+            is VibrateSwitchToggled -> onVibrateSwitchToggled()
             is PlayerColorSelected -> onPlayerColorSelected(uiEvent)
             is DifficultyLevelMinusIconClicked -> onDifficultyLevelMinusIconClicked()
             is DifficultyLevelPlusIconClicked -> onDifficultyLevelPlusIconClicked()
@@ -78,6 +82,11 @@ internal class OptionsMenuViewModel(
     private fun onMoveSuggestionsSwitchToggled() =
         updateState {
             copy(isMoveSuggestionsOn = !isMoveSuggestionsOn)
+        }
+
+    private fun onVibrateSwitchToggled() =
+        updateState {
+            copy(isVibrateOn = !isVibrateOn)
         }
 
     private fun onPlayerColorSelected(uiEvent: PlayerColorSelected) {
@@ -136,7 +145,8 @@ internal class OptionsMenuViewModel(
                 isMoveSuggestionsOn = state.isMoveSuggestionsOn,
                 isPlayerWhite = state.isWhiteSelected,
                 difficultyLevel = DifficultyLevel(state.difficultyLevelStep),
-                isTwoPlayerMode = state.isTwoPlayerMode
+                isTwoPlayerMode = state.isTwoPlayerMode,
+                isVibrateOn = state.isVibrateOn
             )
         ).onFailure { logcat { "Failed to save game options" } }
     }
@@ -149,6 +159,7 @@ private fun initialState(
     OptionsMenuUiState(
         isTwoPlayerMode = route.isTwoPlayerMode,
         isMoveSuggestionsOn = route.isMoveSuggestionsOn,
+        isVibrateOn = route.isVibrateOn,
         isWhiteSelected = route.isPlayerWhite,
         difficultyLevelStep = route.difficultyLevel,
         difficultyLevelLabel = mapper.toDifficultyLevelLabel(route.difficultyLevel)

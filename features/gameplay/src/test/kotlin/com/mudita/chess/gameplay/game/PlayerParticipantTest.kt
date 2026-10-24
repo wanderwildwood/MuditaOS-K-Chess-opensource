@@ -834,6 +834,54 @@ class PlayerParticipantTest {
         }
     }
 
+    @Test
+    fun `a confirmed move gives one tick, picking and previewing give none`() = runTest {
+        tested.setup(gameOptions)
+        advanceUntilIdle()
+
+        uiEvents.moveTicks.test {
+            uiEvents.handleUiEvent(SquareClicked(PositionUi.G1))
+            uiEvents.handleUiEvent(SquareClicked(PositionUi.F3))
+            uiEvents.handleUiEvent(SquareClicked(PositionUi.B5))
+            expectNoEvents()
+
+            val moveJob = launch { tested.doMove() }
+            uiEvents.handleUiEvent(ConfirmMoveButtonClicked)
+            moveJob.join()
+
+            awaitItem()
+            expectNoEvents()
+        }
+    }
+
+    @Test
+    fun `an undo that is taken gives a tick`() = runTest {
+        tested.setup(gameOptions)
+        advanceUntilIdle()
+        board.loadMoves(toMovesLAN(after1RoundPgn))
+
+        uiEvents.moveTicks.test {
+            tested.undoMove()
+
+            awaitItem()
+            expectNoEvents()
+        }
+    }
+
+    @Test
+    fun `an undo tapped on the opponent's turn gives no tick`() = runTest {
+        val board = ChessBoard(topParticipantSide = WHITE)
+        val black = PlayerParticipant(BLACK, board, moveResultNotifier, uiEvents, mapper)
+        black.setup(gameOptions.copy(isPlayerWhite = false))
+        advanceUntilIdle()
+
+        uiEvents.moveTicks.test {
+            black.undoMove()
+
+            expectNoEvents()
+        }
+    }
+
     private fun verifyWhitePlayerInitialBoard(
         testedState: ChessBoardState
     ) = assertThat(testedState).isEqualTo(WHITE_PLAYER_BOARD)

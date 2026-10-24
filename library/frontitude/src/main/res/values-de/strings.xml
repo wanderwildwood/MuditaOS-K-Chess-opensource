@@ -31,6 +31,7 @@
     <string name="chess_optionsmenu_label_gamemode">Spielmodus</string>
     <string name="chess_optionsmenu_label_intermediate">Besserer Anfänger (%d Elo)</string>
     <string name="chess_optionsmenu_label_selectplayercolor">Farbe wählen</string>
+    <string name="chess_optionsmenu_toggle_button_vibrate">Vibrieren bei Zügen</string>
     <string name="chess_statistics_dialog_body_thiswillgiveyou">Beginnt die Partie von vorne. Dies kann aber nicht rückgängig gemacht werden</string>
     <string name="chess_statistics_dialog_button_clearstatistics">Statistiken löschen</string>
     <string name="chess_statistics_dialog_h1_clearallstatistics">Alle Statistiken löschen\?</string>
