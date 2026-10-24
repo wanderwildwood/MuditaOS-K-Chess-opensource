@@ -31,7 +31,6 @@
     <string name="chess_optionsmenu_label_gamemode">Modo de jogo</string>
     <string name="chess_optionsmenu_label_intermediate">Intermédio (%d Elo)</string>
     <string name="chess_optionsmenu_label_selectplayercolor">Cor do jogador</string>
-    <string name="chess_optionsmenu_toggle_button_vibrate">Vibrar a cada jogada</string>
     <string name="chess_statistics_dialog_body_thiswillgiveyou">Esta opção permite começar do zero mas não pode ser anulada</string>
     <string name="chess_statistics_dialog_button_clearstatistics">Limpar estatísticas</string>
     <string name="chess_statistics_dialog_h1_clearallstatistics">Limpar todas as estatísticas\?</string>

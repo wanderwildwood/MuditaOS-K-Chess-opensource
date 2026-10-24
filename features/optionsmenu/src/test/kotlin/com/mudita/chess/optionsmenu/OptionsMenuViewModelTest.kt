@@ -19,7 +19,6 @@ import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.NavigationUpClicked
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.PlayButtonClicked
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.PlayerColorSelected
 import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.SaveGameState
-import com.mudita.chess.optionsmenu.OptionsMenuUiEvent.VibrateSwitchToggled
 import com.mudita.chess.ui.model.TextUi
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -261,26 +260,6 @@ class OptionsMenuViewModelTest {
                     isMoveSuggestionsOn = false,
                     isPlayerWhite = false,
                     difficultyLevel = DifficultyLevel(2)
-                )
-            )
-        }
-    }
-
-    @Test
-    fun `vibrate is off to begin with and is saved once switched on`() = runTest {
-        assertThat(tested.state.isVibrateOn).isFalse()
-
-        tested.handleUiEvent(VibrateSwitchToggled)
-        tested.handleUiEvent(SaveGameState)
-
-        assertThat(tested.state.isVibrateOn).isTrue()
-        coVerify {
-            saveGameOptionsUseCase(
-                GameOptions(
-                    isMoveSuggestionsOn = true,
-                    isPlayerWhite = true,
-                    difficultyLevel = DifficultyLevel(1),
-                    isVibrateOn = true
                 )
             )
         }

@@ -31,7 +31,6 @@
     <string name="chess_optionsmenu_label_gamemode">Herní režim</string>
     <string name="chess_optionsmenu_label_intermediate">Střední (%d Elo)</string>
     <string name="chess_optionsmenu_label_selectplayercolor">Vyberte barvu hráče</string>
-    <string name="chess_optionsmenu_toggle_button_vibrate">Vibrovat při tahu</string>
     <string name="chess_statistics_dialog_body_thiswillgiveyou">Tímto začnete znovu, ale nelze to vrátit zpět</string>
     <string name="chess_statistics_dialog_button_clearstatistics">Vymazat statistiky</string>
     <string name="chess_statistics_dialog_h1_clearallstatistics">Vymazat všechny statistiky\?</string>

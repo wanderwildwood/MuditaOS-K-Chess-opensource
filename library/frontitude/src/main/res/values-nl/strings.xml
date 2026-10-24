@@ -31,7 +31,6 @@
     <string name="chess_optionsmenu_label_gamemode">Spelmodus</string>
     <string name="chess_optionsmenu_label_intermediate">Gemiddeld (%d Elo)</string>
     <string name="chess_optionsmenu_label_selectplayercolor">Kleur kiezen</string>
-    <string name="chess_optionsmenu_toggle_button_vibrate">Trillen bij een zet</string>
     <string name="chess_statistics_dialog_body_thiswillgiveyou">U kunt dan helemaal opnieuw beginnen, maar dit kan niet ongedaan worden gemaakt</string>
     <string name="chess_statistics_dialog_button_clearstatistics">Statistieken wissen</string>
     <string name="chess_statistics_dialog_h1_clearallstatistics">Alle statistieken wissen\?</string>

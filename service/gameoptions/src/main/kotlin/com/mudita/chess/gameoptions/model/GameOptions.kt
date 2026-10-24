@@ -4,9 +4,7 @@ data class GameOptions(
     val isMoveSuggestionsOn: Boolean,
     val isPlayerWhite: Boolean,
     val difficultyLevel: DifficultyLevel,
-    val isTwoPlayerMode: Boolean = false,
-    /** A short tick from the phone when a move of the player's own is accepted. Off unless asked for. */
-    val isVibrateOn: Boolean = false
+    val isTwoPlayerMode: Boolean = false
 ) {
     companion object {
         val DEFAULT = GameOptions(

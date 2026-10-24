@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,8 +18,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.platform.LocalView
-import android.view.HapticFeedbackConstants
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
@@ -70,14 +67,6 @@ private fun GameplayInternal(
     viewModel: GameplayViewModel
 ) {
     val uiState by viewModel.states.collectAsState()
-    // A short tick when a move registers, asked of the phone through the view so its own
-    // touch-feedback setting still decides. No VIBRATE permission is involved.
-    val view = LocalView.current
-    LaunchedEffect(viewModel) {
-        viewModel.moveTicks.collect {
-            view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-        }
-    }
     GameplayScreen(
         uiState = uiState,
         uiEvent = viewModel::handleUiEvent

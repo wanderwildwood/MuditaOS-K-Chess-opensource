@@ -971,32 +971,6 @@ internal class GameplayViewModelTest {
     }
 
     @Test
-    fun `an accepted move reaches the screen as a tick only when vibrate is on`() = runTest {
-        every { args.value } returns GameplayRoute(isPlayerWhite = true)
-        coEvery { getGameOptionsUseCase() } returns Result.success(gameOptions.copy(isVibrateOn = true))
-        tested
-
-        tested.moveTicks.test {
-            uiEvents.tickMoveAccepted()
-
-            awaitItem()
-        }
-    }
-
-    @Test
-    fun `an accepted move gives no tick to the screen while vibrate is off`() = runTest {
-        every { args.value } returns GameplayRoute(isPlayerWhite = true)
-        coEvery { getGameOptionsUseCase() } returns Result.success(gameOptions.copy(isVibrateOn = false))
-        tested
-
-        tested.moveTicks.test {
-            uiEvents.tickMoveAccepted()
-
-            expectNoEvents()
-        }
-    }
-
-    @Test
     fun `BackButtonClicked opens game menu with suggestions on`() {
         every { args.value } returns GameplayRoute(isPlayerWhite = true)
         coEvery { getGameOptionsUseCase() } returns Result.success(gameOptions.copy(isMoveSuggestionsOn = true))

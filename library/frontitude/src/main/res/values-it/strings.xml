@@ -31,7 +31,6 @@
     <string name="chess_optionsmenu_label_gamemode">Modalità di gioco</string>
     <string name="chess_optionsmenu_label_intermediate">Intermedio (%d Elo)</string>
     <string name="chess_optionsmenu_label_selectplayercolor">Colore giocatore</string>
-    <string name="chess_optionsmenu_toggle_button_vibrate">Vibra a ogni mossa</string>
     <string name="chess_statistics_dialog_body_thiswillgiveyou">Conferma per ricominciare da capo, ma ricorda che l’azione è irreversibile</string>
     <string name="chess_statistics_dialog_button_clearstatistics">Azzera statistiche</string>
     <string name="chess_statistics_dialog_h1_clearallstatistics">Azzerare tutte le statistiche\?</string>

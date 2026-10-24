@@ -17,7 +17,6 @@ Supernote's tablets among them.
   back one move, whoever made it.
 - Move suggestions mark where a piece can go once you pick it up. They can be turned off,
   before a game or during one.
-- An optional buzz: Vibrate when a move registers gives a short tick when a move of yours is confirmed or taken back, so you know the tap landed before the slow screen catches up. It is off until you turn it on, in Options.
 - A move is not played until you confirm it, so a slip of the thumb costs nothing.
 - Take moves back, including after the game has ended. A checkmate can be undone and the
   game played on from before it, which is most of what studying a line is.

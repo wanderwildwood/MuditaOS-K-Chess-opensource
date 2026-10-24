@@ -20,9 +20,7 @@ import com.mudita.chess.gameplay.GameplayUiEvent.UndoMoveButtonClicked
 import com.mudita.chess.gameplay.model.GameplayDialogType.CHECK_INFO
 import com.mudita.chess.gameplay.model.GameplayDialogType.GAME_MENU
 import com.mudita.chess.gameplay.model.GameplayDialogType.PAWN_PROMOTION
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
 
@@ -88,18 +86,6 @@ internal class GameplayUiEvents {
 
     val undoMoveClicks = events
         .filterIsInstance<UndoMoveButtonClicked>()
-
-    /**
-     * The other way round: the game telling the screen that a move of the player's own was
-     * accepted (or taken back), so the screen can give a tick before the slow panel catches up.
-     * Never fires for a piece merely picked up, a move not yet confirmed, or a tap that was refused.
-     */
-    private val _moveTicks = MutableSharedFlow<Unit>(extraBufferCapacity = 4)
-    val moveTicks: Flow<Unit> = _moveTicks.asSharedFlow()
-
-    fun tickMoveAccepted() {
-        _moveTicks.tryEmit(Unit)
-    }
 
     suspend fun handleUiEvent(uiEvent: GameplayUiEvent) = events.emit(uiEvent)
 }
