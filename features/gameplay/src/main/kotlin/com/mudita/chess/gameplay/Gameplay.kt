@@ -147,6 +147,8 @@ private fun GameplayScreen(
                             .padding(horizontal = 16.dp),
                         isUndoButtonVisible = uiState.isUndoMoveButtonVisible,
                         onUndoButtonClicked = { uiEvent(EndgameUndoButtonClicked) },
+                        isGameMovesButtonVisible = uiState.isGameMovesButtonVisible,
+                        onGameMovesButtonClicked = { uiEvent(GameMovesButtonClicked) },
                         onNewGameButtonClicked = { uiEvent(EndgameNewGameButtonClicked) },
                         onMainMenuButtonClicked = { uiEvent(EndgameMainMenuButtonClicked) }
                     )

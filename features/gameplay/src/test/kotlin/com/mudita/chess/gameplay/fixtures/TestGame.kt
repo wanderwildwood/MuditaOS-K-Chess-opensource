@@ -4,6 +4,7 @@ import com.github.bhlangonijr.chesslib.Side
 import com.github.bhlangonijr.chesslib.Side.BLACK
 import com.github.bhlangonijr.chesslib.Side.WHITE
 import com.github.bhlangonijr.chesslib.move.Move
+import com.mudita.chess.engine.ChessEngine
 import com.mudita.chess.gameplay.GameplayMapper
 import com.mudita.chess.gameplay.GameplayUiEvents
 import com.mudita.chess.gameplay.game.ChessBoard
@@ -22,6 +23,7 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 internal class TestGame(
     val mapper: GameplayMapper,
     val computerMoveUseCase: GetComputerMoveUseCase = defaultGetComputerMoveMock(),
+    val engine: ChessEngine = mockk(relaxed = true),
 ) {
 
     var startingFen: String? = null
@@ -62,7 +64,7 @@ internal class TestGame(
         playedMoves?.map { it.toString() }?.let(board::loadMoves)
         val participants = listOf(
             PlayerParticipant(playerSide, board, moveResultNotifier, uiEvents, mapper),
-            ComputerParticipant(computerSide, board, moveResultNotifier, mockk(relaxed = true), computerMoveUseCase)
+            ComputerParticipant(computerSide, board, moveResultNotifier, engine, computerMoveUseCase)
         ).associateBy { it.side }
         return Game(
             board = board,

@@ -19,6 +19,7 @@ import com.mudita.chess.gameplay.game.GameStatus
 import com.mudita.chess.gameplay.model.GameplayDialogType
 import com.mudita.chess.gameplay.model.EndgameUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi
+import com.mudita.chess.gameplay.model.GameplayDialogUi.EngineUnavailableDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.GameMenuDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.LoadingDialogUi
 import com.mudita.chess.gameplay.model.ParticipantUi
@@ -49,6 +50,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.joinAll
@@ -153,9 +155,25 @@ internal class GameplayViewModel(
         uiState = StateHandler(initialUiState(game.board.state, isRestoringGame))
 
         setupUiLifecycleCollection()
+        collectEvents(merge(uiEvents.engineUnavailableDismissals, uiEvents.backClicks)) {
+            if (game.isEngineUnavailable) leaveBecauseNoEngine()
+        }
         viewModelScope.launch {
             joinAll(loadOptionsAndSetupGame(), loadSavedGame())
             hideLoadingIfShown()
+
+            if (game.isEngineUnavailable) {
+                // No computer player on this phone. Nothing to start: say so, and wait to be sent
+                // back to the menu (the dialog's button, or Back).
+                showEngineUnavailable()
+                try {
+                    awaitCancellation()
+                } finally {
+                    withContext(NonCancellable) {
+                        game.cleanup()
+                    }
+                }
+            }
 
             val started = game.start()
             if (isRestoringGame && started) {
@@ -164,6 +182,7 @@ internal class GameplayViewModel(
 
             setupUiUpdates()
             setupUiClicksCollection()
+            collectEvents(game.engineUnavailable.filter { it }) { showEngineUnavailable() }
             setupGameAutoSave(skipInitialState = isRestoringGame)
 
             savedStateHandle.markGameStarted()
@@ -190,14 +209,19 @@ internal class GameplayViewModel(
         gameStatus: GameStatus,
         boardState: ChessBoardState
     ) = uiState.updateState {
-        val dialog = mapper.toGameplayDialogUi(
-            status = gameStatus,
-            sideToMove = boardState.sideToMove,
-            isMoveSuggestionsOn = gameOptions.isMoveSuggestionsOn,
-            isPromotionManualConfirmationRequired = boardState.isPromotionManualConfirmationRequired,
-            checkInfo = boardState.checkInfo
-        )
-        val endgame = mapper.toEndgameUi(gameStatus)
+        // A computer player that cannot run outranks whatever the board would have asked.
+        val dialog = if (game.isEngineUnavailable) {
+            EngineUnavailableDialogUi
+        } else {
+            mapper.toGameplayDialogUi(
+                status = gameStatus,
+                sideToMove = boardState.sideToMove,
+                isMoveSuggestionsOn = gameOptions.isMoveSuggestionsOn,
+                isPromotionManualConfirmationRequired = boardState.isPromotionManualConfirmationRequired,
+                checkInfo = boardState.checkInfo
+            )
+        }
+        val endgame = mapper.toEndgameUi(gameStatus, game.drawReason)
         val isCompleteRoundMovesCountReached = boardState.moves.size >= COMPLETE_ROUND_MOVES_COUNT
         val isUndoMovesCountReached = boardState.moves.size >= game.board.movesPerUndo
         // Only relevant in vs-computer mode: true when the computer plays White and has already made
@@ -303,6 +327,16 @@ internal class GameplayViewModel(
         } else {
             this
         }
+    }
+
+    private fun showEngineUnavailable() = uiState.updateState {
+        copy(dialog = EngineUnavailableDialogUi)
+    }
+
+    private suspend fun leaveBecauseNoEngine() {
+        game.resign()
+        removeCurrentGameUseCase()
+        navigateToMain()
     }
 
     private fun hideLoadingIfShown() = uiState.updateState {

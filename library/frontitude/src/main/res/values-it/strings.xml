@@ -55,4 +55,10 @@
     <string name="common_status_loading">Caricamento...</string>
     <string name="common_topbar_button_clearall">Elimina tutto</string>
     <string name="maps_common_screentitle_menu">Menu</string>
+
+    <string name="chess_endingscreen_draw_repetition">Patta per ripetizione</string>
+    <string name="chess_endingscreen_draw_fiftymoves">Patta: 50 mosse senza cattura o pedone</string>
+    <string name="chess_endingscreen_draw_material">Patta: pezzi insufficienti per dare matto</string>
+    <string name="chess_endingscreen_draw_stalemate">Patta: stallo</string>
+    <string name="chess_engine_unavailable">Questo telefono non può avviare il giocatore computer. La modalità a due giocatori funziona ancora.</string>
 </resources>

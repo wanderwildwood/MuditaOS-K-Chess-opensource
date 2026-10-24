@@ -15,6 +15,7 @@ import com.mudita.chess.gameplay.model.DialogAlignment.BOARD_CENTER
 import com.mudita.chess.gameplay.model.DialogAlignment.BOTTOM
 import com.mudita.chess.gameplay.model.GameplayDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.CheckInfoDialogUi
+import com.mudita.chess.gameplay.model.GameplayDialogUi.EngineUnavailableDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.GameMenuDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.LoadingDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.PawnPromotionDialogUi
@@ -55,6 +56,10 @@ internal fun GameplayDialog(
             is PawnPromotionDialogUi -> PawnPromotionDialog(
                 dialog.promotionOptions,
                 onOptionConfirmed = { uiEvent(ConfirmPawnPromotionClicked(piece = it)) }
+            )
+
+            EngineUnavailableDialogUi -> EngineUnavailableDialog(
+                onMenuClick = { uiEvent(DialogDismissRequested(dialog.type)) }
             )
 
             is CheckInfoDialogUi -> CheckInfoDialog(

@@ -3,6 +3,7 @@ package com.mudita.chess.engine.process
 import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import com.mudita.chess.engine.ChessEngineTokens.ENGINE_INTRO
+import com.mudita.chess.engine.EngineUnavailableException
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -37,6 +38,25 @@ class ChessEngineProcessImplTest {
         tested.start()
 
         verify { processBuilder.start() }
+    }
+
+    @Test
+    fun `start reports an engine that is not there as unavailable`() {
+        every { processBuilder.start() } throws java.io.IOException("Cannot run program: error=2")
+
+        val thrown = runCatching { tested.start() }.exceptionOrNull()
+
+        assertThat(thrown).isInstanceOf(EngineUnavailableException::class.java)
+    }
+
+    @Test
+    fun `writeLine does not throw when the engine has died`() {
+        val outputStream = mockk<OutputStream>(relaxed = true)
+        every { outputStream.write(any<ByteArray>()) } throws java.io.IOException("Broken pipe")
+        every { process.outputStream } returns outputStream
+        tested.start()
+
+        tested.writeLine("uci")
     }
 
     @Test

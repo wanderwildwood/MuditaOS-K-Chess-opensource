@@ -3,6 +3,7 @@ package com.mudita.chess.gameplay.game
 import com.github.bhlangonijr.chesslib.Side
 import com.github.bhlangonijr.chesslib.move.Move
 import com.mudita.chess.engine.ChessEngine
+import com.mudita.chess.engine.EngineUnavailableException
 import com.mudita.chess.gameoptions.model.DifficultyLevel
 import com.mudita.chess.gameoptions.model.GameOptions
 import com.mudita.chess.gameplay.game.ComputerParticipant.MoveState.Idle
@@ -13,6 +14,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import logcat.logcat
 
 internal class ComputerParticipant(
     override val side: Side,
@@ -30,7 +32,15 @@ internal class ComputerParticipant(
 
     override suspend fun setup(options: GameOptions) {
         difficultyLevel = options.difficultyLevel
-        engine.start()
+        try {
+            engine.start()
+        } catch (ex: CancellationException) {
+            throw ex
+        } catch (ex: EngineUnavailableException) {
+            throw ex
+        } catch (@Suppress("TooGenericExceptionCaught") ex: Exception) {
+            throw EngineUnavailableException("The engine could not be started", ex)
+        }
     }
 
     override suspend fun doMove() {
@@ -75,10 +85,22 @@ internal class ComputerParticipant(
         } catch (ex: CancellationException) {
             moveToState(Idle)
             throw ex
+        } catch (@Suppress("TooGenericExceptionCaught") ex: Exception) {
+            // Whatever the engine threw, this runs on a background thread where nothing is
+            // waiting to catch it: say the engine is gone and let the game deal with that.
+            moveToState(Idle)
+            throw ex as? EngineUnavailableException
+                ?: EngineUnavailableException("The engine failed while choosing a move", ex)
         }
 
     override suspend fun cleanup() {
-        engine.stop()
+        try {
+            engine.stop()
+        } catch (ex: CancellationException) {
+            throw ex
+        } catch (@Suppress("TooGenericExceptionCaught") ex: Exception) {
+            logcat { "Engine did not stop cleanly: $ex" }
+        }
     }
 
     private fun moveToState(state: MoveState) {

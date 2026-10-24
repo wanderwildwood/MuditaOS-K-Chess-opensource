@@ -55,4 +55,10 @@
     <string name="common_status_loading">Wird geladen…</string>
     <string name="common_topbar_button_clearall">Alles löschen</string>
     <string name="maps_common_screentitle_menu">Menü</string>
+
+    <string name="chess_endingscreen_draw_repetition">Remis durch Stellungswiederholung</string>
+    <string name="chess_endingscreen_draw_fiftymoves">Remis: 50 Züge ohne Schlagen oder Bauernzug</string>
+    <string name="chess_endingscreen_draw_material">Remis: zu wenig Material für ein Matt</string>
+    <string name="chess_endingscreen_draw_stalemate">Remis: Patt</string>
+    <string name="chess_engine_unavailable">Dieses Telefon kann den Computergegner nicht ausführen. Zu zweit spielen geht weiterhin.</string>
 </resources>

@@ -70,6 +70,7 @@ import com.mudita.chess.gameplay.fixtures.withCheckInfo
 import com.mudita.chess.gameplay.game.CheckInfo
 import com.mudita.chess.gameplay.game.ChessBoardState
 import com.mudita.chess.gameplay.game.GameStatus.BLACK_WON
+import com.mudita.chess.gameplay.game.DrawReason
 import com.mudita.chess.gameplay.game.GameStatus.DRAW
 import com.mudita.chess.gameplay.game.GameStatus.STARTED
 import com.mudita.chess.gameplay.game.GameStatus.STOPPED
@@ -384,6 +385,25 @@ internal class GameplayMapperTest {
         val result = tested.toEndgameUi(status = DRAW)
 
         assertThat(result).isEqualTo(EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_itsadraw))
+    }
+
+    @Test
+    fun `toEndgameUi names the rule that drew the game`() {
+        assertThat(tested.toEndgameUi(DRAW, DrawReason.REPETITION))
+            .isEqualTo(EndgameUi(RFrontitude.string.chess_endingscreen_draw_repetition))
+        assertThat(tested.toEndgameUi(DRAW, DrawReason.FIFTY_MOVES))
+            .isEqualTo(EndgameUi(RFrontitude.string.chess_endingscreen_draw_fiftymoves))
+        assertThat(tested.toEndgameUi(DRAW, DrawReason.INSUFFICIENT_MATERIAL))
+            .isEqualTo(EndgameUi(RFrontitude.string.chess_endingscreen_draw_material))
+        assertThat(tested.toEndgameUi(DRAW, DrawReason.STALEMATE))
+            .isEqualTo(EndgameUi(RFrontitude.string.chess_endingscreen_draw_stalemate))
+    }
+
+    @Test
+    fun `toEndgameUi ignores a draw reason on a game that was won`() {
+        val result = tested.toEndgameUi(WHITE_WON, DrawReason.REPETITION)
+
+        assertThat(result).isEqualTo(EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_whitewins))
     }
 
     @Test

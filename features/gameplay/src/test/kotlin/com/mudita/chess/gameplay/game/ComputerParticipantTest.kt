@@ -10,6 +10,7 @@ import com.github.bhlangonijr.chesslib.Square.E4
 import com.github.bhlangonijr.chesslib.move.Move
 import com.google.common.truth.Truth.assertThat
 import com.mudita.chess.engine.ChessEngine
+import com.mudita.chess.engine.EngineUnavailableException
 import com.mudita.chess.gameoptions.model.DifficultyLevel
 import com.mudita.chess.gameoptions.model.GameOptions
 import com.mudita.chess.gameplay.fixtures.ChessBoardStateData.BLACK_PLAYER_BOARD
@@ -51,6 +52,32 @@ class ComputerParticipantTest {
         coVerify(exactly = 1) {
             engine.start()
         }
+    }
+
+    @Test
+    fun `setup says the engine is unavailable whatever the engine threw`() = runTest {
+        coEvery { engine.start() } throws java.io.IOException("Cannot run program")
+
+        val thrown = runCatching { tested.setup(gameOptions) }.exceptionOrNull()
+
+        assertThat(thrown).isInstanceOf(EngineUnavailableException::class.java)
+    }
+
+    @Test
+    fun `a failing engine while choosing a move is reported as unavailable`() = runTest {
+        coEvery { getComputerMoveUseCase(any(), any(), any()) } throws NoSuchElementException("gone")
+
+        val thrown = runCatching { tested.doMove() }.exceptionOrNull()
+
+        assertThat(thrown).isInstanceOf(EngineUnavailableException::class.java)
+        assertThat(tested.state).isEqualTo(Idle)
+    }
+
+    @Test
+    fun `cleanup does not throw when the engine will not stop`() = runTest {
+        coEvery { engine.stop() } throws java.io.IOException("gone")
+
+        tested.cleanup()
     }
 
     @Test

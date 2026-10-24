@@ -18,6 +18,7 @@ import com.mudita.chess.gameplay.GameplayUiEvent.ScreenStarted
 import com.mudita.chess.gameplay.GameplayUiEvent.SquareClicked
 import com.mudita.chess.gameplay.GameplayUiEvent.UndoMoveButtonClicked
 import com.mudita.chess.gameplay.model.GameplayDialogType.CHECK_INFO
+import com.mudita.chess.gameplay.model.GameplayDialogType.ENGINE_UNAVAILABLE
 import com.mudita.chess.gameplay.model.GameplayDialogType.GAME_MENU
 import com.mudita.chess.gameplay.model.GameplayDialogType.PAWN_PROMOTION
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -49,6 +50,10 @@ internal class GameplayUiEvents {
     val cancelCheckInfoClicks = events
         .filterIsInstance<DialogDismissRequested>()
         .filter { it.dialogType == CHECK_INFO }
+
+    val engineUnavailableDismissals = events
+        .filterIsInstance<DialogDismissRequested>()
+        .filter { it.dialogType == ENGINE_UNAVAILABLE }
 
     val confirmMoveClicks = events
         .filterIsInstance<ConfirmMoveButtonClicked>()

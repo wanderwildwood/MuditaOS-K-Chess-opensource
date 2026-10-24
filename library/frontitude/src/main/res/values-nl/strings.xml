@@ -55,4 +55,10 @@
     <string name="common_status_loading">Aan het laden...</string>
     <string name="common_topbar_button_clearall">Alles wissen</string>
     <string name="maps_common_screentitle_menu">Menu</string>
+
+    <string name="chess_endingscreen_draw_repetition">Remise door herhaling</string>
+    <string name="chess_endingscreen_draw_fiftymoves">Remise: 50 zetten zonder slaan of pionzet</string>
+    <string name="chess_endingscreen_draw_material">Remise: te weinig stukken voor schaakmat</string>
+    <string name="chess_endingscreen_draw_stalemate">Remise: pat</string>
+    <string name="chess_engine_unavailable">Deze telefoon kan de computerspeler niet starten. Met twee spelers werkt het nog.</string>
 </resources>

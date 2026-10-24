@@ -55,4 +55,10 @@
     <string name="common_status_loading">Ładowanie...</string>
     <string name="common_topbar_button_clearall">Wyczyść wszystko</string>
     <string name="maps_common_screentitle_menu">Menu</string>
+
+    <string name="chess_endingscreen_draw_repetition">Remis przez powtórzenie</string>
+    <string name="chess_endingscreen_draw_fiftymoves">Remis: 50 posunięć bez bicia i ruchu pionem</string>
+    <string name="chess_endingscreen_draw_material">Remis: za mało figur do mata</string>
+    <string name="chess_endingscreen_draw_stalemate">Remis: pat</string>
+    <string name="chess_engine_unavailable">Ten telefon nie uruchomi gracza komputerowego. Gra we dwoje nadal działa.</string>
 </resources>

@@ -104,6 +104,10 @@ import com.mudita.chess.ui.model.PieceTypeUi.PAWN
 import com.mudita.chess.ui.model.PieceTypeUi.QUEEN
 import com.mudita.chess.ui.model.PieceTypeUi.ROOK
 import com.mudita.chess.ui.model.PieceUi
+import com.mudita.chess.engine.ChessEngine
+import com.mudita.chess.engine.EngineUnavailableException
+import com.mudita.chess.gameplay.game.GameFactory
+import com.mudita.chess.gameplay.model.GameplayDialogType
 import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -1090,6 +1094,69 @@ internal class GameplayViewModelTest {
     }
 
     @Test
+    fun `a phone with no engine shows a message instead of crashing`() = runTest {
+        every { args.value } returns GameplayRoute(isPlayerWhite = true)
+        val engine = mockk<ChessEngine>(relaxed = true)
+        coEvery { engine.start() } throws EngineUnavailableException("no engine")
+        val noEngine = TestGame(mapper, engine = engine)
+
+        val viewModel = newViewModel(noEngine.playerVsComputerFactory())
+
+        assertThat(viewModel.state.dialog).isEqualTo(GameplayDialogUi.EngineUnavailableDialogUi)
+    }
+
+    @Test
+    fun `an engine that throws something else on start is the same message`() = runTest {
+        every { args.value } returns GameplayRoute(isPlayerWhite = true)
+        val engine = mockk<ChessEngine>(relaxed = true)
+        coEvery { engine.start() } throws java.io.IOException("Cannot run program")
+        val noEngine = TestGame(mapper, engine = engine)
+
+        val viewModel = newViewModel(noEngine.playerVsComputerFactory())
+
+        assertThat(viewModel.state.dialog).isEqualTo(GameplayDialogUi.EngineUnavailableDialogUi)
+    }
+
+    @Test
+    fun `dismissing the no engine message goes back to the main menu`() = runTest {
+        every { args.value } returns GameplayRoute(isPlayerWhite = true)
+        val engine = mockk<ChessEngine>(relaxed = true)
+        coEvery { engine.start() } throws EngineUnavailableException("no engine")
+        val viewModel = newViewModel(TestGame(mapper, engine = engine).playerVsComputerFactory())
+
+        viewModel.handleUiEvent(
+            GameplayUiEvent.DialogDismissRequested(GameplayDialogType.ENGINE_UNAVAILABLE)
+        )
+
+        viewModel.navActions.test {
+            verifyNavigatedToMain(awaitItem())
+        }
+        coVerify { removeCurrentGameUseCase() }
+    }
+
+    @Test
+    fun `two player games never touch the engine`() = runTest {
+        every { args.value } returns GameplayRoute(isPlayerWhite = true, isTwoPlayerMode = true)
+
+        assertThat(testedTwoPlayerLocal.state.dialog).isNull()
+    }
+
+    private fun newViewModel(factory: GameFactory) = GameplayViewModel(
+        args = args,
+        savedStateHandle = savedStateHandle,
+        mapper = mapper,
+        uiEvents = uiEvents,
+        getGameOptionsUseCase = getGameOptionsUseCase,
+        saveGameOptionsUseCase = saveGameOptionsUseCase,
+        getCurrentGameMovesUseCase = getCurrentGameMovesUseCase,
+        saveCurrentGameMovesUseCase = saveCurrentGameMovesUseCase,
+        removeCurrentGameUseCase = removeCurrentGameUseCase,
+        addToGameStatisticsUseCase = addToGameStatisticsUseCase,
+        dispatchers = dispatchers,
+        gameFactory = factory
+    )
+
+    @Test
     fun `MoveSuggestionsSwitchToggled updates game menu with move suggestions on and saves game options`() = runTest {
         every { args.value } returns GameplayRoute(isPlayerWhite = true)
         tested.handleUiEvent(PauseButtonClicked)
@@ -1218,7 +1285,7 @@ internal class GameplayViewModelTest {
         )
 
         assertThat(tested.state.endgame)
-            .isEqualTo(EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_itsadraw))
+            .isEqualTo(EndgameUi(RFrontitude.string.chess_endingscreen_draw_repetition))
 
         tested.handleUiEvent(EndgameUndoButtonClicked)
 
@@ -1280,7 +1347,7 @@ internal class GameplayViewModelTest {
             Move(A1, A2), Move(A8, A7)
         )
 
-        assertThat(tested.state.endgame).isEqualTo(EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_itsadraw))
+        assertThat(tested.state.endgame).isEqualTo(EndgameUi(RFrontitude.string.chess_endingscreen_draw_repetition))
 
         tested.handleUiEvent(EndgameNewGameButtonClicked)
 
@@ -1312,7 +1379,7 @@ internal class GameplayViewModelTest {
             Move(A1, A2), Move(A8, A7)
         )
 
-        assertThat(tested.state.endgame).isEqualTo(EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_itsadraw))
+        assertThat(tested.state.endgame).isEqualTo(EndgameUi(RFrontitude.string.chess_endingscreen_draw_repetition))
 
         tested.handleUiEvent(EndgameMainMenuButtonClicked)
 
@@ -1521,7 +1588,7 @@ internal class GameplayViewModelTest {
             Stream.of(
                 Arguments.of(WHITE_PARTICIPANT_WON_FEN, EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_whitewins)),
                 Arguments.of(BLACK_PARTICIPANT_WON_FEN, EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_blackwins)),
-                Arguments.of(STALEMATE_FEN, EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_itsadraw)),
+                Arguments.of(STALEMATE_FEN, EndgameUi(RFrontitude.string.chess_endingscreen_draw_stalemate)),
             )
 
         @JvmStatic
@@ -1551,12 +1618,12 @@ internal class GameplayViewModelTest {
                     WON,
                     EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_blackwins)
                 ),
-                Arguments.of(STALEMATE_FEN, true, DRAW, EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_itsadraw)),
-                Arguments.of(STALEMATE_FEN, false, DRAW, EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_itsadraw)),
-                Arguments.of(FIFTY_FIFTY_RULE_DRAW_FEN, true, DRAW, EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_itsadraw)),
-                Arguments.of(FIFTY_FIFTY_RULE_DRAW_FEN, false, DRAW, EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_itsadraw)),
-                Arguments.of(INSUFFICIENT_MATERIAL_DRAW_FEN, true, DRAW, EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_itsadraw)),
-                Arguments.of(INSUFFICIENT_MATERIAL_DRAW_FEN, false, DRAW, EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_itsadraw))
+                Arguments.of(STALEMATE_FEN, true, DRAW, EndgameUi(RFrontitude.string.chess_endingscreen_draw_stalemate)),
+                Arguments.of(STALEMATE_FEN, false, DRAW, EndgameUi(RFrontitude.string.chess_endingscreen_draw_stalemate)),
+                Arguments.of(FIFTY_FIFTY_RULE_DRAW_FEN, true, DRAW, EndgameUi(RFrontitude.string.chess_endingscreen_draw_fiftymoves)),
+                Arguments.of(FIFTY_FIFTY_RULE_DRAW_FEN, false, DRAW, EndgameUi(RFrontitude.string.chess_endingscreen_draw_fiftymoves)),
+                Arguments.of(INSUFFICIENT_MATERIAL_DRAW_FEN, true, DRAW, EndgameUi(RFrontitude.string.chess_endingscreen_draw_material)),
+                Arguments.of(INSUFFICIENT_MATERIAL_DRAW_FEN, false, DRAW, EndgameUi(RFrontitude.string.chess_endingscreen_draw_material))
             )
     }
 }

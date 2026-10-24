@@ -3,6 +3,7 @@ package com.mudita.chess.gameplay.model
 import com.mudita.chess.gameplay.model.DialogAlignment.BOARD_CENTER
 import com.mudita.chess.gameplay.model.DialogAlignment.BOTTOM
 import com.mudita.chess.gameplay.model.GameplayDialogType.CHECK_INFO
+import com.mudita.chess.gameplay.model.GameplayDialogType.ENGINE_UNAVAILABLE
 import com.mudita.chess.gameplay.model.GameplayDialogType.GAME_MENU
 import com.mudita.chess.gameplay.model.GameplayDialogType.LOADING
 import com.mudita.chess.gameplay.model.GameplayDialogType.PAWN_PROMOTION
@@ -17,7 +18,8 @@ internal enum class GameplayDialogType {
     LOADING,
     GAME_MENU,
     PAWN_PROMOTION,
-    CHECK_INFO
+    CHECK_INFO,
+    ENGINE_UNAVAILABLE
 }
 
 internal sealed class GameplayDialogUi(
@@ -33,6 +35,9 @@ internal sealed class GameplayDialogUi(
     data class PawnPromotionDialogUi(
         val promotionOptions: Set<PieceUi>
     ) : GameplayDialogUi(type = PAWN_PROMOTION)
+
+    /** The computer player cannot run on this phone; the only way on is back to the menu. */
+    data object EngineUnavailableDialogUi : GameplayDialogUi(type = ENGINE_UNAVAILABLE)
 
     data class CheckInfoDialogUi(
         val king: PieceUi,

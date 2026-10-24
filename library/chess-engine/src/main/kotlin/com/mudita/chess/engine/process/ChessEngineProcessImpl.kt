@@ -1,5 +1,6 @@
 package com.mudita.chess.engine.process
 
+import com.mudita.chess.engine.EngineUnavailableException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -34,9 +35,16 @@ internal class ChessEngineProcessImpl(
     override fun start() {
         if (process != null) return
 
-        val processBuilder = processBuilderProvider.provide(engineFile.absolutePath)
-        processBuilder.directory(engineFile.parentFile)
-        process = processBuilder.start()
+        try {
+            val processBuilder = processBuilderProvider.provide(engineFile.absolutePath)
+            processBuilder.directory(engineFile.parentFile)
+            process = processBuilder.start()
+        } catch (ex: IOException) {
+            // "Cannot run program": the APK holds no engine for this processor, or it cannot be run.
+            throw EngineUnavailableException("The engine could not be started: ${engineFile.absolutePath}", ex)
+        } catch (ex: SecurityException) {
+            throw EngineUnavailableException("The engine may not be started: ${engineFile.absolutePath}", ex)
+        }
     }
 
     override suspend fun monitor() {
@@ -53,6 +61,9 @@ internal class ChessEngineProcessImpl(
                 logcat("ChessEngineProcess") { "Engine -> App: $line" }
                 incomeChannel?.send(line)
             }
+            // The engine has gone. Ending the flow lets whoever is waiting on a line find out,
+            // instead of waiting for ever on a process that will say nothing more.
+            incomeChannel?.close()
         }
     }
 
@@ -67,8 +78,13 @@ internal class ChessEngineProcessImpl(
 
     override fun writeLine(data: String) {
         logcat("ChessEngineProcess") { "App - > Engine: $data" }
-        process?.outputStream?.write("$data\n".toByteArray())
-        process?.outputStream?.flush()
+        try {
+            process?.outputStream?.write("$data\n".toByteArray())
+            process?.outputStream?.flush()
+        } catch (ex: IOException) {
+            // A dead engine: the read side ends, and that is where the caller finds out.
+            logcat("ChessEngineProcess") { "Engine is not taking input: $ex" }
+        }
     }
 
     override fun receiveLines(): Flow<String> {

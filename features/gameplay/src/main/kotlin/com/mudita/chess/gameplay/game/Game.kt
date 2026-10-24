@@ -2,6 +2,7 @@ package com.mudita.chess.gameplay.game
 
 import com.github.bhlangonijr.chesslib.Side.BLACK
 import com.github.bhlangonijr.chesslib.Side.WHITE
+import com.mudita.chess.engine.EngineUnavailableException
 import com.mudita.chess.gameoptions.model.GameOptions
 import com.mudita.chess.gameplay.game.GameStatus.BLACK_WON
 import com.mudita.chess.gameplay.game.GameStatus.CREATED
@@ -63,10 +64,31 @@ internal class Game(
     @Volatile
     private var participantToMove: Participant? = null
 
+    private val _engineUnavailable = MutableStateFlow(false)
+
+    /**
+     * True once the computer player cannot be run: its engine would not start, or stopped
+     * answering. The game is left where it is, with nobody to move, and the screen says so.
+     */
+    val isEngineUnavailable: Boolean
+        get() = _engineUnavailable.value
+
+    val engineUnavailable: Flow<Boolean>
+        get() = _engineUnavailable
+
     suspend fun setup(options: GameOptions) = withContext(ioDispatcher) {
-        whiteParticipant.setup(options)
-        blackParticipant.setup(options)
+        try {
+            whiteParticipant.setup(options)
+            blackParticipant.setup(options)
+        } catch (ex: EngineUnavailableException) {
+            logcat { "No computer player: $ex" }
+            _engineUnavailable.value = true
+        }
     }
+
+    /** Why the game was drawn, or null if it was not. */
+    val drawReason: DrawReason?
+        get() = board.drawReason
 
     suspend fun loadMoves(moves: List<String>) = withContext(ioDispatcher) {
         board.loadMoves(moves)
@@ -160,7 +182,14 @@ internal class Game(
                     BLACK -> blackParticipant
                 }
                 participantToMove = participant
-                participant.doMove()
+                try {
+                    participant.doMove()
+                } catch (ex: EngineUnavailableException) {
+                    logcat { "No computer player: $ex" }
+                    participantToMove = null
+                    _engineUnavailable.value = true
+                    return@launch
+                }
             }
             participantToMove = null
             setStatus(requireNotNull(board.endgameStatus))

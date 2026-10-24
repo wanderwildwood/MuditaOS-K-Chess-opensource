@@ -38,12 +38,15 @@ import com.mudita.chess.ui.design.appColorWhite
  *
  * It takes the place of [BottomMenu] rather than covering the board, so the move that ended the
  * game stays where it can be looked at. Undo is the first control because it is the one that gets
- * used: taking the round back is how you find out what you should have played instead.
+ * used: taking the round back is how you find out what you should have played instead. The move
+ * list follows it, as it does in play.
  */
 @Composable
 internal fun EndgameMenu(
     isUndoButtonVisible: Boolean,
     onUndoButtonClicked: () -> Unit,
+    isGameMovesButtonVisible: Boolean,
+    onGameMovesButtonClicked: () -> Unit,
     onNewGameButtonClicked: () -> Unit,
     onMainMenuButtonClicked: () -> Unit,
     modifier: Modifier
@@ -64,17 +67,15 @@ internal fun EndgameMenu(
         // A game restored from a stored position has no moves behind it, so there is nothing to
         // take back and no reason to offer the control.
         if (isUndoButtonVisible) {
-            AppIconButton(
-                modifier = Modifier.border(
-                    border = BorderStroke(
-                        width = 2.dp,
-                        color = ButtonDefaults.buttonColors().containerColor
-                    ),
-                    shape = RoundedCornerShape(8.dp)
-                ),
-                touchAreaPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
-                iconResId = R.drawable.ic_undo,
-                onClick = onUndoButtonClicked
+            EndgameIconButton(iconResId = R.drawable.ic_undo, onClick = onUndoButtonClicked)
+        }
+        // The move list stays reachable after any ending: how a game ended is something to read
+        // back, and a drawn game is the one where it is least obvious.
+        if (isGameMovesButtonVisible) {
+            EndgameIconButton(
+                modifier = Modifier.padding(start = 6.dp),
+                iconResId = R.drawable.ic_history,
+                onClick = onGameMovesButtonClicked
             )
         }
         // Undo sits hard left where the in-play undo button is, and the actions that end this
@@ -102,6 +103,26 @@ internal fun EndgameMenu(
             )
         }
     }
+}
+
+@Composable
+private fun EndgameIconButton(
+    iconResId: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    AppIconButton(
+        modifier = modifier.border(
+            border = BorderStroke(
+                width = 2.dp,
+                color = ButtonDefaults.buttonColors().containerColor
+            ),
+            shape = RoundedCornerShape(8.dp)
+        ),
+        touchAreaPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
+        iconResId = iconResId,
+        onClick = onClick
+    )
 }
 
 /**
@@ -143,6 +164,8 @@ private fun EndgameMenuPreview() {
                 .background(appColorWhite),
             isUndoButtonVisible = true,
             onUndoButtonClicked = {},
+            isGameMovesButtonVisible = true,
+            onGameMovesButtonClicked = {},
             onNewGameButtonClicked = {},
             onMainMenuButtonClicked = {}
         )

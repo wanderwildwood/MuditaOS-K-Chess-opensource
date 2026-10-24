@@ -55,4 +55,10 @@
     <string name="common_status_loading">A carregar...</string>
     <string name="common_topbar_button_clearall">Limpar tudo</string>
     <string name="maps_common_screentitle_menu">Menu</string>
+
+    <string name="chess_endingscreen_draw_repetition">Empate por repetição</string>
+    <string name="chess_endingscreen_draw_fiftymoves">Empate: 50 jogadas sem captura ou peão</string>
+    <string name="chess_endingscreen_draw_material">Empate: peças insuficientes para dar mate</string>
+    <string name="chess_endingscreen_draw_stalemate">Empate: afogamento</string>
+    <string name="chess_engine_unavailable">Este telefone não consegue executar o jogador do computador. O modo de dois jogadores continua a funcionar.</string>
 </resources>

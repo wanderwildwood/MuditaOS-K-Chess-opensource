@@ -55,4 +55,10 @@
     <string name="common_status_loading">Cargando...</string>
     <string name="common_topbar_button_clearall">Borrar todo</string>
     <string name="maps_common_screentitle_menu">Menú</string>
+
+    <string name="chess_endingscreen_draw_repetition">Tablas por repetición</string>
+    <string name="chess_endingscreen_draw_fiftymoves">Tablas: 50 jugadas sin captura ni peón</string>
+    <string name="chess_endingscreen_draw_material">Tablas: faltan piezas para dar mate</string>
+    <string name="chess_endingscreen_draw_stalemate">Tablas: rey ahogado</string>
+    <string name="chess_engine_unavailable">Este teléfono no puede ejecutar al jugador de la computadora. El modo de dos jugadores sigue funcionando.</string>
 </resources>

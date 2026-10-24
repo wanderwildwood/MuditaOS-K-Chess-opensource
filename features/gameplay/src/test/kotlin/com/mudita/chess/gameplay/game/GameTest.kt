@@ -3,6 +3,7 @@ package com.mudita.chess.gameplay.game
 import com.github.bhlangonijr.chesslib.Side.BLACK
 import com.github.bhlangonijr.chesslib.Side.WHITE
 import com.google.common.truth.Truth.assertThat
+import com.mudita.chess.engine.EngineUnavailableException
 import com.mudita.chess.gameoptions.model.DifficultyLevel
 import com.mudita.chess.gameoptions.model.GameOptions
 import com.mudita.chess.gameplay.fixtures.blackParticipantWonPgn
@@ -60,6 +61,34 @@ internal class GameTest {
 
         coVerify { whiteParticipant.setup(gameOptions) }
         coVerify { blackParticipant.setup(gameOptions) }
+    }
+
+    @Test
+    fun `setup keeps the game alive and flags it when the engine is unavailable`() = runTest {
+        val gameOptions = GameOptions(isMoveSuggestionsOn = false, isPlayerWhite = true, difficultyLevel = DifficultyLevel(1))
+        coEvery { blackParticipant.setup(any()) } throws EngineUnavailableException("no engine")
+
+        tested.setup(gameOptions)
+
+        assertThat(tested.isEngineUnavailable).isTrue()
+    }
+
+    @Test
+    fun `setup leaves the flag down when the engine starts`() = runTest {
+        val gameOptions = GameOptions(isMoveSuggestionsOn = false, isPlayerWhite = true, difficultyLevel = DifficultyLevel(1))
+
+        tested.setup(gameOptions)
+
+        assertThat(tested.isEngineUnavailable).isFalse()
+    }
+
+    @Test
+    fun `the game loop flags an engine that fails mid game instead of throwing`() = runTest {
+        coEvery { whiteParticipant.doMove() } throws EngineUnavailableException("gone")
+
+        tested.start()
+
+        assertThat(tested.isEngineUnavailable).isTrue()
     }
 
     @Test

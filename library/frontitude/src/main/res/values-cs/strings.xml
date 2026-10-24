@@ -55,4 +55,10 @@
     <string name="common_status_loading">Načítání...</string>
     <string name="common_topbar_button_clearall">Vymazat vše</string>
     <string name="maps_common_screentitle_menu">Menu</string>
+
+    <string name="chess_endingscreen_draw_repetition">Remíza opakováním tahů</string>
+    <string name="chess_endingscreen_draw_fiftymoves">Remíza: 50 tahů bez braní a tahu pěšcem</string>
+    <string name="chess_endingscreen_draw_material">Remíza: málo figur na mat</string>
+    <string name="chess_endingscreen_draw_stalemate">Remíza: pat</string>
+    <string name="chess_engine_unavailable">Tento telefon neumí spustit počítačového hráče. Hra ve dvou funguje dál.</string>
 </resources>

@@ -65,6 +65,28 @@ class ChessEngineImplTest {
     }
 
     @Test
+    fun `start reports an engine that ends before it is ready as unavailable`() = runTest {
+        val ended = mockk<ChessEngineProcess>(relaxed = true) {
+            every { receiveLines() } returns kotlinx.coroutines.flow.emptyFlow()
+        }
+
+        val thrown = runCatching { ChessEngineImpl(ended, net).start() }.exceptionOrNull()
+
+        assertThat(thrown).isInstanceOf(EngineUnavailableException::class.java)
+    }
+
+    @Test
+    fun `start passes on an engine that cannot be launched`() = runTest {
+        val missing = mockk<ChessEngineProcess>(relaxed = true) {
+            every { start() } throws EngineUnavailableException("no engine")
+        }
+
+        val thrown = runCatching { ChessEngineImpl(missing, net).start() }.exceptionOrNull()
+
+        assertThat(thrown).isInstanceOf(EngineUnavailableException::class.java)
+    }
+
+    @Test
     fun `start launches process and skips net option if not found`() = runTest {
         every { net.load() } returns null
 

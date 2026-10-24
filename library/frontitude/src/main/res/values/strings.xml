@@ -73,4 +73,11 @@
     <string name="chess_about_close" tools:ignore="MissingTranslation">Close</string>
     <!-- The i at the top right of the first screen, for a screen reader -->
     <string name="chess_main_button_about" tools:ignore="MissingTranslation">About</string>
+
+    <!-- Why a game was drawn, shown as the result; the computer player message is shown when the engine cannot run -->
+    <string name="chess_endingscreen_draw_repetition">Draw by repetition</string>
+    <string name="chess_endingscreen_draw_fiftymoves">Draw: 50 moves, no capture or pawn move</string>
+    <string name="chess_endingscreen_draw_material">Draw: not enough pieces to checkmate</string>
+    <string name="chess_endingscreen_draw_stalemate">Draw: stalemate</string>
+    <string name="chess_engine_unavailable">This phone cannot run the computer player. Two-player still works.</string>
 </resources>

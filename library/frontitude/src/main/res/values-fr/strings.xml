@@ -55,4 +55,10 @@
     <string name="common_status_loading">Chargement...</string>
     <string name="common_topbar_button_clearall">Tout effacer</string>
     <string name="maps_common_screentitle_menu">Menu</string>
+
+    <string name="chess_endingscreen_draw_repetition">Nulle par répétition</string>
+    <string name="chess_endingscreen_draw_fiftymoves">Nulle : 50 coups sans prise ni coup de pion</string>
+    <string name="chess_endingscreen_draw_material">Nulle : pas assez de pièces pour mater</string>
+    <string name="chess_endingscreen_draw_stalemate">Nulle : pat</string>
+    <string name="chess_engine_unavailable">Ce téléphone ne peut pas lancer l’adversaire ordinateur. Le mode à deux joueurs fonctionne toujours.</string>
 </resources>

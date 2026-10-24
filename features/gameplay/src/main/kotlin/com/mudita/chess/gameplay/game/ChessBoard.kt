@@ -100,6 +100,21 @@ internal class ChessBoard(
     val isDraw: Boolean
         get() = lock.withLock { isLastMoveConfirmed && board.isDraw }
 
+    /** Which rule drew the game, or null if it is not drawn. */
+    val drawReason: DrawReason?
+        get() = lock.withLock {
+            if (!isDraw) {
+                null
+            } else {
+                DrawReason.of(
+                    isRepetition = board.isRepetition,
+                    isInsufficientMaterial = board.isInsufficientMaterial,
+                    halfMoveCounter = board.halfMoveCounter,
+                    isStalemate = board.isStaleMate
+                )
+            }
+        }
+
     fun getPiece(square: Square): Piece = lock.withLock {
         when (isPiecesPositionReady) {
             true -> board.getPiece(square)

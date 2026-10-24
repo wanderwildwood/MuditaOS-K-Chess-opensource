@@ -30,14 +30,19 @@ internal class ChessEngineImpl(
     override suspend fun start() {
         if (stateFlow.value !is State.Uninitialized) return
 
-        process.start()
-        process.monitor()
-        awaitFirstLine()
-        process.writeLine(UCI)
-        awaitLine { it == UCI_OK_TOKEN }
-        process.writeLine(UCICommands.setOption(HASH_SIZE, DEFAULT_HASH_MB_SIZE))
-        net.load()?.let {
-            process.writeLine(UCICommands.setOption(NET_PATH, it.absoluteFile))
+        try {
+            process.start()
+            process.monitor()
+            awaitFirstLine()
+            process.writeLine(UCI)
+            awaitLine { it == UCI_OK_TOKEN }
+            process.writeLine(UCICommands.setOption(HASH_SIZE, DEFAULT_HASH_MB_SIZE))
+            net.load()?.let {
+                process.writeLine(UCICommands.setOption(NET_PATH, it.absoluteFile))
+            }
+        } catch (ex: NoSuchElementException) {
+            process.stop()
+            throw EngineUnavailableException("The engine ended before it was ready", ex)
         }
 
         moveToState(State.Ready)
@@ -88,15 +93,21 @@ internal class ChessEngineImpl(
         } catch (ex: CancellationException) {
             withContext(NonCancellable) {
                 launch {
-                    process.writeLine(STOP)
-                    // consume lines from process before moving to Ready state
-                    awaitLine {
-                        it.startsWith(BEST_MOVE_TOKEN)
+                    try {
+                        process.writeLine(STOP)
+                        // consume lines from process before moving to Ready state
+                        awaitLine {
+                            it.startsWith(BEST_MOVE_TOKEN)
+                        }
+                        moveToState(State.Ready)
+                    } catch (ignored: NoSuchElementException) {
+                        // The engine went away while the search was being stopped.
                     }
-                    moveToState(State.Ready)
                 }
             }
             throw ex
+        } catch (ex: NoSuchElementException) {
+            throw EngineUnavailableException("The engine stopped answering", ex)
         }
     }
 

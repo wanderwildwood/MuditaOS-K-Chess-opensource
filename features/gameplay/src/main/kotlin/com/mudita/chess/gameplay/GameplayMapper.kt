@@ -19,6 +19,7 @@ import com.mudita.chess.gameplay.GameplayMapper.SquareMapping.toUi
 import com.mudita.chess.gameplay.game.CheckInfo
 import com.mudita.chess.gameplay.game.ChessBoard.Companion.BOARD_SIZE
 import com.mudita.chess.gameplay.game.ChessBoardState
+import com.mudita.chess.gameplay.game.DrawReason
 import com.mudita.chess.gameplay.game.GameStatus
 import com.mudita.chess.gameplay.game.GameStatus.BLACK_WON
 import com.mudita.chess.gameplay.game.GameStatus.DRAW
@@ -110,7 +111,8 @@ internal class GameplayMapper {
             else -> null
         }
 
-    fun toEndgameUi(status: GameStatus): EndgameUi? = createEndgameFor(status)
+    fun toEndgameUi(status: GameStatus, drawReason: DrawReason? = null): EndgameUi? =
+        createEndgameFor(status, drawReason)
 
     fun toSquare(positionUi: PositionUi) = positionUi.toDomain()
 
@@ -142,11 +144,20 @@ internal class GameplayMapper {
             return kingUi?.let { CheckInfoDialogUi(it, attackedBy) }
         }
 
-        fun createEndgameFor(status: GameStatus): EndgameUi? = when (status) {
+        fun createEndgameFor(status: GameStatus, drawReason: DrawReason?): EndgameUi? = when (status) {
             WHITE_WON -> EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_whitewins)
             BLACK_WON -> EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_blackwins)
-            DRAW -> EndgameUi(RFrontitude.string.chess_endingscreen_dialog_h1_itsadraw)
+            DRAW -> EndgameUi(drawResultResId(drawReason))
             else -> null
+        }
+
+        /** A draw says which rule drew it; "It's a draw" is only for a reason that is not known. */
+        private fun drawResultResId(drawReason: DrawReason?): Int = when (drawReason) {
+            DrawReason.REPETITION -> RFrontitude.string.chess_endingscreen_draw_repetition
+            DrawReason.FIFTY_MOVES -> RFrontitude.string.chess_endingscreen_draw_fiftymoves
+            DrawReason.INSUFFICIENT_MATERIAL -> RFrontitude.string.chess_endingscreen_draw_material
+            DrawReason.STALEMATE -> RFrontitude.string.chess_endingscreen_draw_stalemate
+            null -> RFrontitude.string.chess_endingscreen_dialog_h1_itsadraw
         }
     }
 
