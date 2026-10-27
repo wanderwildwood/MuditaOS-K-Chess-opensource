@@ -167,6 +167,29 @@ internal class GameplayMapperTest {
     }
 
     @Test
+    fun `toBoardUi marks the from and to squares of the last move`() {
+        val state = ChessBoardState(
+            squares = WHITE_PLAYER_SQUARES,
+            pieces = WHITE_PLAYER_PIECES,
+            moves = listOf(Move(D2, D3), Move(E7, E5))
+        )
+
+        val result = tested.toBoardUi(state)
+
+        assertThat(result.flatten().filter { it.isLastMove }.map { it.position })
+            .containsExactly(Ui.E7, Ui.E5)
+    }
+
+    @Test
+    fun `toBoardUi marks no square as last move when there are no moves`() {
+        val state = ChessBoardState(squares = WHITE_PLAYER_SQUARES, pieces = WHITE_PLAYER_PIECES)
+
+        val result = tested.toBoardUi(state)
+
+        assertThat(result.flatten().none { it.isLastMove }).isTrue()
+    }
+
+    @Test
     fun `toBoardUi marks square highlighted if check info contains it`() {
         val checkInfo = CheckInfo(
             king = LocatedPiece(WHITE_KING, E1),

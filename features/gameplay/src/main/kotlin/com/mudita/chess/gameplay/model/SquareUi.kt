@@ -7,5 +7,7 @@ internal data class SquareUi(
     val position: PositionUi,
     val piece: PieceUi? = null,
     val isHighlighted: Boolean = false,
+    /** One of the two squares of the last confirmed move. */
+    val isLastMove: Boolean = false,
     val isWhite: Boolean
 )

@@ -15,3 +15,7 @@ internal fun BoardUi.replace(value: SquareUi): List<List<SquareUi>> {
         }
     }.toList()
 }
+
+/** The board with the from and to squares of its last confirmed move marked. */
+internal fun BoardUi.lastMove(from: PositionUi, to: PositionUi): List<List<SquareUi>> =
+    map { row -> row.map { square -> if (square.position == from || square.position == to) square.copy(isLastMove = true) else square } }

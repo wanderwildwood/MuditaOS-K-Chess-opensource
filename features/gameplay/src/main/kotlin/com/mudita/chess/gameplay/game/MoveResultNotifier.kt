@@ -34,6 +34,6 @@ internal class MoveResultNotifier(
         .map { /* to Unit */ }
 
     private companion object {
-        const val CHECK_ACKNOWLEDGE_DURATION_MILLIS = 2000L
+        const val CHECK_ACKNOWLEDGE_DURATION_MILLIS = 4000L
     }
 }

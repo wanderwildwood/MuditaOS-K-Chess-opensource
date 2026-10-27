@@ -68,9 +68,24 @@
     <string name="chess_about_what" tools:ignore="MissingTranslation">Mudita\'s own Chess for the Kompakt, with a second player added: two people at one board, passing the phone between moves.</string>
     <string name="chess_about_licence" translatable="false">GNU General Public License v3</string>
     <string name="chess_about_engine" translatable="false">Fairy-Stockfish 14 — © the Stockfish developers and Fabian Fichter, same licence</string>
+    <string name="chess_about_source" translatable="false">Source code: github.com/wanderwildwood/MuditaOS-K-Chess-opensource</string>
     <string name="chess_about_feed_the_llamas" tools:ignore="MissingTranslation">feed the llamas</string>
-    <string name="chess_about_no_browser" tools:ignore="MissingTranslation">There is no browser on this phone to open that with.</string>
+    <string name="chess_about_no_browser" tools:ignore="MissingTranslation">There is no web browser on this phone to open that with.</string>
     <string name="chess_about_close" tools:ignore="MissingTranslation">Close</string>
+    <string name="chess_about_back" tools:ignore="MissingTranslation">Back</string>
+    <string name="chess_about_privacy_title" tools:ignore="MissingTranslation">Privacy</string>
+    <string name="chess_about_privacy" tools:ignore="MissingTranslation">Everything you do in this app stays on this phone. It has no internet access, so nothing is sent anywhere, and nothing is collected about you. The game in progress, your options and your statistics are kept in the app\'s own storage and go when you uninstall it. It asks for no permissions. There are no ads, no analytics and no tracking.</string>
+    <string name="chess_about_terms_title" tools:ignore="MissingTranslation">Terms</string>
+    <string name="chess_about_terms" tools:ignore="MissingTranslation">This app is free software under the GNU General Public License v3. It comes with no warranty: use it at your own risk.</string>
+    <string name="chess_about_licences_button" tools:ignore="MissingTranslation">Licences</string>
+    <string name="chess_licences_title" tools:ignore="MissingTranslation">Licences</string>
+    <string name="chess_licences_app_title" tools:ignore="MissingTranslation">This app</string>
+    <string name="chess_licences_app" tools:ignore="MissingTranslation">Chess+ is under the GNU General Public License v3, full text below. Its source code is public at the address on the About page.</string>
+    <string name="chess_licences_apache_title" tools:ignore="MissingTranslation">Apache License 2.0</string>
+    <string name="chess_licences_apache" translatable="false">chesslib (Ben-Hur Langoni Junior), MMD (Mudita), AndroidX and Jetpack Compose (Google), Koin, Kotlin and kotlinx libraries (JetBrains), SQLDelight (Cash App), Okio and logcat (Square). Licence text: apache.org/licenses/LICENSE-2.0</string>
+    <string name="chess_licences_font_title" tools:ignore="MissingTranslation">SIL Open Font License 1.1</string>
+    <string name="chess_licences_font" translatable="false">Lato, © Łukasz Dziedzic, supplied with MMD.</string>
+    <string name="chess_licences_gpl_title" translatable="false">GNU General Public License v3</string>
     <!-- The i at the top right of the first screen, for a screen reader -->
     <string name="chess_main_button_about" tools:ignore="MissingTranslation">About</string>
 

@@ -67,8 +67,8 @@ internal fun BottomMenu(
             AppPrimaryButton(
                 text = stringResource(id = RFrontitude.string.chess_gameplay_topbar_button_confirmmove),
                 size = AppButtonAttributes(
-                    height = 36.dp,
-                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+                    height = 48.dp,
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
                     cornerRadius = 8.dp,
                     textStyle = AppTypography900.labelSmall
                 ),

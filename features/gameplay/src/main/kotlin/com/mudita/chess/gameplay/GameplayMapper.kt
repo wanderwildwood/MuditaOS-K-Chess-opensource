@@ -43,6 +43,8 @@ import com.mudita.chess.frontitude.R as RFrontitude
 internal class GameplayMapper {
 
     fun toBoardUi(chessBoardState: ChessBoardState): BoardUi = with(chessBoardState) {
+        val lastMove = moves.lastOrNull()
+        val lastMoveSquares = lastMove?.let { setOf(it.from, it.to) }.orEmpty()
         squares
             .withIndex()
             .chunked(BOARD_SIZE)
@@ -54,6 +56,7 @@ internal class GameplayMapper {
                         position = square.toUi(),
                         piece = piece?.toUi(),
                         isHighlighted = square in allSquaresToHighlight,
+                        isLastMove = square in lastMoveSquares,
                         isWhite = square.isLightSquare
                     )
                 }

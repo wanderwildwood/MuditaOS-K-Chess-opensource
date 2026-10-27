@@ -71,6 +71,7 @@ import com.mudita.chess.gameplay.fixtures.STALEMATE_FEN
 import com.mudita.chess.gameplay.fixtures.TestGame
 import com.mudita.chess.gameplay.fixtures.WHITE_PARTICIPANT_WON_FEN
 import com.mudita.chess.gameplay.fixtures.get
+import com.mudita.chess.gameplay.fixtures.lastMove
 import com.mudita.chess.gameplay.fixtures.neverReturningCoroutine
 import com.mudita.chess.gameplay.fixtures.replace
 import com.mudita.chess.gameplay.model.GameplayDialogType.GAME_MENU
@@ -369,7 +370,7 @@ internal class GameplayViewModelTest {
             GameplayUiState(
                 board = WHITE_PLAYER_INITIAL_BOARD_UI
                     .replace(SquareUi(position = Ui.E2, isWhite = true, piece = null))
-                    .replace(SquareUi(position = Ui.E4, isWhite = true, piece = PieceUi(PAWN, isWhite = true))),
+                    .replace(SquareUi(position = Ui.E4, isWhite = true, piece = PieceUi(PAWN, isWhite = true))).lastMove(Ui.E2, Ui.E4),
                 topParticipant = ParticipantUi(
                     nameResId = RFrontitude.string.common_label_computer,
                     isWhite = false,
@@ -401,7 +402,7 @@ internal class GameplayViewModelTest {
                     .replace(SquareUi(position = Ui.E2, isWhite = true, piece = null))
                     .replace(SquareUi(position = Ui.E4, isWhite = true, piece = PieceUi(PAWN, isWhite = true)))
                     .replace(SquareUi(position = Ui.E7, isWhite = false, piece = null))
-                    .replace(SquareUi(position = Ui.E5, isWhite = false, piece = PieceUi(PAWN, isWhite = false))),
+                    .replace(SquareUi(position = Ui.E5, isWhite = false, piece = PieceUi(PAWN, isWhite = false))).lastMove(Ui.E7, Ui.E5),
                 topParticipant = ParticipantUi(
                     nameResId = RFrontitude.string.common_label_computer,
                     isWhite = true,
@@ -432,7 +433,7 @@ internal class GameplayViewModelTest {
             GameplayUiState(
                 board = WHITE_PLAYER_INITIAL_BOARD_UI
                     .replace(SquareUi(position = Ui.E2, isWhite = true, piece = null))
-                    .replace(SquareUi(position = Ui.E4, isWhite = true, piece = PieceUi(PAWN, isWhite = true))),
+                    .replace(SquareUi(position = Ui.E4, isWhite = true, piece = PieceUi(PAWN, isWhite = true))).lastMove(Ui.E2, Ui.E4),
                 topParticipant = ParticipantUi(
                     nameResId = RFrontitude.string.common_label_computer,
                     isWhite = false,
@@ -463,7 +464,7 @@ internal class GameplayViewModelTest {
                     .replace(SquareUi(position = Ui.E2, isWhite = true, piece = null))
                     .replace(SquareUi(position = Ui.E4, isWhite = true, piece = PieceUi(PAWN, isWhite = true)))
                     .replace(SquareUi(position = Ui.E7, isWhite = false, piece = null))
-                    .replace(SquareUi(position = Ui.E5, isWhite = false, piece = PieceUi(PAWN, isWhite = false))),
+                    .replace(SquareUi(position = Ui.E5, isWhite = false, piece = PieceUi(PAWN, isWhite = false))).lastMove(Ui.E7, Ui.E5),
                 topParticipant = ParticipantUi(
                     nameResId = RFrontitude.string.common_label_computer,
                     isWhite = true,
@@ -506,7 +507,7 @@ internal class GameplayViewModelTest {
                     )
                     .replace(SquareUi(position = Ui.E6, isWhite = true, piece = PieceUi(PAWN, isWhite = true)))
                     .replace(SquareUi(position = Ui.E7, isWhite = false, piece = null))
-                    .replace(SquareUi(position = Ui.D8, isWhite = false, piece = null)),
+                    .replace(SquareUi(position = Ui.D8, isWhite = false, piece = null)).lastMove(Ui.G5, Ui.D2),
                 topParticipant = ParticipantUi(
                     nameResId = RFrontitude.string.common_label_computer,
                     isWhite = false,
@@ -543,7 +544,7 @@ internal class GameplayViewModelTest {
                     .replace(SquareUi(position = Ui.C6, isWhite = true, piece = PieceUi(PAWN, isWhite = false)))
                     .replace(SquareUi(position = Ui.D7, isWhite = true, piece = PieceUi(QUEEN, isWhite = true), isHighlighted = true))
                     .replace(SquareUi(position = Ui.C7, isWhite = false, piece = null))
-                    .replace(SquareUi(position = Ui.E8, isWhite = true, piece = PieceUi(KING, isWhite = false), isHighlighted = true)),
+                    .replace(SquareUi(position = Ui.E8, isWhite = true, piece = PieceUi(KING, isWhite = false), isHighlighted = true)).lastMove(Ui.G4, Ui.D7),
                 topParticipant = ParticipantUi(
                     nameResId = RFrontitude.string.common_label_computer,
                     isWhite = true,
@@ -664,6 +665,7 @@ internal class GameplayViewModelTest {
         val afterWhiteMoveBoard = WHITE_PLAYER_INITIAL_BOARD_UI
             .replace(SquareUi(position = Ui.E2, isWhite = true, piece = null))
             .replace(SquareUi(position = Ui.E4, isWhite = true, piece = pawnUi))
+            .lastMove(Ui.E2, Ui.E4)
 
         testedTwoPlayerLocal.states.test {
             skipItems(1)
@@ -796,6 +798,7 @@ internal class GameplayViewModelTest {
             val moveConfirmedBoard = BLACK_PLAYER_INITIAL_BOARD_UI
                 .replace(SquareUi(position = Ui.E2, isWhite = true, piece = null))
                 .replace(SquareUi(position = Ui.E4, isWhite = true, piece = pawnUi))
+                .lastMove(Ui.E2, Ui.E4)
             assertThat(moveConfirmedState.board).isEqualTo(moveConfirmedBoard)
             assertThat(moveConfirmedState.topParticipant.isSelected).isFalse()
             assertThat(moveConfirmedState.bottomParticipant.isSelected).isTrue()
@@ -848,6 +851,7 @@ internal class GameplayViewModelTest {
             val moveConfirmedBoard = WHITE_PLAYER_INITIAL_BOARD_UI
                 .replace(SquareUi(position = Ui.E2, isWhite = true, piece = null))
                 .replace(SquareUi(position = Ui.E4, isWhite = true, piece = pawnUi))
+                .lastMove(Ui.E2, Ui.E4)
             assertThat(moveConfirmedState.board).isEqualTo(moveConfirmedBoard)
             assertThat(moveConfirmedState.topParticipant.isSelected).isTrue()
             assertThat(moveConfirmedState.bottomParticipant.isSelected).isFalse()
@@ -899,6 +903,7 @@ internal class GameplayViewModelTest {
             val moveConfirmedBoard = WHITE_PLAYER_INITIAL_BOARD_UI
                 .replace(SquareUi(position = Ui.E2, isWhite = true, piece = null))
                 .replace(SquareUi(position = Ui.E4, isWhite = true, piece = pawnUi))
+                .lastMove(Ui.E2, Ui.E4)
             assertThat(moveConfirmedState.board).isEqualTo(moveConfirmedBoard)
             assertThat(moveConfirmedState.topParticipant.isSelected).isTrue()
             assertThat(moveConfirmedState.bottomParticipant.isSelected).isFalse()
@@ -1437,6 +1442,7 @@ internal class GameplayViewModelTest {
                 val computerMovedBoard = BLACK_PLAYER_INITIAL_BOARD_UI
                     .replace(SquareUi(position = Ui.A2, isWhite = true, piece = null))
                     .replace(SquareUi(position = Ui.A3, isWhite = false, piece = PieceUi(PAWN, isWhite = true)))
+                    .lastMove(Ui.A2, Ui.A3)
                 assertThat(computerMovedState.board).isEqualTo(computerMovedBoard)
             }
         }
@@ -1454,6 +1460,7 @@ internal class GameplayViewModelTest {
             val expectedBoard = BLACK_PLAYER_INITIAL_BOARD_UI
                 .replace(SquareUi(position = Ui.E2, isWhite = true, piece = null))
                 .replace(SquareUi(position = Ui.E4, isWhite = true, piece = PieceUi(PAWN, isWhite = true)))
+                .lastMove(Ui.E2, Ui.E4)
             assertThat(moveUndoneState.board).isEqualTo(expectedBoard)
         }
     }
@@ -1512,6 +1519,7 @@ internal class GameplayViewModelTest {
                 .replace(SquareUi(position = Ui.G8, isWhite = true, piece = null))
                 .replace(SquareUi(position = Ui.F8, isWhite = false, piece = null))
                 .replace(SquareUi(position = Ui.B8, isWhite = false, piece = null))
+                .lastMove(Ui.D1, Ui.D4)
             assertThat(moveUndoneState.board[Ui.F6].isHighlighted).isFalse()
             assertThat(moveUndoneState.board[Ui.E8].isHighlighted).isFalse()
             assertThat(moveUndoneState.board).isEqualTo(moveUndoneBoard)
@@ -1559,6 +1567,7 @@ internal class GameplayViewModelTest {
                 .replace(SquareUi(position = Ui.F8, isWhite = false, piece = null))
                 .replace(SquareUi(position = Ui.E8, isWhite = true, piece = PieceUi(KING, isWhite = false), isHighlighted = true))
                 .replace(SquareUi(position = Ui.B8, isWhite = false, piece = null))
+                .lastMove(Ui.D5, Ui.F6)
             assertThat(moveUndoneToCheckedState.board).isEqualTo(moveUndoneToCheckedBoard)
         }
     }

@@ -54,6 +54,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.isSpecified
 import androidx.compose.ui.unit.sp
 import com.mudita.mmd.ThemeMMD
 import com.mudita.mmd.black
@@ -107,7 +108,7 @@ data class AppButtonAttributes(
     val borderStrokeWidth: Dp = 2.dp,
     val iconSize: Dp = 24.dp,
     val spaceBetweenIconAndText: Dp = 8.dp,
-    /** Keep the label on one line and shrink it to fit, for buttons with a fixed height. */
+    /** Shrink the label to fit, never below 14 sp, and let it take a second line, for buttons with a fixed height. */
     val isLabelShrunkToFit: Boolean = false
 ) {
     companion object {
@@ -176,7 +177,7 @@ fun AppSecondaryButton(
 
 /**
  * A button for something that cannot be taken back. The first tap arms it, and it says so in its
- * own face rather than stacking a dialog over the game; a second tap does it. Left alone for four
+ * own face rather than stacking a dialog over the game; a second tap does it. Left alone for six
  * seconds it disarms, so a stray tap leaves nothing live for whoever picks the phone up next.
  */
 @Composable
@@ -208,17 +209,20 @@ fun AppArmedSecondaryButton(
     )
 }
 
-private const val ARMED_TIMEOUT_MILLIS = 4_000L
+private const val MIN_LABEL_SP = 14f
+
+private const val ARMED_TIMEOUT_MILLIS = 6_000L
 
 @Composable
 private fun ButtonLabel(text: String, attributes: AppButtonAttributes) {
     val style = attributes.textStyle ?: MaterialTheme.typography.labelLarge
     if (attributes.isLabelShrunkToFit) {
+        val largest = if (style.fontSize.isSpecified && style.fontSize.value >= MIN_LABEL_SP) style.fontSize else MIN_LABEL_SP.sp
         BasicText(
             text = text,
             style = style.merge(color = LocalContentColor.current),
-            maxLines = 1,
-            autoSize = TextAutoSize.StepBased(minFontSize = 8.sp, maxFontSize = style.fontSize)
+            maxLines = 2,
+            autoSize = TextAutoSize.StepBased(minFontSize = MIN_LABEL_SP.sp, maxFontSize = largest)
         )
     } else {
         Text(text = text, style = style)

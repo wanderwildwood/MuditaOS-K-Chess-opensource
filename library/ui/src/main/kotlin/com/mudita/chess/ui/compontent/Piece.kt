@@ -2,11 +2,15 @@ package com.mudita.chess.ui.compontent
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,14 +28,41 @@ import com.mudita.chess.ui.model.PieceUi
 @Composable
 fun Piece(
     piece: PieceUi,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    haloed: Boolean = false
 ) {
-    Image(
-        modifier = modifier.size(32.dp),
-        painter = painterResource(id = getPieceResId(piece)),
-        contentDescription = null
-    )
+    val painter = painterResource(id = getPieceResId(piece))
+    Box(modifier = modifier.size(32.dp)) {
+        if (haloed) {
+            // The piece's own silhouette in white, one dp out in every direction: a solid rim that
+            // keeps a black piece readable on a black square.
+            HALO_OFFSETS.forEach { (x, y) ->
+                Image(
+                    modifier = Modifier.size(32.dp).offset(x.dp, y.dp),
+                    painter = painter,
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(Color.White)
+                )
+            }
+        }
+        Image(
+            modifier = Modifier.size(32.dp),
+            painter = painter,
+            contentDescription = null
+        )
+    }
 }
+
+private val HALO_OFFSETS = listOf(
+    -1 to -1,
+    0 to -1,
+    1 to -1,
+    -1 to 0,
+    1 to 0,
+    -1 to 1,
+    0 to 1,
+    1 to 1
+)
 
 @Composable
 @DrawableRes

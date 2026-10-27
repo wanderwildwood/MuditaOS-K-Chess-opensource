@@ -54,8 +54,8 @@ internal fun EndgameMenu(
     // Matched to the confirm-move button in BottomMenu, so the strip keeps the same weight when
     // a game ends as it had while the game was being played.
     val buttonAttributes = AppButtonAttributes(
-        height = 36.dp,
-        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+        height = 48.dp,
+        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
         cornerRadius = 8.dp,
         textStyle = AppTypography900.labelSmall,
         isLabelShrunkToFit = true
@@ -149,7 +149,7 @@ internal fun EndgameResult(
             text = stringResource(id = endgame.resultResId),
             style = style.merge(color = LocalContentColor.current),
             maxLines = 1,
-            autoSize = TextAutoSize.StepBased(minFontSize = 12.sp, maxFontSize = style.fontSize)
+            autoSize = TextAutoSize.StepBased(minFontSize = 14.sp, maxFontSize = style.fontSize)
         )
     }
 }

@@ -1,9 +1,11 @@
 package com.mudita.chess.gameplay.design
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,6 +22,9 @@ import com.mudita.chess.ui.design.AppTheme
 import com.mudita.chess.ui.design.appColorBlack
 import com.mudita.chess.ui.design.appColorWhite
 
+private val LAST_MOVE_INSET = 2.dp
+private val LAST_MOVE_STROKE = 2.dp
+
 @Composable
 internal fun Square(
     square: SquareUi,
@@ -28,6 +33,9 @@ internal fun Square(
 ) {
     val squareColor = if (square.isWhite) appColorWhite else appColorBlack
 
+    // Ink on the opposite colour to the square, so the mark reads on both and is never grey.
+    val inkColor = if (square.isWhite) appColorBlack else appColorWhite
+
     Box(
         modifier = modifier
             .size(45.dp)
@@ -35,8 +43,20 @@ internal fun Square(
             .clickable { onClick(square.position) },
         contentAlignment = Alignment.Center
     ) {
+        if (square.isLastMove) {
+            // A frame set in from the edge with a gap of the square's own colour outside it, so it
+            // reads as a mark on the square rather than the square shrinking.
+            Box(
+                Modifier
+                    .matchParentSize()
+                    .padding(LAST_MOVE_INSET)
+                    .border(LAST_MOVE_STROKE, inkColor)
+            )
+        }
         square.piece?.let { piece ->
-            Piece(piece)
+            // A black piece on a dark square has only its thin white outline to show it; a halo of
+            // white behind it makes the shape plain.
+            Piece(piece, haloed = !square.isWhite && !piece.isWhite)
         }
         if (square.isHighlighted) {
             PieceSelector(isWhite = !square.isWhite)
