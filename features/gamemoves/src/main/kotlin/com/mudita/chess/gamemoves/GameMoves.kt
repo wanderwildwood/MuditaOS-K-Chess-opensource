@@ -74,7 +74,7 @@ private fun GameMovesScreen(
         PagedColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(contentPadding),
+                .padding(contentPadding)
         ) {
             items(uiState.moves) { moveUi ->
                 GameMoveListItem(moveUi = moveUi)

@@ -57,11 +57,11 @@ internal fun PawnPromotionDialog(
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .size(40.dp)
+                        .size(48.dp)
                         .clickable { selectedOptionIndex = index }
                 ) {
                     Piece(piece = option, modifier = Modifier.size(34.dp))
-                    if (selectedOptionIndex == index) PieceSelector(isWhite = false, modifier.size(40.dp))
+                    if (selectedOptionIndex == index) PieceSelector(isWhite = false, Modifier.size(44.dp))
                 }
             }
         }

@@ -60,3 +60,6 @@ internal fun Context.licenceParagraphs(): List<String> =
         Log.e("ChessAbout", "Could not read the licence text", e)
         emptyList()
     }
+
+internal fun Context.versionName(): String =
+    packageManager.getPackageInfo(packageName, 0).versionName.orEmpty()

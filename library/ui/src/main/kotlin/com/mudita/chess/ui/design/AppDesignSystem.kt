@@ -113,7 +113,7 @@ data class AppButtonAttributes(
 ) {
     companion object {
         val Small = AppButtonAttributes(
-            height = 32.dp,
+            height = 48.dp,
             contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
         )
         val Large = AppButtonAttributes(

@@ -1,6 +1,6 @@
 package com.mudita.chess.main
 
-import android.content.Context
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -74,10 +74,10 @@ private fun Heading(text: String) {
 }
 
 @Composable
-private fun Section(heading: String, body: String) {
+private fun Section(@StringRes heading: Int, @StringRes body: Int) {
     Column {
-        Heading(heading)
-        Body(body)
+        Heading(stringResource(heading))
+        Body(stringResource(body))
     }
 }
 
@@ -105,10 +105,10 @@ private fun ColumnScope.AboutPage(onOpenLicences: () -> Unit, onDismiss: () -> U
             }
         }
         item {
-            Section(stringResource(RFrontitude.string.chess_about_privacy_title), stringResource(RFrontitude.string.chess_about_privacy))
+            Section(RFrontitude.string.chess_about_privacy_title, RFrontitude.string.chess_about_privacy)
         }
         item {
-            Section(stringResource(RFrontitude.string.chess_about_terms_title), stringResource(RFrontitude.string.chess_about_terms))
+            Section(RFrontitude.string.chess_about_terms_title, RFrontitude.string.chess_about_terms)
         }
         item { Link(stringResource(RFrontitude.string.chess_about_licences_button), onClick = onOpenLicences) }
         item { Llama() }
@@ -128,13 +128,13 @@ private fun ColumnScope.LicencesPage(onBack: () -> Unit) {
     )
     PagedColumn(modifier = Modifier.height(pageHeight())) {
         item {
-            Section(stringResource(RFrontitude.string.chess_licences_app_title), stringResource(RFrontitude.string.chess_licences_app))
+            Section(RFrontitude.string.chess_licences_app_title, RFrontitude.string.chess_licences_app)
         }
         item {
-            Section(stringResource(RFrontitude.string.chess_licences_apache_title), stringResource(RFrontitude.string.chess_licences_apache))
+            Section(RFrontitude.string.chess_licences_apache_title, RFrontitude.string.chess_licences_apache)
         }
         item {
-            Section(stringResource(RFrontitude.string.chess_licences_font_title), stringResource(RFrontitude.string.chess_licences_font))
+            Section(RFrontitude.string.chess_licences_font_title, RFrontitude.string.chess_licences_font)
         }
         item { Heading(stringResource(RFrontitude.string.chess_licences_gpl_title)) }
         items(gpl) { paragraph -> Body(paragraph) }
@@ -212,6 +212,3 @@ private fun Llama() {
         }
     }
 }
-
-private fun Context.versionName(): String =
-    packageManager.getPackageInfo(packageName, 0).versionName.orEmpty()

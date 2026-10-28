@@ -102,9 +102,9 @@ private fun RowScope.Steps(
         Image(
             modifier = Modifier
                 .weight(1f)
-                .height(30.dp)
+                .height(48.dp)
                 .clickable { onStepClick(i) }
-                .padding(horizontal = 2.dp),
+                .padding(horizontal = 2.dp, vertical = 9.dp),
             painter = painterResource(id = stepResId),
             contentScale = ContentScale.FillBounds,
             contentDescription = null

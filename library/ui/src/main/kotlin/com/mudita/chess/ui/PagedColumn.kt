@@ -57,9 +57,6 @@ import kotlinx.coroutines.launch
  * list: no row is drawn in them. [isScrollbarVisible] is taken so a call written for MMD's
  * list still reads the same, and does nothing: no list in the house apps draws a scrollbar.
  *
- * Inside a [ListJumpBox] the letters and page dots move the same [state], and the next swipe
- * goes on from wherever they left it.
- *
  * [onPullAtTop] is for a list fed from somewhere else: a swipe down while the first page is
  * already showing, its first row at the very top, calls it once for that swipe, so the list can
  * ask for its rows again. Left null, as in a list that lives only on the phone, that swipe does
@@ -74,7 +71,7 @@ fun PagedColumn(
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     @Suppress("UNUSED_PARAMETER") isScrollbarVisible: Boolean = false,
     onPullAtTop: (() -> Unit)? = null,
-    content: LazyListScope.() -> Unit,
+    content: LazyListScope.() -> Unit
 ) {
     val scope = rememberCoroutineScope()
     // The gesture below is set up once for the list; read the caller's latest action, not the
@@ -100,7 +97,7 @@ fun PagedColumn(
     }
 
     BoxWithConstraints(
-        modifier.padding(top = contentPadding.calculateTopPadding(), bottom = contentPadding.calculateBottomPadding()),
+        modifier.padding(top = contentPadding.calculateTopPadding(), bottom = contentPadding.calculateBottomPadding())
     ) {
         // Room after the last row for it to come to the top, so the list never has to line
         // its end up with the bottom of the screen.
@@ -118,7 +115,7 @@ fun PagedColumn(
                     detectVerticalDragGestures(
                         onDragStart = { turned = false },
                         onDragEnd = { turned = false },
-                        onDragCancel = { turned = false },
+                        onDragCancel = { turned = false }
                     ) { _, drag ->
                         if (turned || drag == 0f) return@detectVerticalDragGestures
                         turned = true
@@ -132,16 +129,16 @@ fun PagedColumn(
                     }
                 },
             state = state,
-            // One pixel after the tail tells ListJump the last item is room, not a row.
+            // One pixel after the tail marks the last item as room, not a row.
             contentPadding = PaddingValues(
                 start = contentPadding.calculateStartPadding(direction),
                 end = contentPadding.calculateEndPadding(direction),
-                bottom = if (paged) mark else 0.dp,
+                bottom = if (paged) mark else 0.dp
             ),
             verticalArrangement = verticalArrangement,
             horizontalAlignment = horizontalAlignment,
             // The list turns its own pages.
-            userScrollEnabled = false,
+            userScrollEnabled = false
         ) {
             // Read where the rows are placed, not when they are composed: a page turn moves them
             // without composing anything again.
@@ -168,7 +165,7 @@ internal fun swipeTurn(drag: Float, atTop: Boolean, canPull: Boolean): SwipeTurn
     else -> SwipeTurn.None
 }
 
-/** The padding after the tail, in pixels; ListJump knows a paged list by it. */
+/** The padding after the tail, in pixels; it marks a paged list. */
 private const val TAIL_MARK_PX = 1
 
 private fun LazyListState.hasTail(): Boolean = layoutInfo.afterContentPadding == TAIL_MARK_PX
@@ -211,12 +208,11 @@ private data class Spread(val from: Int, val to: Int, val room: Int, val cut: In
 private fun LazyListState.spread(): Spread? {
     val bottom = layoutInfo.viewportSize.height
     val rows = rows()
-    val cut = rows.firstOrNull { it.offset + it.size > bottom } ?: return null
+    val cut = rows.firstOrNull { it.offset + it.size > bottom }
     // A row taller than the screen, read a screen at a time, has nothing whole above it.
-    if (cut.offset <= 0) return null
-    val whole = rows.filter { it.index < cut.index && it.offset >= 0 }
-    if (whole.isEmpty()) return null
-    val last = whole.last()
+    val whole = if (cut != null && cut.offset > 0) rows.filter { it.index < cut.index && it.offset >= 0 } else emptyList()
+    val last = whole.lastOrNull()
+    if (cut == null || last == null) return null
     val room = (bottom - (last.offset + last.size)).coerceAtLeast(0)
     // Room wider than any row on the page is not what a row that did not fit left behind, but
     // the start of one far taller than the rest: shared out, it would scatter a few rows over
@@ -234,7 +230,7 @@ private fun LazyListState.spread(): Spread? {
 private class SpreadScope(
     private val list: LazyListScope,
     private val alignment: Alignment.Horizontal,
-    private val shift: (Int) -> Int,
+    private val shift: (Int) -> Int
 ) : LazyListScope {
     private var next = 0
 
@@ -252,7 +248,7 @@ private class SpreadScope(
         count: Int,
         key: ((index: Int) -> Any)?,
         contentType: (index: Int) -> Any?,
-        itemContent: @Composable LazyItemScope.(index: Int) -> Unit,
+        itemContent: @Composable LazyItemScope.(index: Int) -> Unit
     ) {
         val first = next
         next += count
