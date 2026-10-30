@@ -101,7 +101,7 @@ private fun ColumnScope.AboutPage(onOpenLicences: () -> Unit, onDismiss: () -> U
         item { Body(stringResource(RFrontitude.string.chess_about_engine)) }
         item {
             Link(stringResource(RFrontitude.string.chess_about_source)) {
-                context.openWebPage("https://github.com/wanderwildwood/MuditaOS-K-Chess-opensource")
+                context.openWebPage(SOURCE_URL)
             }
         }
         item {
@@ -120,7 +120,13 @@ private fun ColumnScope.AboutPage(onOpenLicences: () -> Unit, onDismiss: () -> U
 @Composable
 private fun ColumnScope.LicencesPage(onBack: () -> Unit) {
     val context = LocalContext.current
-    val gpl = remember { context.licenceParagraphs() }
+    val texts = remember {
+        listOf(
+            RFrontitude.string.chess_licences_gpl_title to context.licenceParagraphs(),
+            RFrontitude.string.chess_licences_apache_title to context.licenceParagraphs("licences/Apache-2.0.txt"),
+            RFrontitude.string.chess_licences_font_title to context.licenceParagraphs("licences/OFL-1.1.txt")
+        )
+    }
     TextMMD(
         text = stringResource(RFrontitude.string.chess_licences_title),
         style = MaterialTheme.typography.bodyLarge,
@@ -128,16 +134,25 @@ private fun ColumnScope.LicencesPage(onBack: () -> Unit) {
     )
     PagedColumn(modifier = Modifier.height(pageHeight())) {
         item {
+            Column {
+                Heading(stringResource(RFrontitude.string.chess_licences_source_title))
+                Link(SOURCE_URL.removePrefix("https://")) { context.openWebPage(SOURCE_URL) }
+            }
+        }
+        item {
             Section(RFrontitude.string.chess_licences_app_title, RFrontitude.string.chess_licences_app)
         }
-        item {
-            Section(RFrontitude.string.chess_licences_apache_title, RFrontitude.string.chess_licences_apache)
+        item { Heading(stringResource(RFrontitude.string.chess_licences_built_title)) }
+        items(LIBRARIES) { library ->
+            Column {
+                Body("${library.name}, ${library.by}: ${library.licence}")
+                Link(library.link.removePrefix("https://")) { context.openWebPage(library.link) }
+            }
         }
-        item {
-            Section(RFrontitude.string.chess_licences_font_title, RFrontitude.string.chess_licences_font)
+        texts.forEach { (title, paragraphs) ->
+            item { Heading(stringResource(title)) }
+            items(paragraphs) { paragraph -> Body(paragraph) }
         }
-        item { Heading(stringResource(RFrontitude.string.chess_licences_gpl_title)) }
-        items(gpl) { paragraph -> Body(paragraph) }
     }
     Spacer(Modifier.height(10.dp))
     CloseButton(stringResource(RFrontitude.string.chess_about_back), onBack)

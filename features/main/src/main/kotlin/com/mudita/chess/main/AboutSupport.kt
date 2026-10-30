@@ -43,23 +43,45 @@ internal fun Context.openWebPage(address: String) {
     }
 }
 
-/** The GPL text shipped in the APK as assets/LICENSE.md, a paragraph to a row, markup dropped. */
-internal fun Context.licenceParagraphs(): List<String> =
+/** A licence text shipped in the APK under assets/, a paragraph to a row, markup dropped. */
+internal fun Context.licenceParagraphs(asset: String = "LICENSE.md"): List<String> =
     try {
-        assets.open("LICENSE.md").bufferedReader().use { it.readText() }
-            .split(Regex("\n\\s*\n"))
-            .map { paragraph ->
-                paragraph.lines().joinToString(" ") { it.trim() }
-                    .trimStart('#', ' ')
-                    .replace("**", "")
-                    .replace("*", "")
-                    .trim()
-            }
-            .filter { it.isNotEmpty() }
+        assets.open(asset).bufferedReader().use { it.readText() }.toParagraphs()
     } catch (e: java.io.IOException) {
-        Log.e("ChessAbout", "Could not read the licence text", e)
+        Log.e("ChessAbout", "Could not read the licence text $asset", e)
         emptyList()
     }
+
+internal fun String.toParagraphs(): List<String> =
+    replace("\r\n", "\n")
+        .split(Regex("\n\\s*\n"))
+        .map { paragraph ->
+            paragraph.lines().joinToString(" ") { it.trim() }
+                .trimStart('#', ' ')
+                .replace("**", "")
+                .replace("*", "")
+                .trim()
+        }
+        .filter { it.isNotEmpty() }
+
+/** One piece of other people's work that ships inside the APK, and the licence it comes under. */
+internal data class Library(val name: String, val by: String, val licence: String, val link: String)
+
+internal const val SOURCE_URL = "https://github.com/wanderwildwood/MuditaOS-K-Chess-opensource"
+
+/** Everything the APK carries that is not Chess+'s own code, as the build pulls it in. */
+internal val LIBRARIES: List<Library> = listOf(
+    Library("Mudita's Chess (the app this began as)", "Mudita", "no licence file of its own, carried on under the GPL", "https://github.com/mudita/MuditaOS-K-Chess-opensource"),
+    Library("Fairy-Stockfish 14 and its network file", "Fabian Fichter, the Stockfish developers", "GPL-3.0-or-later", "https://github.com/fairy-stockfish/Fairy-Stockfish"),
+    Library("Mudita Mindful Design (MMD)", "Mudita", "Apache-2.0", "https://github.com/mudita/MMD"),
+    Library("chesslib", "Ben-Hur Langoni Junior", "Apache-2.0", "https://github.com/bhlangonijr/chesslib"),
+    Library("AndroidX and Jetpack Compose", "Google", "Apache-2.0", "https://developer.android.com/jetpack"),
+    Library("Koin", "Kotzilla and contributors", "Apache-2.0", "https://insert-koin.io"),
+    Library("Kotlin, kotlinx.coroutines and kotlinx.serialization", "JetBrains", "Apache-2.0", "https://kotlinlang.org"),
+    Library("SQLDelight", "Cash App", "Apache-2.0", "https://github.com/sqldelight/sqldelight"),
+    Library("Okio and logcat", "Square", "Apache-2.0", "https://github.com/square/okio"),
+    Library("Lato typeface, supplied with MMD", "Łukasz Dziedzic", "OFL-1.1", "https://www.latofonts.com"),
+)
 
 internal fun Context.versionName(): String =
     packageManager.getPackageInfo(packageName, 0).versionName.orEmpty()

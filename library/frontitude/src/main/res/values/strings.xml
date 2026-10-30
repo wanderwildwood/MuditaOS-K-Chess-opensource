@@ -80,11 +80,11 @@
     <string name="chess_about_licences_button" tools:ignore="MissingTranslation">Licences</string>
     <string name="chess_licences_title" tools:ignore="MissingTranslation">Licences</string>
     <string name="chess_licences_app_title" tools:ignore="MissingTranslation">This app</string>
-    <string name="chess_licences_app" tools:ignore="MissingTranslation">Chess+ is under the GNU General Public License v3, full text below. Its source code is public at the address on the About page.</string>
-    <string name="chess_licences_apache_title" tools:ignore="MissingTranslation">Apache License 2.0</string>
-    <string name="chess_licences_apache" translatable="false">chesslib (Ben-Hur Langoni Junior), MMD (Mudita), AndroidX and Jetpack Compose (Google), Koin, Kotlin and kotlinx libraries (JetBrains), SQLDelight (Cash App), Okio and logcat (Square). Licence text: apache.org/licenses/LICENSE-2.0</string>
-    <string name="chess_licences_font_title" tools:ignore="MissingTranslation">SIL Open Font License 1.1</string>
-    <string name="chess_licences_font" translatable="false">Lato, © Łukasz Dziedzic, supplied with MMD.</string>
+    <string name="chess_licences_app" tools:ignore="MissingTranslation">Chess+ is free software under the GNU General Public License, version 3 only (GPL-3.0-only), copyright wander wildwood for what is written here. The work it is built on keeps its own licence and its authors keep their copyright, as listed under Built with. The full texts are at the end of this page.</string>
+    <string name="chess_licences_apache_title" translatable="false">Apache License, version 2.0</string>
+    <string name="chess_licences_source_title" tools:ignore="MissingTranslation">Source code</string>
+    <string name="chess_licences_built_title" tools:ignore="MissingTranslation">Built with</string>
+    <string name="chess_licences_font_title" translatable="false">SIL Open Font License, version 1.1</string>
     <string name="chess_licences_gpl_title" translatable="false">GNU General Public License v3</string>
     <!-- The i at the top right of the first screen, for a screen reader -->
     <string name="chess_main_button_about" tools:ignore="MissingTranslation">About</string>
