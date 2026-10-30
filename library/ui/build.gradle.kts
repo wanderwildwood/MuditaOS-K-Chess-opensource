@@ -8,6 +8,7 @@ android {
 }
 
 dependencies {
+    testImplementation(libs.bundles.test)
     implementation(projects.library.frontitude)
 
     api(libs.androidx.compose.tooling.preview)
