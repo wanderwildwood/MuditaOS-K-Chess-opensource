@@ -1,8 +1,8 @@
 package com.mudita.chess.ui
 
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Test
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
+import org.junit.Test
 
 class LinkOpenerTest {
     @Test fun aBrowserIsABrowser() {
@@ -20,4 +20,24 @@ class LinkOpenerTest {
         assertFalse(isRealBrowser(null))
         assertFalse(isRealBrowser("android"))
     }
+
+    @Test
+    fun severalBrowsersWithNoDefaultStillReachABrowser() {
+        // Android answers with its own chooser ("android"); the browsers behind it count.
+        assertTrue(canReachBrowser("android", listOf("org.mozilla.firefox", "com.einkbro")))
+        assertTrue(canReachBrowser("android", listOf("org.chromium.webview_shell", "com.einkbro")))
+    }
+
+    @Test
+    fun aChooserWithNoRealBrowserBehindItIsNoBrowser() {
+        assertFalse(canReachBrowser("android", emptyList()))
+        assertFalse(canReachBrowser("android", listOf("org.chromium.webview_shell", null)))
+    }
+
+    @Test
+    fun aSingleAnswerIsJudgedByItself() {
+        assertTrue(canReachBrowser("com.einkbro", emptyList()))
+        assertFalse(canReachBrowser(null, emptyList()))
+    }
 }
+
