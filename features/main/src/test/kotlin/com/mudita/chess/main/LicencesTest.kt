@@ -1,23 +1,33 @@
 package com.mudita.chess.main
 
 import com.google.common.truth.Truth.assertThat
+import com.mudita.chess.ui.LicenceText
+import com.mudita.chess.ui.LicencesData
+import com.mudita.chess.ui.licenceParagraphs
+import com.mudita.chess.ui.licencesProblems
 import java.io.File
 import java.net.URI
 import org.junit.jupiter.api.Test
 
 class LicencesTest {
 
-    private fun asset(name: String) = File("../../app-android/src/main/assets/$name").readText()
+    private fun raw(name: String) = File("src/main/res/raw/$name.txt").readText()
+
+    private val data = LicencesData(
+        "Chess+", SOURCE_URL, "GPL-3.0-only", LICENCE_COMPONENTS,
+        LICENCE_RAW.map { LicenceText(it.first, it.first, it.second) },
+    )
 
     @Test
-    fun `every library has a name, a licence and an https link`() {
-        assertThat(LIBRARIES).isNotEmpty()
-        LIBRARIES.forEach {
-            assertThat(URI(it.link).scheme).isEqualTo("https")
-            assertThat(it.name).isNotEmpty()
-            assertThat(it.licence).isNotEmpty()
-        }
-        assertThat(LIBRARIES.map { it.name }.toSet()).hasSize(LIBRARIES.size)
+    fun `the licence data has no problems`() {
+        assertThat(licencesProblems(data)).isEmpty()
+    }
+
+    @Test
+    fun `mudita and the engine stay credited`() {
+        val names = LICENCE_COMPONENTS.map { it.name }
+        assertThat(names.any { it.startsWith("Mudita's Chess") }).isTrue()
+        assertThat(names.any { it.startsWith("Fairy-Stockfish") }).isTrue()
     }
 
     @Test
@@ -29,14 +39,9 @@ class LicencesTest {
 
     @Test
     fun `the three bundled licence texts split into paragraphs`() {
-        assertThat(asset("LICENSE.md").toParagraphs().size).isGreaterThan(10)
-        assertThat(asset("licences/Apache-2.0.txt").toParagraphs().size).isGreaterThan(10)
-        assertThat(asset("licences/OFL-1.1.txt").toParagraphs().size).isGreaterThan(5)
-        assertThat(asset("licences/Apache-2.0.txt")).contains("Apache License")
-    }
-
-    @Test
-    fun `paragraphs are joined into one row each`() {
-        assertThat("One two\n three\n\n\nFour\r\nfive".toParagraphs()).containsExactly("One two three", "Four five").inOrder()
+        assertThat(licenceParagraphs(raw("gpl_3_0")).size).isGreaterThan(10)
+        assertThat(licenceParagraphs(raw("apache_2_0")).size).isGreaterThan(10)
+        assertThat(licenceParagraphs(raw("ofl_1_1")).size).isGreaterThan(5)
+        assertThat(raw("apache_2_0")).contains("Apache License")
     }
 }

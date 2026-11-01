@@ -5,6 +5,6 @@
     <application>
         <activity
             android:name=".GameLoaderActivity"
-            android:exported="true" />
+            android:exported="false" />
     </application>
 </manifest>

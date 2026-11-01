@@ -30,6 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.mudita.chess.ui.LicencesScreen
 import com.mudita.chess.ui.PagedColumn
 import com.mudita.chess.ui.design.EInkDialog
 import com.mudita.mmd.components.buttons.OutlinedButtonMMD
@@ -119,43 +120,12 @@ private fun ColumnScope.AboutPage(onOpenLicences: () -> Unit, onDismiss: () -> U
 
 @Composable
 private fun ColumnScope.LicencesPage(onBack: () -> Unit) {
-    val context = LocalContext.current
-    val texts = remember {
-        listOf(
-            RFrontitude.string.chess_licences_gpl_title to context.licenceParagraphs(),
-            RFrontitude.string.chess_licences_apache_title to context.licenceParagraphs("licences/Apache-2.0.txt"),
-            RFrontitude.string.chess_licences_font_title to context.licenceParagraphs("licences/OFL-1.1.txt")
-        )
-    }
-    TextMMD(
-        text = stringResource(RFrontitude.string.chess_licences_title),
-        style = MaterialTheme.typography.bodyLarge,
-        fontWeight = FontWeight.Medium
+    LicencesScreen(
+        rememberLicencesData(),
+        rememberLicencesLabels(),
+        onBack = onBack,
+        modifier = Modifier.fillMaxWidth().height(pageHeight() + 110.dp)
     )
-    PagedColumn(modifier = Modifier.height(pageHeight())) {
-        item {
-            Column {
-                Heading(stringResource(RFrontitude.string.chess_licences_source_title))
-                Link(SOURCE_URL.removePrefix("https://")) { context.openWebPage(SOURCE_URL) }
-            }
-        }
-        item {
-            Section(RFrontitude.string.chess_licences_app_title, RFrontitude.string.chess_licences_app)
-        }
-        item { Heading(stringResource(RFrontitude.string.chess_licences_built_title)) }
-        items(LIBRARIES) { library ->
-            Column {
-                Body("${library.name}, ${library.by}: ${library.licence}")
-                Link(library.link.removePrefix("https://")) { context.openWebPage(library.link) }
-            }
-        }
-        texts.forEach { (title, paragraphs) ->
-            item { Heading(stringResource(title)) }
-            items(paragraphs) { paragraph -> Body(paragraph) }
-        }
-    }
-    Spacer(Modifier.height(10.dp))
-    CloseButton(stringResource(RFrontitude.string.chess_about_back), onBack)
 }
 
 @Composable
