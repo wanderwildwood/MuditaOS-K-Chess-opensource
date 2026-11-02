@@ -79,14 +79,13 @@
     <string name="chess_about_terms" tools:ignore="MissingTranslation">This app is free software under the GNU General Public License v3. It comes with no warranty: use it at your own risk.</string>
     <string name="chess_about_licences_button" tools:ignore="MissingTranslation">Licences</string>
     <string name="chess_licences_title" tools:ignore="MissingTranslation">Licences</string>
-    <string name="chess_licences_app" tools:ignore="MissingTranslation">Chess+ is free software under the GNU General Public License, version 3 only (GPL-3.0-only), copyright wander wildwood for what is written here. The work it is built on keeps its own licence and its authors keep their copyright, as listed under Built with. The full texts are at the end.</string>
+    <string name="chess_licences_app" tools:ignore="MissingTranslation">Chess+ is free software under the GNU General Public License, version 3 only (GPL-3.0-only), copyright wander wildwood for what is written here. The work it is built on keeps its own licence and its authors keep their copyright, each on its own page.</string>
     <string name="chess_licences_source_title" tools:ignore="MissingTranslation">Source code</string>
-    <string name="chess_licences_licence_title" tools:ignore="MissingTranslation">Licence</string>
+    <string name="chess_licences_no_text" tools:ignore="MissingTranslation">%s needs no licence text here.</string>
     <string name="chess_licences_full_title" tools:ignore="MissingTranslation">Full texts</string>
     <string name="chess_licences_full_gpl" translatable="false">GNU General Public License v3 (full text)</string>
     <string name="chess_licences_full_apache" translatable="false">Apache License 2.0 (full text)</string>
     <string name="chess_licences_full_ofl" translatable="false">SIL Open Font License 1.1 (full text)</string>
-    <string name="chess_licences_built_title" tools:ignore="MissingTranslation">Built with</string>
     <!-- The i at the top right of the first screen, for a screen reader -->
     <string name="chess_main_button_about" tools:ignore="MissingTranslation">About</string>
 

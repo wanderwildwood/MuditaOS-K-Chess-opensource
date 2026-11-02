@@ -55,13 +55,12 @@ internal fun rememberLicencesData(): LicencesData = LicencesData(
 @Composable
 internal fun rememberLicencesLabels(): LicencesLabels {
     val none = stringResource(RFrontitude.string.chess_about_no_browser)
+    val noText = stringResource(RFrontitude.string.chess_licences_no_text, "@@")
     return LicencesLabels(
         title = stringResource(RFrontitude.string.chess_licences_title),
         back = stringResource(RFrontitude.string.chess_about_back),
         sourceHeading = stringResource(RFrontitude.string.chess_licences_source_title),
-        licenceHeading = stringResource(RFrontitude.string.chess_licences_licence_title),
-        builtWithHeading = stringResource(RFrontitude.string.chess_licences_built_title),
-        fullTextsHeading = stringResource(RFrontitude.string.chess_licences_full_title),
+        noText = { licence -> noText.replace("@@", licence) },
         noBrowser = { none },
     )
 }

@@ -70,8 +70,7 @@ the Stockfish developers, under the GPL version 3 or later, and an app distribut
 distributed under the GPL as a whole. Version 3 is the version taken here. The engine's
 source is in `library/chess-engine-bin`, and the app runs the engine built from it.
 
-The app's own **Licences** page (About) gives the source address, the list of what it is built
-with and the full text of each licence.
+The app's own **Licences** page (About) lists Chess+ and then every library it is built with, one row each; a row opens the author, website and full licence text, and Chess+'s own page carries the source address and the GPL.
 
 [chesslib](https://github.com/bhlangonijr/chesslib) (Apache 2.0) checks the moves, and
 [MMD](https://github.com/mudita/MMD) (Apache 2.0) draws the interface.
