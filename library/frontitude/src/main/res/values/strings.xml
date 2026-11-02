@@ -68,9 +68,9 @@
     <string name="chess_about_what" tools:ignore="MissingTranslation">Mudita\'s own Chess for the Kompakt, with a second player added: two people at one board, passing the phone between moves.</string>
     <string name="chess_about_licence" translatable="false">GNU General Public License v3</string>
     <string name="chess_about_engine" translatable="false">Fairy-Stockfish 14 — © the Stockfish developers and Fabian Fichter, same licence</string>
-    <string name="chess_about_source" translatable="false">Source code: github.com/wanderwildwood/MuditaOS-K-Chess-opensource</string>
-    <string name="chess_about_feed_the_llamas" tools:ignore="MissingTranslation">feed the llamas</string>
+    <string name="chess_about_feed_the_llamas" tools:ignore="MissingTranslation">Feed the llamas</string>
     <string name="chess_about_no_browser" tools:ignore="MissingTranslation">There is no web browser on this phone to open that with.</string>
+    <string name="chess_about_no_browser_address" tools:ignore="MissingTranslation">No browser is installed. The address is %1$s.</string>
     <string name="chess_about_close" tools:ignore="MissingTranslation">Close</string>
     <string name="chess_about_back" tools:ignore="MissingTranslation">Back</string>
     <string name="chess_about_privacy_title" tools:ignore="MissingTranslation">Privacy</string>
