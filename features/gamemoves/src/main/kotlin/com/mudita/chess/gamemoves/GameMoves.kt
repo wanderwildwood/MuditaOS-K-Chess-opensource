@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -78,7 +79,7 @@ private fun GameMovesScreen(
         ) {
             items(uiState.moves) { moveUi ->
                 GameMoveListItem(moveUi = moveUi)
-                AppDashedHorizontalDivider(modifier = Modifier.fillMaxWidth())
+                AppDashedHorizontalDivider(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp))
             }
         }
     }

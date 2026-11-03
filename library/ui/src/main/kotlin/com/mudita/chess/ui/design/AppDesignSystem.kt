@@ -362,20 +362,24 @@ fun AppConfirmCard(
     }
 }
 
+/**
+ * The rule between the rows of a list: the house's thin dotted line (Feeds' DottedRule.kt):
+ * 1 dp thick but never more than 1.5 px, 2.3 dp of ink and 1.5 dp of gap, in the text colour.
+ */
 @Composable
 fun AppDashedHorizontalDivider(
     modifier: Modifier = Modifier,
     thickness: Dp = 1.dp,
-    color: Color = MaterialTheme.colorScheme.outlineVariant,
-    dashWidth: Dp = 6.dp,
-    gapWidth: Dp = 4.dp
+    color: Color = MaterialTheme.colorScheme.onSurface,
+    dashWidth: Dp = 2.3.dp,
+    gapWidth: Dp = 1.5.dp
 ) {
     Canvas(modifier = modifier.height(thickness)) {
-        val strokeWidthPx = thickness.toPx()
+        val strokeWidthPx = thickness.toPx().coerceAtMost(1.5f)
         drawLine(
             color = color,
-            start = Offset(0f, strokeWidthPx / 2),
-            end = Offset(size.width, strokeWidthPx / 2),
+            start = Offset(0f, size.height / 2),
+            end = Offset(size.width, size.height / 2),
             strokeWidth = strokeWidthPx,
             pathEffect = PathEffect.dashPathEffect(
                 intervals = floatArrayOf(dashWidth.toPx(), gapWidth.toPx()),
