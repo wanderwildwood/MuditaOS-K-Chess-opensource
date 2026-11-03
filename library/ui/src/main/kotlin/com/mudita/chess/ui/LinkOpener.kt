@@ -1,11 +1,12 @@
 package com.mudita.chess.ui
 
+import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.widget.Toast
+import androidx.core.net.toUri
 
 /**
  * Opens [url] in a real browser, and says so in plain words when there is none.
@@ -16,7 +17,7 @@ import android.widget.Toast
  * can be typed in by hand). Never a WebView here.
  */
 fun openLink(context: Context, url: String, noBrowser: String) {
-    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).addCategory(Intent.CATEGORY_BROWSABLE)
+    val intent = Intent(Intent.ACTION_VIEW, url.toUri()).addCategory(Intent.CATEGORY_BROWSABLE)
     if (!browserAvailable(context, intent)) {
         Toast.makeText(context, noBrowser, Toast.LENGTH_LONG).show()
         return
@@ -33,6 +34,9 @@ fun openLink(context: Context, url: String, noBrowser: String) {
  * Android answers with its own chooser (the package "android"), which is not a browser but is a way
  * to one: then any real browser among the candidates is enough, and the chooser is shown.
  */
+// The browser <queries> is declared in this library's manifest and the app's; lint run on a feature
+// module does not merge a library's manifest, so it misses it there (library/ui's own lint is clean).
+@SuppressLint("QueryPermissionsNeeded")
 fun browserAvailable(context: Context, intent: Intent): Boolean {
     val pm = context.packageManager
     val answer = pm.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)?.activityInfo?.packageName

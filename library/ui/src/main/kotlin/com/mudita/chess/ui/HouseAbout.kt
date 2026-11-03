@@ -22,8 +22,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -111,7 +112,7 @@ fun HouseAboutDialog(
     onDismiss: () -> Unit,
     licences: @Composable (Modifier, () -> Unit) -> Unit,
 ) {
-    val room = LocalConfiguration.current.screenHeightDp.dp * 0.62f
+    val room = with(LocalDensity.current) { LocalWindowInfo.current.containerSize.height.toDp() } * 0.62f
     var showLicences by rememberSaveable { mutableStateOf(false) }
     EInkDialog(onDismiss = { if (showLicences) showLicences = false else onDismiss() }) {
         if (showLicences) {
