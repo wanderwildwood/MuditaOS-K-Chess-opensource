@@ -67,7 +67,7 @@
     <string name="chess_about_title" translatable="false">Chess+ %1$s</string>
     <string name="chess_about_what" tools:ignore="MissingTranslation">Mudita\'s own Chess for the Kompakt, with a second player added: two people at one board, passing the phone between moves.</string>
     <string name="chess_about_licence" translatable="false">GNU General Public License v3</string>
-    <string name="chess_about_engine" translatable="false">Fairy-Stockfish 14 — © the Stockfish developers and Fabian Fichter, same licence</string>
+    <string name="chess_about_engine" translatable="false">Fairy-Stockfish 14 — © the Stockfish developers and Fabian Fichter, same license</string>
     <string name="chess_about_feed_the_llamas" tools:ignore="MissingTranslation">Feed the llamas</string>
     <string name="chess_about_no_browser" tools:ignore="MissingTranslation">There is no web browser on this phone to open that with.</string>
     <string name="chess_about_no_browser_address" tools:ignore="MissingTranslation">No browser is installed. The address is %1$s.</string>
@@ -77,11 +77,11 @@
     <string name="chess_about_privacy" tools:ignore="MissingTranslation">Everything you do in this app stays on this phone. It has no internet access, so nothing is sent anywhere, and nothing is collected about you. The game in progress, your options and your statistics are kept in the app\'s own storage and go when you uninstall it. It asks for no permissions. There are no ads, no analytics and no tracking.</string>
     <string name="chess_about_terms_title" tools:ignore="MissingTranslation">Terms</string>
     <string name="chess_about_terms" tools:ignore="MissingTranslation">This app is free software under the GNU General Public License v3. It comes with no warranty: use it at your own risk.</string>
-    <string name="chess_about_licences_button" tools:ignore="MissingTranslation">Licences</string>
-    <string name="chess_licences_title" tools:ignore="MissingTranslation">Licences</string>
-    <string name="chess_licences_app" tools:ignore="MissingTranslation">Chess+ is free software under the GNU General Public License, version 3 only (GPL-3.0-only), copyright wander wildwood for what is written here. The work it is built on keeps its own licence and its authors keep their copyright, each on its own page.</string>
+    <string name="chess_about_licences_button" tools:ignore="MissingTranslation">Licenses</string>
+    <string name="chess_licences_title" tools:ignore="MissingTranslation">Licenses</string>
+    <string name="chess_licences_app" tools:ignore="MissingTranslation">Chess+ is free software under the GNU General Public License, version 3 only (GPL-3.0-only), copyright wander wildwood for what is written here. The work it is built on keeps its own license and its authors keep their copyright, each on its own page.</string>
     <string name="chess_licences_source_title" tools:ignore="MissingTranslation">Source code</string>
-    <string name="chess_licences_no_text" tools:ignore="MissingTranslation">%s needs no licence text here.</string>
+    <string name="chess_licences_no_text" tools:ignore="MissingTranslation">%s needs no license text here.</string>
     <string name="chess_licences_full_title" tools:ignore="MissingTranslation">Full texts</string>
     <string name="chess_licences_full_gpl" translatable="false">GNU General Public License v3 (full text)</string>
     <string name="chess_licences_full_apache" translatable="false">Apache License 2.0 (full text)</string>
