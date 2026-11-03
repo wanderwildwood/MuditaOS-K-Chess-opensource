@@ -4,8 +4,8 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.widget.Toast
+import androidx.core.net.toUri
 
 /**
  * Opens [url] in a real browser, and says so in plain words when there is none.
@@ -16,7 +16,7 @@ import android.widget.Toast
  * can be typed in by hand). Never a WebView here.
  */
 fun openLink(context: Context, url: String, noBrowser: String) {
-    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).addCategory(Intent.CATEGORY_BROWSABLE)
+    val intent = Intent(Intent.ACTION_VIEW, url.toUri()).addCategory(Intent.CATEGORY_BROWSABLE)
     if (!browserAvailable(context, intent)) {
         Toast.makeText(context, noBrowser, Toast.LENGTH_LONG).show()
         return
