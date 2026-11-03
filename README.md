@@ -26,7 +26,7 @@ Supernote's tablets among them.
   game is there when you come back.
 - New game and Exit in the pause menu end the game you are playing, so each asks with a
   second tap.
-- Statistics count wins, draws and losses against the computer, and which colour you played.
+- Statistics count wins, draws and losses against the computer, and which color you played.
   Two-player games are not counted; they are not yours to win or lose alone.
 - No permissions and no network. Nothing leaves the phone. See [PRIVACY.md](PRIVACY.md).
 
@@ -60,17 +60,17 @@ A copy older than 1.3.3 was signed with a different key. Android will not update
 stops with `INSTALL_FAILED_UPDATE_INCOMPATIBLE`; uninstall it first. That clears its
 statistics and does not touch the phone's own Chess app.
 
-## Licence
+## License
 
 GPL-3.0-only. See [LICENSE.md](LICENSE.md).
 
-Mudita's repository carries no licence file of its own. The app it builds bundles
+Mudita's repository carries no license file of its own. The app it builds bundles
 [Fairy-Stockfish](https://github.com/fairy-stockfish/Fairy-Stockfish) 14, by Fabian Fichter and
 the Stockfish developers, under the GPL version 3 or later, and an app distributed with it is
 distributed under the GPL as a whole. Version 3 is the version taken here. The engine's
 source is in `library/chess-engine-bin`, and the app runs the engine built from it.
 
-The app's own **Licences** page (About) lists Chess+ and then every library it is built with, one row each; a row opens the author, website and full licence text, and Chess+'s own page carries the source address and the GPL.
+The app's own **Licenses** page (About) lists Chess+ and then every library it is built with, one row each; a row opens the author, website and full license text, and Chess+'s own page carries the source address and the GPL.
 
 [chesslib](https://github.com/bhlangonijr/chesslib) (Apache 2.0) checks the moves, and
 [MMD](https://github.com/mudita/MMD) (Apache 2.0) draws the interface.
