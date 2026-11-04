@@ -72,7 +72,7 @@ import com.mudita.chess.frontitude.R as RFrontitude
  * not publicly resolvable outside Mudita's own infrastructure.
  */
 @Composable
-fun AppTheme(content: @Composable () -> Unit) = ThemeMMD(colorScheme = monochrome) { ArmedScope(content = content) }
+fun AppTheme(content: @Composable () -> Unit) = ThemeMMD(colorScheme = monochrome, typography = houseTypography) { ArmedScope(content = content) }
 
 val appColorBlack: Color = black
 val appColorWhite: Color = white
@@ -106,7 +106,7 @@ data class AppButtonAttributes(
     val borderStrokeWidth: Dp = 2.dp,
     val iconSize: Dp = 24.dp,
     val spaceBetweenIconAndText: Dp = 8.dp,
-    /** Shrink the label to fit, never below 14 sp, and let it take a second line, for buttons with a fixed height. */
+    /** Shrink the label to fit, never below the 16 sp house floor, and let it take a second line, for buttons with a fixed height. */
     val isLabelShrunkToFit: Boolean = false
 ) {
     companion object {
@@ -202,7 +202,7 @@ fun AppArmedSecondaryButton(
     )
 }
 
-private const val MIN_LABEL_SP = 14f
+private const val MIN_LABEL_SP = HOUSE_TYPE_FLOOR_SP
 
 @Composable
 private fun ButtonLabel(text: String, attributes: AppButtonAttributes) {

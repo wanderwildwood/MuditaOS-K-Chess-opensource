@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.mudita.chess.frontitude.R as RFrontitude
 import com.mudita.chess.gameplay.model.EndgameUi
 import com.mudita.chess.ui.R
@@ -31,6 +30,7 @@ import com.mudita.chess.ui.design.AppPrimaryButton
 import com.mudita.chess.ui.design.AppSecondaryButton
 import com.mudita.chess.ui.design.AppTheme
 import com.mudita.chess.ui.design.AppTypography900
+import com.mudita.chess.ui.design.HouseTypeFloor
 import com.mudita.chess.ui.design.appColorWhite
 
 /**
@@ -149,7 +149,7 @@ internal fun EndgameResult(
             text = stringResource(id = endgame.resultResId),
             style = style.merge(color = LocalContentColor.current),
             maxLines = 1,
-            autoSize = TextAutoSize.StepBased(minFontSize = 14.sp, maxFontSize = style.fontSize)
+            autoSize = TextAutoSize.StepBased(minFontSize = HouseTypeFloor, maxFontSize = style.fontSize)
         )
     }
 }
