@@ -1,8 +1,8 @@
 package com.mudita.chess.ui
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 
 class LicencesLogicTest {
     private fun c(name: String, licence: String) = LicenceComponent(name, "someone", licence, "https://example.org/$name")
@@ -151,9 +151,9 @@ class LicencesLogicTest {
         val ends = starts.drop(1) + h.size
         var covered = 0
         starts.zip(ends).forEach { (s, e) ->
-            assertEquals("no row skipped", covered, s)
+            assertEquals(covered, s, "no row skipped")
             val used = (s until e).sumOf { h[it] } + 8 * (e - s - 1)
-            assertTrue("page $s..$e is $used px", used <= 300)
+            assertTrue(used <= 300, "page $s..$e is $used px")
             covered = e
         }
         assertEquals(h.size, covered)
