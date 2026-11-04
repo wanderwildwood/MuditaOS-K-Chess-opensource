@@ -17,6 +17,11 @@ fun DialogHost(
     modifier: Modifier = Modifier,
     dialogContent: @Composable BoxScope.() -> Unit
 ) {
+    // Registered before the content so that a Back while one of its rows is armed only disarms
+    // that row (the row's own handler comes later and so goes first); the next Back closes.
+    BackHandler {
+        onDismissRequest()
+    }
     Box(
         contentAlignment = dialogContentAlignment,
         modifier = modifier
@@ -31,8 +36,5 @@ fun DialogHost(
         ) {
             dialogContent()
         }
-    }
-    BackHandler {
-        onDismissRequest()
     }
 }

@@ -34,10 +34,7 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,6 +53,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.isSpecified
 import androidx.compose.ui.unit.sp
+import com.mudita.chess.ui.ArmedScope
+import com.mudita.chess.ui.rememberArmedFlag
 import com.mudita.mmd.ThemeMMD
 import com.mudita.mmd.black
 import com.mudita.mmd.components.buttons.ButtonDefaultsMMD
@@ -65,7 +64,6 @@ import com.mudita.mmd.components.divider.HorizontalDividerMMD
 import com.mudita.mmd.components.switcher.SwitchMMD
 import com.mudita.mmd.components.top_app_bar.TopAppBarMMD
 import com.mudita.mmd.white
-import kotlinx.coroutines.delay
 import com.mudita.chess.frontitude.R as RFrontitude
 
 /**
@@ -74,7 +72,7 @@ import com.mudita.chess.frontitude.R as RFrontitude
  * not publicly resolvable outside Mudita's own infrastructure.
  */
 @Composable
-fun AppTheme(content: @Composable () -> Unit) = ThemeMMD(colorScheme = monochrome, content = content)
+fun AppTheme(content: @Composable () -> Unit) = ThemeMMD(colorScheme = monochrome) { ArmedScope(content = content) }
 
 val appColorBlack: Color = black
 val appColorWhite: Color = white
@@ -177,8 +175,9 @@ fun AppSecondaryButton(
 
 /**
  * A button for something that cannot be taken back. The first tap arms it, and it says so in its
- * own face rather than stacking a dialog over the game; a second tap does it. Left alone for six
- * seconds it disarms, so a stray tap leaves nothing live for whoever picks the phone up next.
+ * own face rather than stacking a dialog over the game; a second tap does it. It stays armed, with
+ * no timer, until the next other touch, Back (which only disarms) or leaving the screen
+ * (the shared [rememberArmedFlag]).
  */
 @Composable
 fun AppArmedSecondaryButton(
@@ -187,13 +186,7 @@ fun AppArmedSecondaryButton(
     modifier: Modifier = Modifier,
     attributes: AppButtonAttributes = AppButtonAttributes()
 ) {
-    var isArmed by remember { mutableStateOf(false) }
-    LaunchedEffect(isArmed) {
-        if (isArmed) {
-            delay(ARMED_TIMEOUT_MILLIS)
-            isArmed = false
-        }
-    }
+    var isArmed by rememberArmedFlag()
     AppSecondaryButton(
         modifier = modifier,
         text = if (isArmed) stringResource(RFrontitude.string.chess_common_button_tapagain, text) else text,
@@ -210,8 +203,6 @@ fun AppArmedSecondaryButton(
 }
 
 private const val MIN_LABEL_SP = 14f
-
-private const val ARMED_TIMEOUT_MILLIS = 6_000L
 
 @Composable
 private fun ButtonLabel(text: String, attributes: AppButtonAttributes) {
