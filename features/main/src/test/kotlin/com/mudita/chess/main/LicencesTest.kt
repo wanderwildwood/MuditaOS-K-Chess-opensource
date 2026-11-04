@@ -43,6 +43,7 @@ class LicencesTest {
         "Mudita's Chess (the app this began as)",
         "Fairy-Stockfish 14",
         "Lato typeface",
+        "Java library desugaring (desugar_jdk_libs)",
     )
 
     @Test
