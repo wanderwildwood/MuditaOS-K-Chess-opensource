@@ -30,3 +30,9 @@ dependencies {
     testImplementation(testFixtures(projects.library.coroutines))
     testImplementation(libs.bundles.test)
 }
+
+// LicencesTest reads the Licenses list the AboutLibraries plugin writes in app-android (the
+// release one, which is what ships), so that list is made fresh before these tests run.
+tasks.withType<Test>().configureEach {
+    dependsOn(":app-android:prepareLibraryDefinitionsRelease")
+}

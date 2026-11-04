@@ -1,4 +1,5 @@
 [versions]
+aboutlibraries = "15.3.0"
 android-compileSdk = "36"
 android-minSdk = "30"
 android-targetSdk = "31"
@@ -134,6 +135,8 @@ test = [
 ]
 
 [plugins]
+# Builds the Licenses list from the dependency graph (res/raw/aboutlibraries.json).
+aboutlibraries-android = { id = "com.mikepenz.aboutlibraries.plugin.android", version.ref = "aboutlibraries" }
 # Android/Kotlin
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
 android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }

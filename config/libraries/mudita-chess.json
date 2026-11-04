@@ -1,0 +1,9 @@
+{
+  "uniqueId": "mudita-chess",
+  "name": "Mudita's Chess (the app this began as)",
+  "description": "Mudita's own Chess for the Kompakt, published under the GPL; most of this app is its code.",
+  "developers": [{ "name": "Mudita" }],
+  "organization": { "name": "Mudita", "url": "https://mudita.com" },
+  "website": "https://github.com/mudita/MuditaOS-K-Chess-opensource",
+  "licenses": ["stockfishlic"]
+}
