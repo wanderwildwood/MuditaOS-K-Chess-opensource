@@ -79,7 +79,7 @@
     <string name="chess_about_terms" tools:ignore="MissingTranslation">This app is free software under the GNU General Public License v3. It comes with no warranty: use it at your own risk.</string>
     <string name="chess_about_licences_button" tools:ignore="MissingTranslation">Licenses</string>
     <string name="chess_licences_title" tools:ignore="MissingTranslation">Licenses</string>
-    <string name="chess_licences_app" tools:ignore="MissingTranslation">Chess+ is free software under the GNU General Public License, version 3 only (GPL-3.0-only), copyright wander wildwood for what is written here. The work it is built on keeps its own license and its authors keep their copyright, each on its own page.</string>
+    <string name="chess_licences_app" tools:ignore="MissingTranslation">Chess+ is free software under the GNU General Public License, version 3 only (GPL-3.0-only), copyright wander wildwood for what is written here. The work it is built on keeps its own license and its authors keep their copyright, listed below.</string>
     <string name="chess_licences_source_title" tools:ignore="MissingTranslation">Source code</string>
     <string name="chess_licences_no_text" tools:ignore="MissingTranslation">%s needs no license text here.</string>
     <string name="chess_licences_full_title" tools:ignore="MissingTranslation">Full texts</string>
@@ -98,6 +98,10 @@
     <!-- shared-about: contact row + privacy section (edit in /opt/projects/shared-about) -->
     <string name="about_write_to" tools:ignore="MissingTranslation">Write to %1$s</string>
     <string name="about_no_mail_app" tools:ignore="MissingTranslation">No email app is installed. The address is %1$s.</string>
+    <string name="about_open_drawer" tools:ignore="MissingTranslation">Open %1$s</string>
+    <string name="about_close_drawer" tools:ignore="MissingTranslation">Close %1$s</string>
+    <string name="about_contact_head" tools:ignore="MissingTranslation">Contact</string>
+    <string name="about_links_head" tools:ignore="MissingTranslation">Links</string>
     <string name="privacy_who_title" tools:ignore="MissingTranslation">Who we are</string>
     <string name="privacy_who" tools:ignore="MissingTranslation">This app is made by wander wildwood, an independent developer: one person, not a company. That makes wander wildwood the data controller for anything the app itself handles, and that is very little: what you put in stays on this phone unless you send it somewhere yourself, and nothing comes to the developer.</string>
     <string name="privacy_contact_title" tools:ignore="MissingTranslation">How to contact us</string>

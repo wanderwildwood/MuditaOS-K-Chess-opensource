@@ -4,17 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import com.mudita.chess.ui.AboutData
-import com.mudita.chess.ui.AboutLabels
-import com.mudita.chess.ui.AboutSection
-import com.mudita.chess.ui.HouseAboutDialog
-import com.mudita.chess.ui.LicencesScreen
 import com.mudita.chess.frontitude.R as RFrontitude
 
 /**
- * This app's About: only the words and the address. The dialog, its one Close button, the
- * Licenses row, the links, the contact row and the llama are the shared HouseAbout.kt, the same
- * in every app.
+ * This app's About: only the words and the address. The dialog, its drawers, its one Close button,
+ * the Licenses drawer, the links, the contact row and the llama are the shared HouseAbout.kt, the
+ * same in every app.
  *
  * Most of this app is Mudita's own Chess for the Kompakt, and the engine is Stockfish's; both are
  * named here because somebody who installed the APK and never saw the repository has no other
@@ -28,8 +23,6 @@ internal fun AboutDialog(onDismiss: () -> Unit) {
         title = stringResource(RFrontitude.string.chess_about_title, version),
         sections = listOf(
             AboutSection(null, stringResource(RFrontitude.string.chess_about_what)),
-            AboutSection(null, stringResource(RFrontitude.string.chess_about_licence)),
-            AboutSection(null, stringResource(RFrontitude.string.chess_about_engine)),
             AboutSection(
                 stringResource(RFrontitude.string.chess_about_privacy_title),
                 stringResource(RFrontitude.string.chess_about_privacy),
@@ -41,6 +34,8 @@ internal fun AboutDialog(onDismiss: () -> Unit) {
                 stringResource(RFrontitude.string.chess_about_terms_title),
                 stringResource(RFrontitude.string.chess_about_terms),
             ),
+            AboutSection(null, stringResource(RFrontitude.string.chess_about_licence)),
+            AboutSection(null, stringResource(RFrontitude.string.chess_about_engine)),
         ),
         sourceUrl = SOURCE_URL,
     )
@@ -51,8 +46,10 @@ internal fun AboutDialog(onDismiss: () -> Unit) {
         noBrowser = { address -> context.getString(RFrontitude.string.chess_about_no_browser_address, address) },
         writeTo = { address -> context.getString(RFrontitude.string.about_write_to, address) },
         noMailApp = { address -> context.getString(RFrontitude.string.about_no_mail_app, address) },
+        openDrawer = { heading -> context.getString(RFrontitude.string.about_open_drawer, heading) },
+        closeDrawer = { heading -> context.getString(RFrontitude.string.about_close_drawer, heading) },
+        contact = stringResource(RFrontitude.string.about_contact_head),
+        links = stringResource(RFrontitude.string.about_links_head),
     )
-    HouseAboutDialog(data, labels, R.drawable.llama, onDismiss) { modifier, back ->
-        LicencesScreen(rememberLicencesData(), rememberLicencesLabels(), onBack = back, modifier = modifier)
-    }
+    HouseAboutDialog(data, labels, R.drawable.llama, onDismiss)
 }
