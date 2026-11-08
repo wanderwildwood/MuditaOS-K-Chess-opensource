@@ -3,9 +3,9 @@ aboutlibraries = "15.3.0"
 android-compileSdk = "36"
 android-minSdk = "30"
 android-targetSdk = "31"
-app-version-versionName = "1.3.24"
+app-version-versionName = "1.3.25"
 # Raise by one with every release. It used to come from the CI run number, which is gone.
-app-version-versionCode = "29"
+app-version-versionCode = "30"
 app-version-appId = "com.wanderwildwood.chessplus"
 # Android/Kotlin
 android-gradle-plugin = "8.13.1"
