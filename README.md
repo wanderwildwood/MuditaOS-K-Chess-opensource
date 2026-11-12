@@ -6,7 +6,7 @@ Supernote's tablets among them.
 
 | | |
 |---|---|
-| ![The first screen](screenshots/1-title.png) | ![Options: players, colour, difficulty from 500 to 2150 Elo](screenshots/2-options.png) |
+| ![The first screen](screenshots/1-title.png) | ![Options: players, color, difficulty from 500 to 2150 Elo](screenshots/2-options.png) |
 | ![A game: a pawn picked up, where it can go marked, the last move framed](screenshots/3-game.png) | ![About: privacy and terms](screenshots/4-about.png) |
 
 ## What it does
