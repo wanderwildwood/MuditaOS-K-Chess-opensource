@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -46,6 +47,7 @@ import com.mudita.chess.ui.design.AppSecondaryButton
 import com.mudita.chess.ui.design.AppTheme
 import com.mudita.chess.ui.design.AppTopAppBar
 import com.mudita.chess.ui.design.AppTypography900
+import com.mudita.chess.ui.design.DarkMode
 import org.koin.androidx.compose.koinViewModel
 import com.mudita.chess.frontitude.R as RFrontitude
 
@@ -80,6 +82,7 @@ private fun OptionsMenuScreen(
     uiState: OptionsMenuUiState,
     uiEvent: (OptionsMenuUiEvent) -> Unit
 ) {
+    val context = LocalContext.current
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = { OptionsMenuTopAppBar(uiEvent) }
@@ -102,6 +105,15 @@ private fun OptionsMenuScreen(
                 textStyle = AppTypography900.titleMedium,
                 isSwitchedOn = uiState.isMoveSuggestionsOn,
                 onSwitchToggle = { uiEvent(MoveSuggestionsSwitchToggled) }
+            )
+            SwitchOption(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 4.dp, end = 12.dp, bottom = 16.dp),
+                text = stringResource(id = R.string.settings_dark),
+                textStyle = AppTypography900.titleMedium,
+                isSwitchedOn = DarkMode.on,
+                onSwitchToggle = { DarkMode.set(context, it) }
             )
             if (!uiState.isTwoPlayerMode) {
                 PlayerColor(
