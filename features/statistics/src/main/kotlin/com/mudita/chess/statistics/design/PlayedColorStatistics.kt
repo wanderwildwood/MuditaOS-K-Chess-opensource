@@ -1,5 +1,6 @@
 package com.mudita.chess.statistics.design
 
+import com.mudita.chess.ui.design.DarkMode
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -39,13 +40,15 @@ internal fun PlayedColorStatistics(
             .padding(horizontal = 28.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
+        // Dark mode turns every color, so it is given the other knight and shows the right one.
+        val dark = DarkMode.on
         PlayerColorResult(
-            iconResId = com.mudita.chess.ui.R.drawable.ic_knight_white_outline_black,
+            iconResId = if (dark) com.mudita.chess.ui.R.drawable.ic_knight_black_outline_white else com.mudita.chess.ui.R.drawable.ic_knight_white_outline_black,
             percentage = playedAsWhitePercentage,
             label = stringResource(id = RFrontitude.string.common_label_white)
         )
         PlayerColorResult(
-            iconResId = com.mudita.chess.ui.R.drawable.ic_knight_black_outline_white,
+            iconResId = if (dark) com.mudita.chess.ui.R.drawable.ic_knight_white_outline_black else com.mudita.chess.ui.R.drawable.ic_knight_black_outline_white,
             percentage = playedAsBlackPercentage,
             label = stringResource(id = RFrontitude.string.common_label_black)
         )

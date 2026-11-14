@@ -204,7 +204,8 @@ private fun PlayerColor(
             AppSecondaryButton(
                 modifier = Modifier.weight(1f),
                 text = stringResource(id = RFrontitude.string.common_label_white),
-                iconResId = R.drawable.ic_knight_white_transparent,
+                // Dark mode turns every color, so it is given the other knight and shows the right one.
+                iconResId = if (DarkMode.on) R.drawable.ic_knight_black_transparent else R.drawable.ic_knight_white_transparent,
                 attributes = colorButtonAttributes(isSelected = isWhiteSelected),
                 onClick = { uiEvent(PlayerColorSelected(isWhiteSelected = true)) }
             )
@@ -212,7 +213,7 @@ private fun PlayerColor(
             AppSecondaryButton(
                 modifier = Modifier.weight(1f),
                 text = stringResource(id = RFrontitude.string.common_label_black),
-                iconResId = R.drawable.ic_knight_black_transparent,
+                iconResId = if (DarkMode.on) R.drawable.ic_knight_white_transparent else R.drawable.ic_knight_black_transparent,
                 attributes = colorButtonAttributes(isSelected = !isWhiteSelected),
                 onClick = { uiEvent(PlayerColorSelected(isWhiteSelected = false)) }
             )

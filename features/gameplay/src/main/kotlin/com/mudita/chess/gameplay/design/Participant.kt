@@ -1,5 +1,6 @@
 package com.mudita.chess.gameplay.design
 
+import com.mudita.chess.ui.design.DarkMode
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -66,10 +67,11 @@ internal fun Participant(
 @Composable
 @DrawableRes
 private fun getParticipantIconResId(participant: ParticipantUi) =
-    if (participant.isWhite) {
-        R.drawable.ic_knight_white_outline_black
-    } else {
-        R.drawable.ic_knight_black_no_outline
+    // Dark mode turns every color, so it is given the other knight and shows the right one.
+    when {
+        DarkMode.on -> if (participant.isWhite) R.drawable.ic_knight_black_outline_white else R.drawable.ic_knight_white_outline_black
+        participant.isWhite -> R.drawable.ic_knight_white_outline_black
+        else -> R.drawable.ic_knight_black_no_outline
     }
 
 @Preview
