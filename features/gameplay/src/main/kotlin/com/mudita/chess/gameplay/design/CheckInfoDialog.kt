@@ -1,5 +1,8 @@
 package com.mudita.chess.gameplay.design
 
+import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.background
+import com.mudita.chess.ui.design.keepColors
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -51,7 +54,7 @@ internal fun CheckInfoDialog(
             attackedBy.forEach { piece ->
                 Piece(
                     piece = piece,
-                    modifier = modifier.size(34.dp)
+                    modifier = modifier.size(34.dp).keepColors().background(Color.White) // its own color on a white tile in dark mode
                 )
             }
             Image(
@@ -64,7 +67,7 @@ internal fun CheckInfoDialog(
             )
             Piece(
                 piece = king,
-                modifier = modifier.size(34.dp)
+                modifier = modifier.size(34.dp).keepColors().background(Color.White) // its own color on a white tile in dark mode
             )
         }
     }

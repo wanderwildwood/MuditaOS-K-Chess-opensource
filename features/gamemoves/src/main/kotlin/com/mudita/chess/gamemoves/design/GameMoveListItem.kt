@@ -1,5 +1,8 @@
 package com.mudita.chess.gamemoves.design
 
+import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.background
+import com.mudita.chess.ui.design.keepColors
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,7 +38,7 @@ internal fun GameMoveListItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Piece(
-            modifier = Modifier.size(28.dp),
+            modifier = Modifier.size(28.dp).keepColors().background(Color.White), // its own color on a white tile in dark mode
             piece = moveUi.pieceUi
         )
         Column(

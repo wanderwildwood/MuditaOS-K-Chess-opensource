@@ -1,5 +1,8 @@
 package com.mudita.chess.gameplay.design
 
+import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.background
+import com.mudita.chess.ui.design.keepColors
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -60,7 +63,7 @@ internal fun PawnPromotionDialog(
                         .size(48.dp)
                         .clickable { selectedOptionIndex = index }
                 ) {
-                    Piece(piece = option, modifier = Modifier.size(34.dp))
+                    Piece(piece = option, modifier = Modifier.size(34.dp).keepColors().background(Color.White)) // its own color on a white tile in dark mode
                     if (selectedOptionIndex == index) PieceSelector(isWhite = false, Modifier.size(44.dp))
                 }
             }

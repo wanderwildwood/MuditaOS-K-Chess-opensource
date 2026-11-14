@@ -14,13 +14,15 @@ import com.mudita.chess.gameplay.GameplayMapper
 import com.mudita.chess.gameplay.game.ChessBoard
 import com.mudita.chess.ui.model.PositionUi
 import com.mudita.chess.ui.design.AppTheme
+import com.mudita.chess.ui.design.keepColors
 
 @Composable
 internal fun Board(
     board: BoardUi,
     onSquareClick: (PositionUi) -> Unit,
     modifier: Modifier = Modifier
-) = Column(modifier = modifier) {
+// Dark mode leaves the board alone: turned, the black pieces would be the white ones.
+) = Column(modifier = modifier.keepColors()) {
     HorizontalFrame()
     Content(board, onSquareClick)
     HorizontalFrame()
