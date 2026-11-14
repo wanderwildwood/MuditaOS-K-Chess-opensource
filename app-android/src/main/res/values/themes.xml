@@ -14,6 +14,8 @@
         <item name="windowSplashScreenAnimatedIcon">@drawable/splash_nothing</item>
         <item name="windowSplashScreenAnimationDuration">0</item>
         <item name="postSplashScreenTheme">@style/Theme.App</item>
+        <!-- No start-up window: in dark mode it would flash white before the first frame. -->
+        <item name="android:windowDisablePreview">true</item>
     </style>
 
     <!--
