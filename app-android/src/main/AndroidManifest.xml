@@ -5,6 +5,8 @@
 
     <!-- To ask what can open a web address (About links); without it Android 11+ answers nothing. -->
     <queries>
+        <!-- Home, whose dark mode switch this app follows when Home is installed. -->
+        <package android:name="com.wanderwildwood.iori" />
         <intent>
             <action android:name="android.intent.action.VIEW" />
             <category android:name="android.intent.category.BROWSABLE" />
@@ -24,6 +26,12 @@
         android:theme="@style/Theme.Splash"
         tools:ignore="DataExtractionRules,UnusedAttribute">
         <profileable android:shell="true" />
+
+        <!-- Starts dark mode before the first screen is drawn. Holds no data. -->
+        <provider
+            android:name="com.mudita.chess.ui.design.DarkModeInit"
+            android:authorities="${applicationId}.darkmodeinit"
+            android:exported="false" />
 
         <activity
             android:name=".root.MainActivity"
