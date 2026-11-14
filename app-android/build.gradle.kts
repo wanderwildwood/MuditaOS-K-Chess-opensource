@@ -54,6 +54,9 @@ android {
             proguardFiles("benchmark-rules.pro")
         }
         getByName("release") {
+            // The download carries the one processor these devices have. Without this the
+            // ready-built androidx libraries come packed for four, beside an engine built for one.
+            ndk { abiFilters += "arm64-v8a" }
             // AGP stamps the git revision into META-INF, and the build box works from an rsync
             // with no .git. Off, so a release built anywhere has the same contents.
             vcsInfo {
