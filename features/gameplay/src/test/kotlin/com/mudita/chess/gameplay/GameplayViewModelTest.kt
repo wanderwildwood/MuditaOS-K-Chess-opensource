@@ -1496,6 +1496,10 @@ internal class GameplayViewModelTest {
             assertThat(checkedState.board[Ui.E8].isHighlighted).isTrue()
             advanceUntilIdle()
 
+            // "Check" stays until it is pressed away.
+            uiEvents.handleUiEvent(DialogDismissRequested(GameplayDialogType.CHECK_INFO))
+            advanceUntilIdle()
+
             uiEvents.handleUiEvent(UndoMoveButtonClicked)
 
             skipItems(1)

@@ -20,16 +20,16 @@ class MoveResultNotifierTest {
     private val tested = MoveResultNotifier(board, uiEvents)
 
     @Test
-    fun `maybeNotifyCheck clears check acknowledge required when delay passes`() = runTest {
-        launch {
+    fun `maybeNotifyCheck keeps check acknowledge required however long it waits`() = runTest {
+        val job = launch {
             tested.maybeNotifyCheck(MoveResult(opponentInCheck = true))
         }
         runCurrent()
+        advanceTimeBy(STILL_UP_AFTER_MILLIS)
+        runCurrent()
+
         verify(exactly = 0) { board.clearCheckAcknowledgeRequired() }
-
-        advanceTimeBy(CHECK_ACKNOWLEDGE_DURATION_MILLIS + 1)
-
-        verify(exactly = 1) { board.clearCheckAcknowledgeRequired() }
+        job.cancelAndJoin()
     }
 
     @Test
@@ -69,6 +69,6 @@ class MoveResultNotifierTest {
     }
 
     private companion object {
-        const val CHECK_ACKNOWLEDGE_DURATION_MILLIS = 4000L
+        const val STILL_UP_AFTER_MILLIS = 60_000L
     }
 }
