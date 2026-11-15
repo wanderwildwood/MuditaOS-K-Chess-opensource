@@ -22,7 +22,7 @@ internal val LICENCE_RAW: List<Pair<String, Int>> = listOf(
 
 @Composable
 internal fun rememberLicencesData(): LicencesData = LicencesData(
-    appName = "Chess+",
+    appName = stringResource(RFrontitude.string.common_label_chess),
     sourceUrl = SOURCE_URL,
     licenceLine = stringResource(RFrontitude.string.chess_licences_app),
     // One row per artifact in the APK, listed by the build (the AboutLibraries plugin in
