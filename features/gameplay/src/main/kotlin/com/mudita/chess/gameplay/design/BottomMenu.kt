@@ -42,6 +42,7 @@ internal fun BottomMenu(
     ) {
         BottomMenuIconButton(
             iconResId = R.drawable.ic_pause,
+            contentDescription = stringResource(RFrontitude.string.chess_cd_pause),
             touchAreaPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
             onClicks = onPauseButtonClick
         )
@@ -49,6 +50,7 @@ internal fun BottomMenu(
             Spacer(modifier = Modifier.width(6.dp))
             BottomMenuIconButton(
                 iconResId = R.drawable.ic_history,
+                contentDescription = stringResource(RFrontitude.string.chess_listofmoves_screentitle_listofmoves),
                 touchAreaPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
                 onClicks = onGameMovesButtonClicked
             )
@@ -57,6 +59,7 @@ internal fun BottomMenu(
             Spacer(modifier = Modifier.width(6.dp))
             BottomMenuIconButton(
                 iconResId = R.drawable.ic_undo,
+                contentDescription = stringResource(RFrontitude.string.chess_cd_undo),
                 touchAreaPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
                 onClicks = onUndoMoveButtonClicked
             )
@@ -81,6 +84,7 @@ internal fun BottomMenu(
 @Composable
 private fun BottomMenuIconButton(
     iconResId: Int,
+    contentDescription: String,
     touchAreaPadding: PaddingValues,
     onClicks: () -> Unit,
     modifier: Modifier = Modifier
@@ -96,6 +100,7 @@ private fun BottomMenuIconButton(
             ),
         touchAreaPadding = touchAreaPadding,
         iconResId = iconResId,
+        contentDescription = contentDescription,
         onClick = onClicks
     )
 }

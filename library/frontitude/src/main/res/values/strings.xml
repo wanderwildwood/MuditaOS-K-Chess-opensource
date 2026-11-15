@@ -73,6 +73,12 @@
     <string name="chess_about_no_browser_address" tools:ignore="MissingTranslation">No browser is installed. The address is %1$s.</string>
     <string name="chess_about_close" tools:ignore="MissingTranslation">Close</string>
     <string name="chess_about_back" tools:ignore="MissingTranslation">Back</string>
+    <!-- What a screen reader says for the icon-only buttons -->
+    <string name="chess_cd_pause" tools:ignore="MissingTranslation">Pause</string>
+    <string name="chess_cd_undo" tools:ignore="MissingTranslation">Undo move</string>
+    <string name="chess_cd_easier" tools:ignore="MissingTranslation">Easier</string>
+    <string name="chess_cd_harder" tools:ignore="MissingTranslation">Harder</string>
+    <string name="chess_cd_level" tools:ignore="MissingTranslation">Level %1$d</string>
     <string name="chess_about_privacy_title" tools:ignore="MissingTranslation">Privacy</string>
     <string name="chess_about_privacy" tools:ignore="MissingTranslation">Everything you do in this app stays on this phone. It has no internet access, so nothing is sent anywhere, and nothing is collected about you. The game in progress, your options and your statistics are kept in the app\'s own storage and go when you uninstall it. It asks for no permissions. There are no ads, no analytics and no tracking. \"Feed the llamas\" in About opens a donation page (square.link) in your browser, only when you press it. The app sends nothing there; if you give, the payment is handled on that page by Square, not by this app.</string>
     <string name="chess_about_terms_title" tools:ignore="MissingTranslation">Terms</string>

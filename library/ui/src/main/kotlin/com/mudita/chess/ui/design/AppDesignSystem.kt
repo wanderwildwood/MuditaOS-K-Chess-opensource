@@ -226,7 +226,8 @@ fun AppIconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     iconSize: Dp = 24.dp,
-    touchAreaPadding: PaddingValues = PaddingValues(0.dp)
+    touchAreaPadding: PaddingValues = PaddingValues(0.dp),
+    contentDescription: String? = null,
 ) {
     // The padding is touch area, so the click goes on the outside of it: callers draw a border
     // around the whole padded box, and a tap anywhere inside that border has to count. Ripple is
@@ -240,7 +241,7 @@ fun AppIconButton(
     ) {
         Icon(
             painter = painterResource(id = iconResId),
-            contentDescription = null,
+            contentDescription = contentDescription,
             modifier = Modifier.size(iconSize)
         )
     }
@@ -280,7 +281,15 @@ fun AppTopAppBar(
         navigationIcon = {
             if (onNavigationIconClick != null) {
                 IconButton(onClick = onNavigationIconClick) {
-                    Icon(imageVector = icon, contentDescription = null)
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = stringResource(
+                            when (navigationIcon) {
+                                AppNavigationIcon.BACK -> RFrontitude.string.chess_about_back
+                                AppNavigationIcon.CLOSE -> RFrontitude.string.chess_about_close
+                            }
+                        )
+                    )
                 }
             }
         },

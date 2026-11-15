@@ -34,6 +34,10 @@ import com.mudita.chess.ui.model.stringify
 import com.mudita.chess.ui.design.AppIconButton
 import com.mudita.chess.ui.design.AppTypography500
 import com.mudita.chess.frontitude.R as RFrontitude
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.res.stringResource
 
 @Composable
 internal fun DifficultyLevelBar(
@@ -52,6 +56,7 @@ internal fun DifficultyLevelBar(
         ) {
             ControllerIcon(
                 iconResId = R.drawable.ic_minus_circle_border,
+                contentDescription = stringResource(RFrontitude.string.chess_cd_easier),
                 onClick = onMinusIconClick
             )
             Spacer(modifier = Modifier.width(8.dp))
@@ -62,6 +67,7 @@ internal fun DifficultyLevelBar(
             Spacer(modifier = Modifier.width(8.dp))
             ControllerIcon(
                 iconResId = R.drawable.ic_plus_circle_border,
+                contentDescription = stringResource(RFrontitude.string.chess_cd_harder),
                 onClick = onPlusIconClick
             )
         }
@@ -73,10 +79,12 @@ internal fun DifficultyLevelBar(
 @Composable
 private fun ControllerIcon(
     @DrawableRes iconResId: Int,
+    contentDescription: String,
     onClick: () -> Unit
 ) {
     AppIconButton(
         onClick = onClick,
+        contentDescription = contentDescription,
         iconSize = 21.75.dp,
         iconResId = iconResId,
         touchAreaPadding = PaddingValues(0.dp)
@@ -94,6 +102,7 @@ private fun RowScope.Steps(
 ) {
     for (i in MIN_DIFFICULTY_LEVEL..MAX_DIFFICULTY_LEVEL) {
         val selected = i <= difficultyLevelStep
+        val levelName = stringResource(RFrontitude.string.chess_cd_level, i)
         val stepResId = if (selected) {
             R.drawable.ic_step_filled
         } else {
@@ -103,6 +112,12 @@ private fun RowScope.Steps(
             modifier = Modifier
                 .weight(1f)
                 .height(48.dp)
+                // Filled up to the level chosen: a screen reader hears each step's level, and
+                // the chosen one as selected.
+                .semantics {
+                    contentDescription = levelName
+                    this.selected = i == difficultyLevelStep
+                }
                 .clickable { onStepClick(i) }
                 .padding(horizontal = 2.dp, vertical = 9.dp),
             painter = painterResource(id = stepResId),

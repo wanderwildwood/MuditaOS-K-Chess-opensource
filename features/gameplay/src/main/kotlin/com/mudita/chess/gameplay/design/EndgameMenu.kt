@@ -67,7 +67,11 @@ internal fun EndgameMenu(
         // A game restored from a stored position has no moves behind it, so there is nothing to
         // take back and no reason to offer the control.
         if (isUndoButtonVisible) {
-            EndgameIconButton(iconResId = R.drawable.ic_undo, onClick = onUndoButtonClicked)
+            EndgameIconButton(
+                iconResId = R.drawable.ic_undo,
+                contentDescription = stringResource(RFrontitude.string.chess_cd_undo),
+                onClick = onUndoButtonClicked
+            )
         }
         // The move list stays reachable after any ending: how a game ended is something to read
         // back, and a drawn game is the one where it is least obvious.
@@ -75,6 +79,7 @@ internal fun EndgameMenu(
             EndgameIconButton(
                 modifier = Modifier.padding(start = 6.dp),
                 iconResId = R.drawable.ic_history,
+                contentDescription = stringResource(RFrontitude.string.chess_listofmoves_screentitle_listofmoves),
                 onClick = onGameMovesButtonClicked
             )
         }
@@ -108,6 +113,7 @@ internal fun EndgameMenu(
 @Composable
 private fun EndgameIconButton(
     iconResId: Int,
+    contentDescription: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -121,6 +127,7 @@ private fun EndgameIconButton(
         ),
         touchAreaPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
         iconResId = iconResId,
+        contentDescription = contentDescription,
         onClick = onClick
     )
 }
