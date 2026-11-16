@@ -72,7 +72,7 @@ import com.mudita.chess.frontitude.R as RFrontitude
  * not publicly resolvable outside Mudita's own infrastructure.
  */
 @Composable
-fun AppTheme(content: @Composable () -> Unit) = ThemeMMD(colorScheme = monochrome, typography = houseTypography) { ArmedScope(content = content) }
+fun AppTheme(content: @Composable () -> Unit) = ThemeMMD(colorScheme = monochrome, typography = houseTypography) { DarkSelection { ArmedScope(content = content) } }
 
 val appColorBlack: Color = black
 val appColorWhite: Color = white
