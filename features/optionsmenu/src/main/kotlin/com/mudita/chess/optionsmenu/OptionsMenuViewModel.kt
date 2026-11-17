@@ -120,6 +120,8 @@ internal class OptionsMenuViewModel(
     }
 
     private fun onNavigateToGame() = viewModelScope.launch {
+        // The game reads the options as it sets up: they are saved first, not in a race with it.
+        saveOptions()
         emitNavAction(
             NavigateTo(
                 GameplayRoute(
@@ -130,7 +132,9 @@ internal class OptionsMenuViewModel(
         )
     }
 
-    private fun onSaveGameState() = viewModelScope.launch {
+    private fun onSaveGameState() = viewModelScope.launch { saveOptions() }
+
+    private suspend fun saveOptions() {
         saveGameOptionsUseCase(
             GameOptions(
                 isMoveSuggestionsOn = state.isMoveSuggestionsOn,
