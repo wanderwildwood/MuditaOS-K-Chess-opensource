@@ -1,7 +1,6 @@
 package com.mudita.chess
 
 import android.app.Application
-import com.mudita.chess.BuildConfig.DEBUG
 import com.mudita.chess.appinfo.AppInfo
 import com.mudita.chess.appinfo.di.appInfoModule
 import com.mudita.chess.coroutines.di.coroutinesModule
@@ -52,7 +51,7 @@ class App : Application() {
             )
 
             val appInfo: AppInfo = get()
-            if (appInfo.isDebug == DEBUG) {
+            if (appInfo.isDebug) {
                 androidLogger(Level.DEBUG)
             }
         }
