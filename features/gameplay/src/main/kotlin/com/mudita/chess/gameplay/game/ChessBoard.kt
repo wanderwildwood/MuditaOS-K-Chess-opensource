@@ -208,6 +208,12 @@ internal class ChessBoard(
 
             if (!isLastMoveConfirmed) {
                 undoUnconfirmedMove()
+                // Between two people that was the undo: the opponent's move before it stays.
+                if (movesPerUndo == 1) {
+                    checkInfo = evaluateCheckInfo(checkAcknowledgeRequired = false)
+                    if (!updating) rebuildState()
+                    return
+                }
             }
             repeat(moves.size.coerceAtMost(movesPerUndo)) {
                 board.undoMove()
