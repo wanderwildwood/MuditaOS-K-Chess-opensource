@@ -48,7 +48,7 @@
     <string name="common_dialog_button_cancel">Cancel</string>
     <string name="common_dialog_button_confirm">Confirm</string>
     <string name="common_label_black">Black</string>
-    <string name="common_label_chess">Chess+</string>
+    <string name="common_label_chess" translatable="false">Chess+</string>
     <string name="common_label_computer">Computer</string>
     <string name="common_label_options">Options</string>
     <string name="common_label_white">White</string>
