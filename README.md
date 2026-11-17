@@ -1,8 +1,8 @@
 # Chess+
 
 Chess for the [Mudita Kompakt](https://mudita.com/products/kompakt/), against the computer or
-against the person across the table. It will install on any device with Android 11 or later,
-Supernote's tablets among them.
+against the person across the table. It will install on any 64-bit ARM device with Android 11 or
+later, Supernote's tablets among them.
 
 | | |
 |---|---|
@@ -70,7 +70,7 @@ the Stockfish developers, under the GPL version 3 or later, and an app distribut
 distributed under the GPL as a whole. Version 3 is the version taken here. The engine's
 source is in `library/chess-engine-bin`, and the app runs the engine built from it.
 
-The **Licenses** drawer in About lists Chess+ and then every library it is built with, one row each; a row opens to the author, website and full license text, and Chess+'s own row carries the source address and the GPL.
+**Licenses** in About opens a page listing Chess+ and then every library it is built with, one row each; a row opens a page with the author, website and full license text, and Chess+'s own row carries the source address and the GPL.
 
 [chesslib](https://github.com/bhlangonijr/chesslib) (Apache 2.0) checks the moves, and
 [MMD](https://github.com/mudita/MMD) (Apache 2.0) draws the interface.
