@@ -62,10 +62,14 @@ internal class ChessEngineImpl(
     }
 
     override suspend fun calculateBestMove(options: SearchOptions): String {
+        // A stop is only answered once a search is under way; cancelled before then, there is
+        // nothing to stop and no "bestmove" will ever come.
+        var searching = false
         return try {
             awaitReady()
 
             moveToState(State.CalculatingMove)
+            searching = true
 
             process.writeLine(UCICommands.position(options.fen, options.moves))
             process.writeLine(
@@ -91,6 +95,7 @@ internal class ChessEngineImpl(
 
             move
         } catch (ex: CancellationException) {
+            if (!searching) throw ex
             withContext(NonCancellable) {
                 launch {
                     try {

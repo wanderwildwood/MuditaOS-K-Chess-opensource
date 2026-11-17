@@ -44,6 +44,21 @@ class ChessEngineNetImplTest {
         assertThat(copied).isNotNull()
     }
 
+    @Test
+    fun `load copies again over a temporary file left by a copy cut short`() {
+        File("$JVM_TEST_FILE/data/data/com.mudita.chess/files/chess-engine/net/nn-3475407dc199.nnue.tmp").run {
+            parentFile?.mkdirs()
+            writeText("Test NN")
+        }
+        every { assetManager.open("nn-3475407dc199.nnue") } returns "Test NNUE".byteInputStream()
+
+        val copied = tested.load()
+
+        assertThat(copied).isNotNull()
+        assertThat(copied?.parentFile?.listFiles()).hasLength(1)
+        assertThat(copied?.readText()).isEqualTo("Test NNUE")
+    }
+
     @AfterEach
     fun tearDown() {
         File(JVM_TEST_FILE).deleteRecursively()

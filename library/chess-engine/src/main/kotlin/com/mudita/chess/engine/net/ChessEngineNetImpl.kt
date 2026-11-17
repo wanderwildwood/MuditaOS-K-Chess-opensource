@@ -12,11 +12,20 @@ internal class ChessEngineNetImpl(
         val netFile = File(netDir, DEFAULT_NET)
         if (netFile.exists()) return netFile
         val tmpFile = File(netDir, "$DEFAULT_NET.tmp")
-        return if (tmpFile.parentFile?.mkdirs() == true && tmpFile.createNewFile()) {
-            appContext.assets.open(DEFAULT_NET).copyTo(tmpFile.outputStream())
-            tmpFile.renameTo(netFile)
-            netFile
-        } else {
+        // A copy cut short last time (the app stopped, or the disk full) leaves its .tmp behind;
+        // it is started again from the beginning, not taken as a reason to go without the net.
+        return runCatching {
+            if (!netDir.isDirectory && !netDir.mkdirs()) return null
+            tmpFile.delete()
+            appContext.assets.open(DEFAULT_NET).use { input ->
+                java.io.FileOutputStream(tmpFile).use { output ->
+                    input.copyTo(output)
+                    output.fd.sync()
+                }
+            }
+            if (tmpFile.renameTo(netFile)) netFile else null
+        }.getOrElse {
+            tmpFile.delete()
             null
         }
     }
