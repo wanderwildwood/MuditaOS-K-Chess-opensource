@@ -79,7 +79,16 @@ internal class ComputerParticipant(
     private suspend fun calculateMove(): Move =
         try {
             moveToState(MoveCalculating)
-            val move = getComputerMoveUseCase(board.moves, side, difficultyLevel)
+            val move = try {
+                getComputerMoveUseCase(board.moves, side, difficultyLevel)
+            } catch (ex: CancellationException) {
+                throw ex
+            } catch (@Suppress("TooGenericExceptionCaught") ex: Exception) {
+                // An engine that fell over once is started again, and asked once more.
+                logcat { "Engine failed while choosing a move, starting it again: $ex" }
+                restartEngine()
+                getComputerMoveUseCase(board.moves, side, difficultyLevel)
+            }
             moveToState(MoveCalculated(move))
             move
         } catch (ex: CancellationException) {
@@ -92,6 +101,17 @@ internal class ComputerParticipant(
             throw ex as? EngineUnavailableException
                 ?: EngineUnavailableException("The engine failed while choosing a move", ex)
         }
+
+    private suspend fun restartEngine() {
+        try {
+            engine.stop()
+        } catch (ex: CancellationException) {
+            throw ex
+        } catch (@Suppress("TooGenericExceptionCaught") ex: Exception) {
+            logcat { "Engine did not stop cleanly: $ex" }
+        }
+        engine.start()
+    }
 
     override suspend fun cleanup() {
         try {

@@ -71,6 +71,28 @@ class ComputerParticipantTest {
 
         assertThat(thrown).isInstanceOf(EngineUnavailableException::class.java)
         assertThat(tested.state).isEqualTo(Idle)
+        // Started again once, and asked twice in all, before giving up.
+        coVerify(exactly = 1) { engine.stop() }
+        coVerify(exactly = 1) { engine.start() }
+        coVerify(exactly = 2) { getComputerMoveUseCase(any(), any(), any()) }
+    }
+
+    @Test
+    fun `an engine that fails once is started again and its move is played`() = runTest {
+        val move = Move(E2, E4)
+        var calls = 0
+        coEvery { getComputerMoveUseCase(any(), any(), any()) } answers {
+            calls++
+            if (calls == 1) throw NoSuchElementException("gone") else move
+        }
+
+        val job = launch { tested.doMove() }
+        advanceTimeBy(1_000)
+        job.join()
+
+        coVerify(exactly = 1) { engine.stop() }
+        coVerify(exactly = 1) { engine.start() }
+        assertThat(tested.state).isEqualTo(Idle)
     }
 
     @Test

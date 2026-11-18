@@ -333,9 +333,11 @@ internal class GameplayViewModel(
         copy(dialog = EngineUnavailableDialogUi)
     }
 
+    /**
+     * Back to the menu with the game kept as it stands: it was the engine that failed, not the
+     * player, so the game is neither resigned nor deleted, and it can be taken up again later.
+     */
     private suspend fun leaveBecauseNoEngine() {
-        game.resign()
-        removeCurrentGameUseCase()
         navigateToMain()
     }
 
