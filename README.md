@@ -68,7 +68,8 @@ Mudita's repository carries no license file of its own. The app it builds bundle
 [Fairy-Stockfish](https://github.com/fairy-stockfish/Fairy-Stockfish) 14, by Fabian Fichter and
 the Stockfish developers, under the GPL version 3 or later, and an app distributed with it is
 distributed under the GPL as a whole. Version 3 is the version taken here. The engine's
-source is in `library/chess-engine-bin`, and the app runs the engine built from it.
+source is in `library/chess-engine-bin`. The engine the app runs is the build of that source
+that came with Mudita's repository, not one made again here.
 
 **Licenses** in About opens a page listing Chess+ and then every library it is built with, one row each; a row opens a page with the author, website and full license text, and Chess+'s own row carries the source address and the GPL.
 

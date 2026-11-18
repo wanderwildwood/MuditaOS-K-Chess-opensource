@@ -18,7 +18,7 @@ import kotlin.coroutines.CoroutineContext
  * Runs the engine this app ships, `libstockfish.so` from its own native library directory.
  *
  * It used to run `./stockfish` in `/system/bin`, which is a copy the Kompakt's firmware carries
- * for Mudita's own Chess app. That left the engine built from this repository unused, and
+ * for Mudita's own Chess app. That left the engine this repository carries unused, and
  * one-player games depending on whatever the phone's firmware happened to hold.
  */
 internal class ChessEngineProcessImpl(
