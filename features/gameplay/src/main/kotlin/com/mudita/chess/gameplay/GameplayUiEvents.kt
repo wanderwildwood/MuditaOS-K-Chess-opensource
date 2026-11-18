@@ -15,6 +15,7 @@ import com.mudita.chess.gameplay.GameplayUiEvent.NewGameButtonClicked
 import com.mudita.chess.gameplay.GameplayUiEvent.PauseButtonClicked
 import com.mudita.chess.gameplay.GameplayUiEvent.ResumeButtonClicked
 import com.mudita.chess.gameplay.GameplayUiEvent.SavedGameDiscardClicked
+import com.mudita.chess.gameplay.GameplayUiEvent.SavedGameStartNewClicked
 import com.mudita.chess.gameplay.GameplayUiEvent.ScreenStarted
 import com.mudita.chess.gameplay.GameplayUiEvent.SquareClicked
 import com.mudita.chess.gameplay.GameplayUiEvent.UndoMoveButtonClicked
@@ -64,6 +65,9 @@ internal class GameplayUiEvents {
 
     val savedGameDiscardClicks = events
         .filterIsInstance<SavedGameDiscardClicked>()
+
+    val savedGameStartNewClicks = events
+        .filterIsInstance<SavedGameStartNewClicked>()
 
     val confirmMoveClicks = events
         .filterIsInstance<ConfirmMoveButtonClicked>()

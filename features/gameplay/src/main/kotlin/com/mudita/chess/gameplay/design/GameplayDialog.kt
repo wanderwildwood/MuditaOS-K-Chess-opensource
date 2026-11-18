@@ -12,6 +12,7 @@ import com.mudita.chess.gameplay.GameplayUiEvent.MoveSuggestionsSwitchToggled
 import com.mudita.chess.gameplay.GameplayUiEvent.NewGameButtonClicked
 import com.mudita.chess.gameplay.GameplayUiEvent.ResumeButtonClicked
 import com.mudita.chess.gameplay.GameplayUiEvent.SavedGameDiscardClicked
+import com.mudita.chess.gameplay.GameplayUiEvent.SavedGameStartNewClicked
 import com.mudita.chess.gameplay.model.DialogAlignment.BOARD_CENTER
 import com.mudita.chess.gameplay.model.DialogAlignment.BOTTOM
 import com.mudita.chess.gameplay.model.GameplayDialogUi
@@ -19,6 +20,7 @@ import com.mudita.chess.gameplay.model.GameplayDialogUi.CheckInfoDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.EngineUnavailableDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.GameMenuDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.LoadingDialogUi
+import com.mudita.chess.gameplay.model.GameplayDialogUi.NewGameOverUnreadableDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.PawnPromotionDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.SavedGameUnreadableDialogUi
 import com.mudita.chess.ui.KompaktPreview
@@ -67,6 +69,11 @@ internal fun GameplayDialog(
             SavedGameUnreadableDialogUi -> SavedGameUnreadableDialog(
                 onKeepClick = { uiEvent(DialogDismissRequested(dialog.type)) },
                 onDiscardClick = { uiEvent(SavedGameDiscardClicked) }
+            )
+
+            NewGameOverUnreadableDialogUi -> NewGameOverUnreadableDialog(
+                onKeepClick = { uiEvent(DialogDismissRequested(dialog.type)) },
+                onStartClick = { uiEvent(SavedGameStartNewClicked) }
             )
 
             is CheckInfoDialogUi -> CheckInfoDialog(

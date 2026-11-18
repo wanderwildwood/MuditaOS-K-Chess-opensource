@@ -22,6 +22,7 @@ import com.mudita.chess.gameplay.model.GameplayDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.EngineUnavailableDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.GameMenuDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.LoadingDialogUi
+import com.mudita.chess.gameplay.model.GameplayDialogUi.NewGameOverUnreadableDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.SavedGameUnreadableDialogUi
 import com.mudita.chess.gameplay.model.ParticipantUi
 import com.mudita.chess.gameplay.model.SquareUi
@@ -41,6 +42,8 @@ import com.mudita.chess.navigation.routes.OptionsMenuRoute
 import com.mudita.chess.navigation.routes.RootRoute
 import com.mudita.chess.ui.model.PieceUi
 import com.mudita.chess.ui.model.PositionUi
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.awaitCancellation
@@ -93,6 +96,7 @@ internal sealed interface GameplayUiEvent {
     data object GameMovesButtonClicked : GameplayUiEvent
     data object UndoMoveButtonClicked : GameplayUiEvent
     data object SavedGameDiscardClicked : GameplayUiEvent
+    data object SavedGameStartNewClicked : GameplayUiEvent
 }
 
 @Suppress("TooManyFunctions", "LongParameterList")
@@ -129,6 +133,9 @@ internal class GameplayViewModel(
     /** The saved game is there but could not be read: it is kept until the person discards it. */
     @Volatile
     private var isSavedGameUnreadable = false
+
+    /** Start, on the message that a new game replaces the saved game that could not be read. */
+    private val newGameOverUnreadableConfirmed = CompletableDeferred<Unit>()
 
     private val uiState: StateHandler<GameplayUiState>
 
@@ -172,9 +179,24 @@ internal class GameplayViewModel(
                 backToMenuUnderneath()
             }
         }
+        collectEvents(uiEvents.savedGameStartNewClicks) {
+            if (isSavedGameUnreadable) newGameOverUnreadableConfirmed.complete(Unit)
+        }
         viewModelScope.launch {
             joinAll(loadOptionsAndSetupGame(), loadSavedGame())
             hideLoadingIfShown()
+
+            if (isSavedGameUnreadable && !isRestoringGame) {
+                // A new game was asked for, but there is only one saved game and the new one would
+                // be saved over it. Ask first: Start deletes it and goes on, Keep (or Back) goes
+                // back to the menu and leaves it in place.
+                showNewGameOverUnreadable()
+                awaitOrCleanup { newGameOverUnreadableConfirmed.await() }
+                removeCurrentGameUseCase()
+                    .onFailure { logcat { "Failed to remove the unreadable game. ${it.asLog()}" } }
+                isSavedGameUnreadable = false
+                hideNewGameOverUnreadable()
+            }
 
             if (isSavedGameUnreadable) {
                 // Nothing to play: say so, and wait for Keep (or Back) or Discard. Nothing is
@@ -362,6 +384,24 @@ internal class GameplayViewModel(
 
     private fun showSavedGameUnreadable() = uiState.updateState {
         copy(dialog = SavedGameUnreadableDialogUi)
+    }
+
+    private fun showNewGameOverUnreadable() = uiState.updateState {
+        copy(dialog = NewGameOverUnreadableDialogUi)
+    }
+
+    private fun hideNewGameOverUnreadable() = uiState.updateState {
+        if (dialog is NewGameOverUnreadableDialogUi) copy(dialog = null) else this
+    }
+
+    /** Waits in [block]; if the screen goes away meanwhile, the game is cleaned up as on the way out. */
+    private suspend fun <T> awaitOrCleanup(block: suspend () -> T): T = try {
+        block()
+    } catch (e: CancellationException) {
+        withContext(NonCancellable) {
+            game.cleanup()
+        }
+        throw e
     }
 
     /**

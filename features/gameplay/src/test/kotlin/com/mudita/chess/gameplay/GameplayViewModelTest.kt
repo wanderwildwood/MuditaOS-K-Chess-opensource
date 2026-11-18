@@ -112,6 +112,7 @@ import com.mudita.chess.gameplay.model.GameplayDialogType
 import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.coVerifyOrder
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
@@ -614,6 +615,66 @@ internal class GameplayViewModelTest {
         tested.handleUiEvent(GameplayUiEvent.SavedGameDiscardClicked)
 
         coVerify(exactly = 0) { removeCurrentGameUseCase() }
+    }
+
+    @Test
+    fun `a new game over an unreadable saved game asks first and keeps the game meanwhile`() = runTest {
+        every { args.value } returns GameplayRoute(isPlayerWhite = true, isNewGame = true)
+        every { savedStateHandle.get<Boolean>(KEY_GAME_STARTED_BEFORE) } returns false
+        coEvery { getCurrentGameMovesUseCase.invoke() } coAnswers { Result.failure(Error("game read error")) }
+
+        assertThat(tested.state.dialog).isEqualTo(GameplayDialogUi.NewGameOverUnreadableDialogUi)
+        coVerify(exactly = 0) { removeCurrentGameUseCase() }
+        coVerify(exactly = 0) { saveCurrentGameMovesUseCase(any()) }
+    }
+
+    @Test
+    fun `starting a new game over an unreadable saved game removes it, then starts and saves the new one`() = runTest {
+        every { args.value } returns GameplayRoute(isPlayerWhite = true, isNewGame = true)
+        every { savedStateHandle.get<Boolean>(KEY_GAME_STARTED_BEFORE) } returns false
+        coEvery { getCurrentGameMovesUseCase.invoke() } coAnswers { Result.failure(Error("game read error")) }
+
+        tested.handleUiEvent(GameplayUiEvent.SavedGameStartNewClicked)
+
+        coVerifyOrder {
+            removeCurrentGameUseCase()
+            saveCurrentGameMovesUseCase(emptyList())
+        }
+        coVerify(exactly = 1) { removeCurrentGameUseCase() }
+        assertThat(tested.state.dialog).isNotEqualTo(GameplayDialogUi.NewGameOverUnreadableDialogUi)
+        assertThat(tested.state.board).isEqualTo(WHITE_PLAYER_INITIAL_BOARD_UI)
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = [true, false])
+    fun `keeping an unreadable game instead of a new game goes back to the main menu and keeps it`(
+        byBack: Boolean
+    ) = runTest {
+        every { args.value } returns GameplayRoute(isPlayerWhite = true, isNewGame = true)
+        every { savedStateHandle.get<Boolean>(KEY_GAME_STARTED_BEFORE) } returns false
+        coEvery { getCurrentGameMovesUseCase.invoke() } coAnswers { Result.failure(Error("game read error")) }
+
+        tested.handleUiEvent(
+            if (byBack) BackButtonClicked else DialogDismissRequested(GameplayDialogType.SAVED_GAME_UNREADABLE)
+        )
+
+        tested.navActions.test {
+            verifyNavigatedToMenuUnderneath(awaitItem())
+        }
+        coVerify(exactly = 0) { removeCurrentGameUseCase() }
+        coVerify(exactly = 0) { saveCurrentGameMovesUseCase(any()) }
+    }
+
+    @Test
+    fun `start does nothing when resuming an unreadable saved game`() = runTest {
+        every { args.value } returns GameplayRoute(isPlayerWhite = true, isNewGame = false)
+        coEvery { getCurrentGameMovesUseCase.invoke() } coAnswers { Result.failure(Error("game read error")) }
+
+        tested.handleUiEvent(GameplayUiEvent.SavedGameStartNewClicked)
+
+        assertThat(tested.state.dialog).isEqualTo(GameplayDialogUi.SavedGameUnreadableDialogUi)
+        coVerify(exactly = 0) { removeCurrentGameUseCase() }
+        coVerify(exactly = 0) { saveCurrentGameMovesUseCase(any()) }
     }
 
     private fun verifyNavigatedToMenuUnderneath(navAction: NavAction) {

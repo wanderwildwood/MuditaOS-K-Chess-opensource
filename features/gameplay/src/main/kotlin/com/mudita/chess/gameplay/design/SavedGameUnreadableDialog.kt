@@ -30,6 +30,39 @@ internal fun SavedGameUnreadableDialog(
     onKeepClick: () -> Unit,
     onDiscardClick: () -> Unit,
     modifier: Modifier = Modifier
+) = KeepOrArmedDialog(
+    message = stringResource(id = RFrontitude.string.chess_savedgame_unreadable),
+    armedText = stringResource(id = RFrontitude.string.chess_savedgame_button_discard),
+    onKeepClick = onKeepClick,
+    onArmedClick = onDiscardClick,
+    modifier = modifier
+)
+
+/**
+ * Said when a new game is asked for while the saved game cannot be read: there is one saved game,
+ * and the new one would replace it. Keep leaves it and goes back; Start deletes it and starts,
+ * with a second tap because that cannot be undone.
+ */
+@Composable
+internal fun NewGameOverUnreadableDialog(
+    onKeepClick: () -> Unit,
+    onStartClick: () -> Unit,
+    modifier: Modifier = Modifier
+) = KeepOrArmedDialog(
+    message = stringResource(id = RFrontitude.string.chess_savedgame_unreadable_newgame),
+    armedText = stringResource(id = RFrontitude.string.chess_savedgame_button_start),
+    onKeepClick = onKeepClick,
+    onArmedClick = onStartClick,
+    modifier = modifier
+)
+
+@Composable
+private fun KeepOrArmedDialog(
+    message: String,
+    armedText: String,
+    onKeepClick: () -> Unit,
+    onArmedClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -38,7 +71,7 @@ internal fun SavedGameUnreadableDialog(
             .padding(16.dp)
     ) {
         Text(
-            text = stringResource(id = RFrontitude.string.chess_savedgame_unreadable),
+            text = message,
             textAlign = TextAlign.Center,
             style = AppTypography900.titleMedium
         )
@@ -52,9 +85,9 @@ internal fun SavedGameUnreadableDialog(
         Spacer(modifier = Modifier.height(16.dp))
         AppArmedSecondaryButton(
             modifier = Modifier.fillMaxWidth(),
-            text = stringResource(id = RFrontitude.string.chess_savedgame_button_discard),
+            text = armedText,
             attributes = buttonAttributes(),
-            onConfirm = onDiscardClick
+            onConfirm = onArmedClick
         )
     }
 }
@@ -67,4 +100,10 @@ private fun buttonAttributes() =
 @Composable
 private fun SavedGameUnreadableDialogPreview() = AppTheme {
     SavedGameUnreadableDialog(onKeepClick = {}, onDiscardClick = {})
+}
+
+@KompaktPreview
+@Composable
+private fun NewGameOverUnreadableDialogPreview() = AppTheme {
+    NewGameOverUnreadableDialog(onKeepClick = {}, onStartClick = {})
 }

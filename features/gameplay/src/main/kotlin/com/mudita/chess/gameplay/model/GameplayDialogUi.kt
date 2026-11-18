@@ -44,6 +44,12 @@ internal sealed class GameplayDialogUi(
     /** The saved game could not be read; Keep leaves it for a later try, Discard deletes it. */
     data object SavedGameUnreadableDialogUi : GameplayDialogUi(type = SAVED_GAME_UNREADABLE)
 
+    /**
+     * A new game was asked for while the saved game could not be read, and the new one would be
+     * saved over it. Start deletes it and starts; Keep leaves it and goes back, as on the message above.
+     */
+    data object NewGameOverUnreadableDialogUi : GameplayDialogUi(type = SAVED_GAME_UNREADABLE)
+
     data class CheckInfoDialogUi(
         val king: PieceUi,
         val attackedBy: List<PieceUi>
