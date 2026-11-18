@@ -4,6 +4,7 @@ import com.mudita.chess.engine.EngineUnavailableException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ClosedSendChannelException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -48,22 +49,31 @@ internal class ChessEngineProcessImpl(
     }
 
     override suspend fun monitor() {
-        if (process == null) return
-        incomeChannel = Channel(Channel.BUFFERED)
+        // The coroutine below holds on to this process and this channel only. After a restart
+        // the fields name the new engine, and a monitor left over from the old one, still blocked
+        // in readLine until that process ends, must not feed or close the new engine's channel.
+        val proc = process ?: return
+        val channel = Channel<String>(Channel.BUFFERED)
+        incomeChannel = channel
         monitorJob = CoroutineScope(engineContext).launch {
-            val inStream = process?.inputStream?.bufferedReader() ?: return@launch
-            while (isActive && process?.isAlive == true) {
+            val inStream = proc.inputStream.bufferedReader()
+            while (isActive && proc.isAlive) {
                 val line = try {
                     inStream.readLine()
                 } catch (ignored: IOException) {
                     null
                 } ?: continue
                 logcat("ChessEngineProcess") { "Engine -> App: $line" }
-                incomeChannel?.send(line)
+                try {
+                    channel.send(line)
+                } catch (ignored: ClosedSendChannelException) {
+                    // stop() closed it: nobody is listening to this engine any more.
+                    break
+                }
             }
             // The engine has gone. Ending the flow lets whoever is waiting on a line find out,
             // instead of waiting for ever on a process that will say nothing more.
-            incomeChannel?.close()
+            channel.close()
         }
     }
 

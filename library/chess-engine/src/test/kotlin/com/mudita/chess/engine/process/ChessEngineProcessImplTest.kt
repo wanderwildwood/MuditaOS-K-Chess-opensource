@@ -12,6 +12,8 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import java.io.File
 import java.io.OutputStream
+import java.io.PipedInputStream
+import java.io.PipedOutputStream
 
 class ChessEngineProcessImplTest {
 
@@ -104,5 +106,39 @@ class ChessEngineProcessImplTest {
             outputStream.write("uci\n".toByteArray())
             outputStream.flush()
         }
+    }
+
+    @Test
+    fun `a monitor left from before a restart neither feeds nor closes the new engine's lines`() = runTest {
+        val oldOutput = PipedOutputStream()
+        val oldInput = PipedInputStream(oldOutput)
+        var oldAlive = true
+        val oldProcess = mockk<Process>(relaxed = true) {
+            every { inputStream } returns oldInput
+            every { isAlive } answers { oldAlive }
+        }
+        every { processBuilder.start() } returnsMany listOf(oldProcess, process)
+        tested.start()
+        tested.monitor()
+
+        tested.stop()
+        tested.start()
+        tested.monitor()
+        // The old engine answers late, then ends.
+        oldOutput.write("bestmove e2e4\n".toByteArray())
+        oldOutput.flush()
+        oldAlive = false
+        oldOutput.close()
+        Thread.sleep(OLD_MONITOR_SETTLE_MILLIS)
+
+        tested.receiveLines().test {
+            assertThat(awaitItem()).isEqualTo(ENGINE_INTRO)
+            expectNoEvents()
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    private companion object {
+        const val OLD_MONITOR_SETTLE_MILLIS = 200L
     }
 }
