@@ -7,6 +7,7 @@ import com.mudita.chess.gameplay.model.GameplayDialogType.ENGINE_UNAVAILABLE
 import com.mudita.chess.gameplay.model.GameplayDialogType.GAME_MENU
 import com.mudita.chess.gameplay.model.GameplayDialogType.LOADING
 import com.mudita.chess.gameplay.model.GameplayDialogType.PAWN_PROMOTION
+import com.mudita.chess.gameplay.model.GameplayDialogType.SAVED_GAME_UNREADABLE
 import com.mudita.chess.ui.model.PieceUi
 
 enum class DialogAlignment {
@@ -19,7 +20,8 @@ internal enum class GameplayDialogType {
     GAME_MENU,
     PAWN_PROMOTION,
     CHECK_INFO,
-    ENGINE_UNAVAILABLE
+    ENGINE_UNAVAILABLE,
+    SAVED_GAME_UNREADABLE
 }
 
 internal sealed class GameplayDialogUi(
@@ -38,6 +40,9 @@ internal sealed class GameplayDialogUi(
 
     /** The computer player cannot run on this phone; the only way on is back to the menu. */
     data object EngineUnavailableDialogUi : GameplayDialogUi(type = ENGINE_UNAVAILABLE)
+
+    /** The saved game could not be read; Keep leaves it for a later try, Discard deletes it. */
+    data object SavedGameUnreadableDialogUi : GameplayDialogUi(type = SAVED_GAME_UNREADABLE)
 
     data class CheckInfoDialogUi(
         val king: PieceUi,

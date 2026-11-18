@@ -22,6 +22,7 @@ import com.mudita.chess.gameplay.model.GameplayDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.EngineUnavailableDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.GameMenuDialogUi
 import com.mudita.chess.gameplay.model.GameplayDialogUi.LoadingDialogUi
+import com.mudita.chess.gameplay.model.GameplayDialogUi.SavedGameUnreadableDialogUi
 import com.mudita.chess.gameplay.model.ParticipantUi
 import com.mudita.chess.gameplay.model.SquareUi
 import com.mudita.chess.games.usecase.GetCurrentGameMovesUseCase
@@ -91,6 +92,7 @@ internal sealed interface GameplayUiEvent {
     data object ConfirmMoveButtonClicked : GameplayUiEvent
     data object GameMovesButtonClicked : GameplayUiEvent
     data object UndoMoveButtonClicked : GameplayUiEvent
+    data object SavedGameDiscardClicked : GameplayUiEvent
 }
 
 @Suppress("TooManyFunctions", "LongParameterList")
@@ -124,6 +126,10 @@ internal class GameplayViewModel(
 
     private var isFinishedGameLeft = false
 
+    /** The saved game is there but could not be read: it is kept until the person discards it. */
+    @Volatile
+    private var isSavedGameUnreadable = false
+
     private val uiState: StateHandler<GameplayUiState>
 
     val states: StateFlow<GameplayUiState>
@@ -155,12 +161,33 @@ internal class GameplayViewModel(
         uiState = StateHandler(initialUiState(game.board.state, isRestoringGame))
 
         setupUiLifecycleCollection()
-        collectEvents(merge(uiEvents.engineUnavailableDismissals, uiEvents.backClicks)) {
-            if (game.isEngineUnavailable) leaveBecauseNoEngine()
+        collectEvents(
+            merge(uiEvents.engineUnavailableDismissals, uiEvents.savedGameKeepClicks, uiEvents.backClicks)
+        ) {
+            if (isSavedGameUnreadable || game.isEngineUnavailable) backToMenuUnderneath()
+        }
+        collectEvents(uiEvents.savedGameDiscardClicks) {
+            if (isSavedGameUnreadable) {
+                removeCurrentGameUseCase()
+                backToMenuUnderneath()
+            }
         }
         viewModelScope.launch {
             joinAll(loadOptionsAndSetupGame(), loadSavedGame())
             hideLoadingIfShown()
+
+            if (isSavedGameUnreadable) {
+                // Nothing to play: say so, and wait for Keep (or Back) or Discard. Nothing is
+                // started, so nothing is saved over the game that could not be read.
+                showSavedGameUnreadable()
+                try {
+                    awaitCancellation()
+                } finally {
+                    withContext(NonCancellable) {
+                        game.cleanup()
+                    }
+                }
+            }
 
             if (game.isEngineUnavailable) {
                 // No computer player on this phone. Nothing to start: say so, and wait to be sent
@@ -333,15 +360,20 @@ internal class GameplayViewModel(
         copy(dialog = EngineUnavailableDialogUi)
     }
 
+    private fun showSavedGameUnreadable() = uiState.updateState {
+        copy(dialog = SavedGameUnreadableDialogUi)
+    }
+
     /**
-     * Back to the menu with the game kept as it stands: it was the engine that failed, not the
-     * player, so the game is neither resigned nor deleted, and it can be taken up again later.
+     * Back to the menu with the game kept as it stands, when the engine failed or the saved game
+     * could not be read: neither is the player's doing, so the game is neither resigned nor
+     * deleted (unless they chose Discard), and a later start or a later version can take it up.
      *
      * It goes back to the menu that is already under this screen, not a fresh one: a fresh menu
-     * opens a saved game straight away, which would bring this message back for ever and leave
+     * opens a saved game straight away, which would bring the message back for ever and leave
      * no way to a new game, two players or the statistics.
      */
-    private suspend fun leaveBecauseNoEngine() = emitNavAction(
+    private suspend fun backToMenuUnderneath() = emitNavAction(
         NavigateTo(
             route = MainRoute,
             options = navOptions {
@@ -392,9 +424,9 @@ internal class GameplayViewModel(
         getCurrentGameMovesUseCase()
             .onSuccess { game.loadMoves(it.orEmpty()) }
             .onFailure {
+                // Kept, not deleted: most likely a reading bug that a later version can fix.
                 logcat { "Failed load game moves. ${it.asLog()}" }
-                removeCurrentGameUseCase()
-                navigateToMain()
+                isSavedGameUnreadable = true
             }
     }
 

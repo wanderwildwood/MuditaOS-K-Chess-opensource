@@ -101,6 +101,10 @@
     <string name="chess_endingscreen_draw_material">Draw: not enough pieces to checkmate</string>
     <string name="chess_endingscreen_draw_stalemate">Draw: stalemate</string>
     <string name="chess_engine_unavailable">This phone cannot run the computer player. Two-player still works.</string>
+    <!-- Said when the saved game cannot be read; Keep leaves it for a later version to try again -->
+    <string name="chess_savedgame_unreadable" tools:ignore="MissingTranslation">This saved game could not be read. Keep it to try again after an update, or discard it.</string>
+    <string name="chess_savedgame_button_keep" tools:ignore="MissingTranslation">Keep</string>
+    <string name="chess_savedgame_button_discard" tools:ignore="MissingTranslation">Discard</string>
     <!-- shared-about: contact row + privacy section (edit in /opt/projects/shared-about) -->
     <string name="about_write_to" tools:ignore="MissingTranslation">Write to %1$s</string>
     <string name="about_no_mail_app" tools:ignore="MissingTranslation">No email app is installed. The address is %1$s.</string>

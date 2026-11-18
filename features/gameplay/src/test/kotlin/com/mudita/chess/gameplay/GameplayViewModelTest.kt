@@ -567,15 +567,64 @@ internal class GameplayViewModelTest {
     }
 
     @Test
-    fun `on init navigates to main when unable to load game`() = runTest {
+    fun `on init says so and keeps the game when unable to load it`() = runTest {
         every { args.value } returns GameplayRoute(isPlayerWhite = false, isNewGame = true)
         every { savedStateHandle.get<Boolean>(KEY_GAME_STARTED_BEFORE) } returns true
         coEvery { getCurrentGameMovesUseCase.invoke() } coAnswers { Result.failure(Error("game read error")) }
 
+        assertThat(tested.state.dialog).isEqualTo(GameplayDialogUi.SavedGameUnreadableDialogUi)
+        coVerify(exactly = 0) { removeCurrentGameUseCase() }
+        coVerify(exactly = 0) { saveCurrentGameMovesUseCase(any()) }
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = [true, false])
+    fun `keeping an unreadable game goes back to the main menu and keeps it`(byBack: Boolean) = runTest {
+        every { args.value } returns GameplayRoute(isPlayerWhite = true, isNewGame = false)
+        coEvery { getCurrentGameMovesUseCase.invoke() } coAnswers { Result.failure(Error("game read error")) }
+
+        tested.handleUiEvent(
+            if (byBack) BackButtonClicked else DialogDismissRequested(GameplayDialogType.SAVED_GAME_UNREADABLE)
+        )
+
         tested.navActions.test {
-            verifyNavigatedToMain(awaitItem())
+            verifyNavigatedToMenuUnderneath(awaitItem())
         }
-        coVerify { removeCurrentGameUseCase() }
+        coVerify(exactly = 0) { removeCurrentGameUseCase() }
+    }
+
+    @Test
+    fun `discarding an unreadable game removes it and goes back to the main menu`() = runTest {
+        every { args.value } returns GameplayRoute(isPlayerWhite = true, isNewGame = false)
+        coEvery { getCurrentGameMovesUseCase.invoke() } coAnswers { Result.failure(Error("game read error")) }
+
+        tested.handleUiEvent(GameplayUiEvent.SavedGameDiscardClicked)
+
+        tested.navActions.test {
+            verifyNavigatedToMenuUnderneath(awaitItem())
+        }
+        coVerify(exactly = 1) { removeCurrentGameUseCase() }
+    }
+
+    @Test
+    fun `discard does nothing when the saved game was read`() = runTest {
+        every { args.value } returns GameplayRoute(isPlayerWhite = true, isNewGame = false)
+        coEvery { getCurrentGameMovesUseCase.invoke() } coAnswers { Result.success(listOf("e2e4")) }
+
+        tested.handleUiEvent(GameplayUiEvent.SavedGameDiscardClicked)
+
+        coVerify(exactly = 0) { removeCurrentGameUseCase() }
+    }
+
+    private fun verifyNavigatedToMenuUnderneath(navAction: NavAction) {
+        // The menu already there, which does not reopen the saved game and bring the message back.
+        assertThat(navAction).isEqualTo(NavigateTo(
+            route = MainRoute,
+            options = navOptions {
+                popUpTo<MainRoute>()
+                launchSingleTop = true
+            }
+        ))
     }
 
     @Test

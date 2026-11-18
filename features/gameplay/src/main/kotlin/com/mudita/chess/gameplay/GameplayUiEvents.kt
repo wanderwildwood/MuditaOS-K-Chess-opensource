@@ -14,6 +14,7 @@ import com.mudita.chess.gameplay.GameplayUiEvent.MoveSuggestionsSwitchToggled
 import com.mudita.chess.gameplay.GameplayUiEvent.NewGameButtonClicked
 import com.mudita.chess.gameplay.GameplayUiEvent.PauseButtonClicked
 import com.mudita.chess.gameplay.GameplayUiEvent.ResumeButtonClicked
+import com.mudita.chess.gameplay.GameplayUiEvent.SavedGameDiscardClicked
 import com.mudita.chess.gameplay.GameplayUiEvent.ScreenStarted
 import com.mudita.chess.gameplay.GameplayUiEvent.SquareClicked
 import com.mudita.chess.gameplay.GameplayUiEvent.UndoMoveButtonClicked
@@ -21,6 +22,7 @@ import com.mudita.chess.gameplay.model.GameplayDialogType.CHECK_INFO
 import com.mudita.chess.gameplay.model.GameplayDialogType.ENGINE_UNAVAILABLE
 import com.mudita.chess.gameplay.model.GameplayDialogType.GAME_MENU
 import com.mudita.chess.gameplay.model.GameplayDialogType.PAWN_PROMOTION
+import com.mudita.chess.gameplay.model.GameplayDialogType.SAVED_GAME_UNREADABLE
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
@@ -54,6 +56,14 @@ internal class GameplayUiEvents {
     val engineUnavailableDismissals = events
         .filterIsInstance<DialogDismissRequested>()
         .filter { it.dialogType == ENGINE_UNAVAILABLE }
+
+    /** Keep, Back, or a tap beside the message: all leave the unreadable saved game in place. */
+    val savedGameKeepClicks = events
+        .filterIsInstance<DialogDismissRequested>()
+        .filter { it.dialogType == SAVED_GAME_UNREADABLE }
+
+    val savedGameDiscardClicks = events
+        .filterIsInstance<SavedGameDiscardClicked>()
 
     val confirmMoveClicks = events
         .filterIsInstance<ConfirmMoveButtonClicked>()
