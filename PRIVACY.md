@@ -17,6 +17,17 @@ There is no networking code in the app and no dependency that provides any. With
 `INTERNET` permission it could not open a connection if there were. The engine runs on the
 phone, as a program inside the app.
 
+In About, "feed the llamas" opens a donation page (square.link) and wanderthe.dev opens the
+author's website, in your browser and only when you press them. The app does not fetch either
+page and learns nothing about whether you went.
+
+## What it can see of other apps
+
+If Home (`com.wanderwildwood.iori`) is installed and signed with Home's own key, Chess+ asks it
+whether its dark mode switch is on, a yes or no, and follows it; it sends nothing to Home. The
+manifest also lets Chess+ ask Android which installed apps can open a web address, so that the
+About links can open in a browser. It sees nothing else of your other apps.
+
 ## What it keeps
 
 The game in progress, the options you chose, and the statistics of games against the
