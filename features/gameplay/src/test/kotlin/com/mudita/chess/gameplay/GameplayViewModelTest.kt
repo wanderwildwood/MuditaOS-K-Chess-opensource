@@ -1123,7 +1123,7 @@ internal class GameplayViewModelTest {
     }
 
     @Test
-    fun `dismissing the no engine message goes back to the main menu`() = runTest {
+    fun `dismissing the no engine message goes back to the main menu and keeps the game`() = runTest {
         every { args.value } returns GameplayRoute(isPlayerWhite = true)
         val engine = mockk<ChessEngine>(relaxed = true)
         coEvery { engine.start() } throws EngineUnavailableException("no engine")
@@ -1136,7 +1136,8 @@ internal class GameplayViewModelTest {
         viewModel.navActions.test {
             verifyNavigatedToMain(awaitItem())
         }
-        coVerify { removeCurrentGameUseCase() }
+        // The engine failed, not the player: the saved game stays, to be taken up again.
+        coVerify(exactly = 0) { removeCurrentGameUseCase() }
     }
 
     @Test
