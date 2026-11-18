@@ -27,3 +27,6 @@
 **/output-metadata.json
 *.dm
 aboutlibraries.json
+# Signing key and its properties (never committed; the release build is unsigned without them)
+/signing/*
+!/signing/.gitignore
