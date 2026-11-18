@@ -8,10 +8,7 @@ import com.mudita.chess.mvvm.StateViewModel
 import com.mudita.chess.navigation.NavAction.NavigateUp
 import com.mudita.chess.navigation.NavActionsEmitter
 import com.mudita.chess.statistics.StatisticsUiEvent.BackClicked
-import com.mudita.chess.statistics.StatisticsUiEvent.ClearAllButtonClicked
-import com.mudita.chess.statistics.StatisticsUiEvent.DialogCancelButtonClicked
-import com.mudita.chess.statistics.StatisticsUiEvent.DialogClearStatisticsButtonClicked
-import com.mudita.chess.statistics.StatisticsUiEvent.DialogDismissRequested
+import com.mudita.chess.statistics.StatisticsUiEvent.ClearAllConfirmed
 import com.mudita.chess.statistics.StatisticsUiEvent.NavigationUpClicked
 import com.mudita.chess.statistics.model.MatchResultUi
 import kotlinx.coroutines.launch
@@ -22,17 +19,15 @@ internal data class StatisticsUiState(
     val isClearAllButtonVisible: Boolean = false,
     val playedAsWhitePercentage: Int = 0,
     val playedAsBlackPercentage: Int = 0,
-    val matchResults: List<MatchResultUi> = emptyList(),
-    val isClearStatisticsDialogVisible: Boolean = false
+    val matchResults: List<MatchResultUi> = emptyList()
 )
 
 internal sealed interface StatisticsUiEvent {
     data object BackClicked : StatisticsUiEvent
     data object NavigationUpClicked : StatisticsUiEvent
-    data object ClearAllButtonClicked : StatisticsUiEvent
-    data object DialogCancelButtonClicked : StatisticsUiEvent
-    data object DialogClearStatisticsButtonClicked : StatisticsUiEvent
-    data object DialogDismissRequested : StatisticsUiEvent
+
+    /** The second tap on the armed Clear all: the first only asks, on the button itself. */
+    data object ClearAllConfirmed : StatisticsUiEvent
 }
 
 internal class StatisticsViewModel(
@@ -81,28 +76,12 @@ internal class StatisticsViewModel(
             BackClicked,
             NavigationUpClicked -> emitNavAction(NavigateUp())
 
-            ClearAllButtonClicked -> openClearStatisticsDialog()
-
-            DialogCancelButtonClicked,
-            DialogDismissRequested -> closeClearStatisticsDialog()
-
-            DialogClearStatisticsButtonClicked -> onDialogClearStatisticsButtonClicked()
+            ClearAllConfirmed -> clearStatistics()
         }
     }
 
-    private fun openClearStatisticsDialog() =
-        updateState {
-            copy(isClearStatisticsDialogVisible = true)
-        }
-
-    private fun closeClearStatisticsDialog() =
-        updateState {
-            copy(isClearStatisticsDialogVisible = false)
-        }
-
-    private fun onDialogClearStatisticsButtonClicked() = viewModelScope.launch {
+    private fun clearStatistics() = viewModelScope.launch {
         removeGameStatisticsUseCase()
-        closeClearStatisticsDialog()
         showScreen(GameStatistics.EMPTY)
     }
 

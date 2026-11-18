@@ -2,7 +2,6 @@ package com.mudita.chess.statistics
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,19 +22,14 @@ import androidx.compose.ui.unit.dp
 import com.mudita.chess.navigation.AppNavigator
 import com.mudita.chess.navigation.NavActionsEffect
 import com.mudita.chess.statistics.StatisticsUiEvent.BackClicked
-import com.mudita.chess.statistics.StatisticsUiEvent.ClearAllButtonClicked
-import com.mudita.chess.statistics.StatisticsUiEvent.DialogCancelButtonClicked
-import com.mudita.chess.statistics.StatisticsUiEvent.DialogClearStatisticsButtonClicked
-import com.mudita.chess.statistics.StatisticsUiEvent.DialogDismissRequested
+import com.mudita.chess.statistics.StatisticsUiEvent.ClearAllConfirmed
 import com.mudita.chess.statistics.StatisticsUiEvent.NavigationUpClicked
 import com.mudita.chess.statistics.design.MatchResults
 import com.mudita.chess.statistics.design.PlayedColorStatistics
 import com.mudita.chess.statistics.model.MatchResultUi
 import com.mudita.chess.ui.KompaktPreview
-import com.mudita.chess.ui.compontent.DialogHost
+import com.mudita.chess.ui.design.AppArmedSecondaryButton
 import com.mudita.chess.ui.design.AppButtonAttributes
-import com.mudita.chess.ui.design.AppConfirmCard
-import com.mudita.chess.ui.design.AppSecondaryButton
 import com.mudita.chess.ui.design.AppTheme
 import com.mudita.chess.ui.design.AppTopAppBar
 import com.mudita.chess.ui.design.AppTypography500
@@ -89,8 +83,7 @@ private fun StatisticsScreen(
             } else {
                 Content(
                     modifier = contentModifier,
-                    uiState = uiState,
-                    uiEvent = uiEvent
+                    uiState = uiState
                 )
             }
         }
@@ -114,33 +107,14 @@ private fun EmptyContent(modifier: Modifier = Modifier) =
 @Composable
 private fun Content(
     uiState: StatisticsUiState,
-    uiEvent: (StatisticsUiEvent) -> Unit,
     modifier: Modifier = Modifier
-) = Box {
-    Column(modifier = modifier) {
-        PlayedColorStatistics(
-            playedAsWhitePercentage = uiState.playedAsWhitePercentage,
-            playedAsBlackPercentage = uiState.playedAsBlackPercentage
-        )
-        Spacer(modifier = Modifier.height(18.dp))
-        MatchResults(uiState.matchResults)
-    }
-    if (uiState.isClearStatisticsDialogVisible) {
-        DialogHost(
-            dialogContentAlignment = Alignment.BottomCenter,
-            onDismissRequest = { uiEvent(DialogDismissRequested) }
-        ) {
-            AppConfirmCard(
-                modifier = Modifier.padding(start = 12.dp, end = 12.dp, bottom = 16.dp),
-                title = stringResource(id = RFrontitude.string.chess_statistics_dialog_h1_clearallstatistics),
-                description = stringResource(id = RFrontitude.string.chess_statistics_dialog_body_thiswillgiveyou),
-                confirmText = stringResource(id = RFrontitude.string.chess_statistics_dialog_button_clearstatistics),
-                cancelText = stringResource(id = RFrontitude.string.common_dialog_button_cancel),
-                onConfirm = { uiEvent(DialogClearStatisticsButtonClicked) },
-                onCancel = { uiEvent(DialogCancelButtonClicked) }
-            )
-        }
-    }
+) = Column(modifier = modifier) {
+    PlayedColorStatistics(
+        playedAsWhitePercentage = uiState.playedAsWhitePercentage,
+        playedAsBlackPercentage = uiState.playedAsBlackPercentage
+    )
+    Spacer(modifier = Modifier.height(18.dp))
+    MatchResults(uiState.matchResults)
 }
 
 @Composable
@@ -153,10 +127,12 @@ internal fun StatisticsTopAppBar(
         onNavigationIconClick = { uiEvent(NavigationUpClicked) },
         actions = {
             if (isClearAllButtonVisible) {
-                AppSecondaryButton(
+                // Statistics cannot be brought back: the button asks itself ("tap again"),
+                // as New game and Exit do, rather than stacking a dialog over the screen.
+                AppArmedSecondaryButton(
                     text = stringResource(id = RFrontitude.string.common_topbar_button_clearall),
                     attributes = AppButtonAttributes.Small,
-                    onClick = { uiEvent(ClearAllButtonClicked) }
+                    onConfirm = { uiEvent(ClearAllConfirmed) }
                 )
                 Spacer(modifier = Modifier.width(16.dp))
             }
@@ -179,8 +155,7 @@ private fun StatisticsScreenPreview() {
                     MatchResultUi(titleResId = RFrontitude.string.chess_statistics_label_drawn, value = 30),
                     MatchResultUi(titleResId = RFrontitude.string.chess_statistics_label_lost, value = 5),
                     MatchResultUi(titleResId = RFrontitude.string.chess_statistics_label_percentageofwins, value = 30)
-                ),
-                isClearStatisticsDialogVisible = false
+                )
             ),
             uiEvent = {}
         )

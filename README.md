@@ -27,7 +27,8 @@ later, Supernote's tablets among them.
 - New game and Exit in the pause menu end the game you are playing, so each asks with a
   second tap.
 - Statistics count wins, draws and losses against the computer, and which color you played.
-  Two-player games are not counted; they are not yours to win or lose alone.
+  Two-player games are not counted; they are not yours to win or lose alone. Clear all
+  cannot be undone, so it too asks with a second tap.
 - No permissions and no network. Nothing leaves the phone. See [PRIVACY.md](PRIVACY.md).
 
 ## Where it comes from
