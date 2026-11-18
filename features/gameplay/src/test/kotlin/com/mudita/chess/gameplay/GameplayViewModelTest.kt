@@ -1134,7 +1134,15 @@ internal class GameplayViewModelTest {
         )
 
         viewModel.navActions.test {
-            verifyNavigatedToMain(awaitItem())
+            // Back to the menu already there, which does not reopen the saved game and bring
+            // this message straight back.
+            assertThat(awaitItem()).isEqualTo(NavigateTo(
+                route = MainRoute,
+                options = navOptions {
+                    popUpTo<MainRoute>()
+                    launchSingleTop = true
+                }
+            ))
         }
         // The engine failed, not the player: the saved game stays, to be taken up again.
         coVerify(exactly = 0) { removeCurrentGameUseCase() }

@@ -336,10 +336,20 @@ internal class GameplayViewModel(
     /**
      * Back to the menu with the game kept as it stands: it was the engine that failed, not the
      * player, so the game is neither resigned nor deleted, and it can be taken up again later.
+     *
+     * It goes back to the menu that is already under this screen, not a fresh one: a fresh menu
+     * opens a saved game straight away, which would bring this message back for ever and leave
+     * no way to a new game, two players or the statistics.
      */
-    private suspend fun leaveBecauseNoEngine() {
-        navigateToMain()
-    }
+    private suspend fun leaveBecauseNoEngine() = emitNavAction(
+        NavigateTo(
+            route = MainRoute,
+            options = navOptions {
+                popUpTo<MainRoute>()
+                launchSingleTop = true
+            }
+        )
+    )
 
     private fun hideLoadingIfShown() = uiState.updateState {
         if (dialog is LoadingDialogUi) copy(dialog = null) else this
