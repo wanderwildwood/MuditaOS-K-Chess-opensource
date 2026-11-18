@@ -16,8 +16,8 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.dropWhile
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.takeWhile
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 
 @Suppress("TooManyFunctions")
 internal class ChessEngineImpl(
@@ -26,6 +26,10 @@ internal class ChessEngineImpl(
 ) : ChessEngine {
 
     private val stateFlow = MutableStateFlow<State>(State.Uninitialized)
+
+    /** Set when a stopped search left the engine ended; the next caller starts it again. */
+    @Volatile
+    private var restartNeeded = false
 
     override suspend fun start() {
         if (stateFlow.value !is State.Uninitialized) return
@@ -45,6 +49,7 @@ internal class ChessEngineImpl(
             throw EngineUnavailableException("The engine ended before it was ready", ex)
         }
 
+        restartNeeded = false
         moveToState(State.Ready)
     }
 
@@ -97,17 +102,27 @@ internal class ChessEngineImpl(
         } catch (ex: CancellationException) {
             if (!searching) throw ex
             withContext(NonCancellable) {
-                launch {
-                    try {
+                // consume lines from process before moving to Ready state. The wait is bounded:
+                // a "bestmove" handed over just as the search was cancelled is lost, an idle
+                // engine does not answer a stop, and a wedged one answers nothing.
+                val drained = try {
+                    withTimeoutOrNull(STOP_ANSWER_TIMEOUT_MILLIS) {
                         process.writeLine(STOP)
-                        // consume lines from process before moving to Ready state
                         awaitLine {
                             it.startsWith(BEST_MOVE_TOKEN)
                         }
-                        moveToState(State.Ready)
-                    } catch (ignored: NoSuchElementException) {
-                        // The engine went away while the search was being stopped.
-                    }
+                    } != null
+                } catch (ignored: NoSuchElementException) {
+                    // The engine went away while the search was being stopped.
+                    false
+                }
+                if (drained) {
+                    moveToState(State.Ready)
+                } else {
+                    // Its next answer could belong to the search just stopped: end this engine,
+                    // and the next caller starts a fresh one.
+                    stop()
+                    restartNeeded = true
                 }
             }
             throw ex
@@ -123,6 +138,7 @@ internal class ChessEngineImpl(
     }
 
     override suspend fun stop() {
+        restartNeeded = false
         process.writeLine(QUIT)
         process.stop()
         moveToState(State.Uninitialized)
@@ -130,6 +146,7 @@ internal class ChessEngineImpl(
 
     @VisibleForTesting
     suspend fun awaitReady() {
+        if (restartNeeded) start()
         awaitState<State.Ready>()
     }
 
@@ -168,5 +185,8 @@ internal class ChessEngineImpl(
         const val UCI_OK_TOKEN = "uciok"
         const val READY_OK_TOKEN = "readyok"
         const val BEST_MOVE_TOKEN = "bestmove"
+
+        /** Stockfish answers a stop within milliseconds; this is for one that never will. */
+        const val STOP_ANSWER_TIMEOUT_MILLIS = 2_000L
     }
 }

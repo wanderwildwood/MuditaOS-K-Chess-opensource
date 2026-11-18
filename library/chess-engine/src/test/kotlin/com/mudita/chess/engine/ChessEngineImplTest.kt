@@ -225,6 +225,30 @@ class ChessEngineImplTest {
     }
 
     @Test
+    fun `a stop the engine never answers gives up, and the next search starts the engine again`() = runTest {
+        every { process.writeLine(UCICommands.go()) } coAnswers {
+            processLines.send(SEARCH_RESPONSE.take(5))
+        }
+        // STOP is left unanswered, as an idle or wedged engine leaves it.
+        tested.start()
+        val calculateJob = launch {
+            val move = tested.calculateBestMove(SearchOptions())
+            fail("Method returned $move event though calculation was cancelled")
+        }
+        testScheduler.advanceUntilIdle()
+
+        calculateJob.cancelAndJoin()
+
+        verify { process.stop() }
+        every { process.writeLine(UCICommands.go()) } coAnswers {
+            processLines.send(BEST_MOVE_RESPONSE)
+        }
+        val move = tested.calculateBestMove(SearchOptions())
+        assertThat(move).isEqualTo("e2e3")
+        verify(exactly = 2) { process.start() }
+    }
+
+    @Test
     fun `cancelMoveCalculation sends stop command to engine`() = runTest {
         every { process.writeLine(UCICommands.go()) } coAnswers {
             processLines.send(SEARCH_RESPONSE)
